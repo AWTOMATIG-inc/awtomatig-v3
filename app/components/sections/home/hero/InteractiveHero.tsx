@@ -110,18 +110,7 @@ export default function InteractiveHero({ children }: { children: ReactNode }) {
       pointer.isHovered = false;
       resetPointerTarget();
     };
-    // Tap / Click creates high-energy radial shockwave
-    const onPointerDown = (e: PointerEvent) => {
-      const rect = hero.getBoundingClientRect();
-      shockwaves.push({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        radius: 0,
-        maxRadius: Math.max(width, height) * 0.85,
-        speed: 8.5,
-        opacity: 0.95,
-      });
-    };
+    
 
     const resizeObserver = new ResizeObserver(onResize);
 
@@ -325,7 +314,6 @@ export default function InteractiveHero({ children }: { children: ReactNode }) {
     hero.addEventListener("touchstart", onTouch, { passive: true });
     hero.addEventListener("touchmove", onTouch, { passive: true });
     hero.addEventListener("pointerleave", onPointerLeave);
-    hero.addEventListener("pointerdown", onPointerDown);
     frameId = requestAnimationFrame(render);
 
     return () => {
@@ -335,7 +323,6 @@ export default function InteractiveHero({ children }: { children: ReactNode }) {
       hero.removeEventListener("touchstart", onTouch);
       hero.removeEventListener("touchmove", onTouch);
       hero.removeEventListener("pointerleave", onPointerLeave);
-      hero.removeEventListener("pointerdown", onPointerDown);
     };
   }, []);
 

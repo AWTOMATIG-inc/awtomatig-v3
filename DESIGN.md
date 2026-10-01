@@ -47,6 +47,7 @@ This document is the reference for building UI in this project. It covers the de
 | Font loading | `app/layout.tsx` | `next/font/google` self-hosts Inter (`--font-inter`) and Inter Tight (`--font-inter-tight`) and puts both variables on `<html>`. |
 | Text styles | `app/globals.css` → `@utility type-*` | One utility per Figma text style, e.g. `type-heading-40`. |
 | Content container | `app/globals.css` → `@utility site-container` | 1440px max-width wrapper for every section's content (see §9). |
+| Effect utilities | `app/globals.css` → `@utility glass`, `@utility text-gradient-display` | Frosted glass surface (§7.3) and the Display title gradient (§4.3). |
 | Component styles | `app/components/**/<name>.css`, `@import`ed at the top of `globals.css` | Colocated with each component (see §10.1). |
 | Base styles | `app/globals.css` → `@layer base` | Body defaults to `surface-inverse` with `fg-inverse` text. `h1`–`h6` use Inter Tight. Focus ring uses `action-primary`. |
 
@@ -116,11 +117,13 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 
 ### 4.2 Type scale
 
-Each Figma text style has a matching `type-*` utility that sets the family, size, line height, tracking and weight together. Sizes are the values in the 1440px design frame. Styles of 28px and larger scale down fluidly on smaller screens (`clamp`), so they never need manual breakpoints.
+Each Figma text style has a matching `type-*` utility that sets the family, size, line height, tracking and weight together. Sizes are the values in the 1440px design frame. Styles of 28px and larger scale down fluidly on smaller screens (`clamp`), so they never need manual breakpoints. Display / 100 uses a two-stage curve: `10vw` between 42px and 72px below `lg`, then it tracks the 1440 frame (72 → 100px) from `lg` up, with no jump at the breakpoint.
+
+The fixed sizes (24px and below) are written as `calc(var(--u, 0.0625rem) * N)`. Outside a frame-scaled section that is plain `rem` (it respects the user's font-size setting); inside the header or hero on desktop it follows the `--u` frame scale (§9.2), so the same `type-*` class works in both places.
 
 | Figma style | Utility | Family | Size (desktop → min) | Line height | Tracking | Weight |
 | --- | --- | --- | --- | --- | --- | --- |
-| Display / 100 | `type-display-100` | Inter Tight | 100 → 44px | 0.99 | -0.04em | 500 |
+| Display / 100 | `type-display-100` | Inter Tight | 100 → 42px | 0.99 | -0.04em | 500 |
 | Display / 80 | `type-display-80` | Inter Tight | 80 → 40px | 1.00 | -0.04em | 500 |
 | Heading / 60 | `type-heading-60` | Inter Tight | 60 → 36px | 1.05 | -0.03em | 500 |
 | Heading / 50 | `type-heading-50` | Inter Tight | 50 → 32px | 1.10 | -0.03em | 500 |
@@ -156,8 +159,9 @@ The specimen text from Figma shows how each group is meant to be used: Display (
   - **Body 20**: lead or intro paragraphs. **Body 16**: default paragraphs. **16 Compact**: dense UI and cards. **14**: captions, meta and footnotes.
   - **Label**: buttons, navigation, tags, eyebrows. Uppercase labels are for CTAs and eyebrows only.
 - Semantic HTML is independent of visual style: an `<h2>` may use `type-heading-28`. Keep the heading order (`h1` → `h2` → `h3`) correct regardless of size.
-- Keep paragraphs to **~60–75 characters** per line (`max-w-[720px]` for Body 20, `max-w-[640px]` for Body 16).
-- Display gradients (white → pale cyan, as in the hero title) are allowed on Display styles only.
+- Keep paragraphs to **~60–75 characters** per line (`max-w-720` for Body 20, `max-w-640` for Body 16; max-width utilities use the 1px spacing unit).
+- Display gradients (white → pale cyan, as in the hero title) are allowed on Display styles only: `type-display-100 text-gradient-display`. The gradient lives in the `--gradient-display` token.
+- Responsive type changes the style, not the size: `type-body-16 lg:type-body-20`.
 - You may override weight or color after a `type-*` utility (e.g. `type-body-16 font-medium`). Do not override size or line height. If you need to, use another style.
 
 ---
@@ -176,6 +180,7 @@ The specimen text from Figma shows how each group is meant to be used: Display (
 | **Group** | `20`, `32`, `40` | Card padding, gaps between related blocks, form rows |
 | **Section** | `50`, `60` | Vertical rhythm between sections, page gutters on desktop |
 | *Observed only* | `7`, `21`, `25`, `29`, `46`, `52` | Present in the Figma homepage. Use only to match an existing frame exactly; do not use in new work. |
+| *Frame-scaled* | any Figma px | Only in the desktop composition of a frame-scaled section (header, hero; §9.2), where values are copied verbatim from Figma (`gap-36`, `w-250`, `h-102`) because they scale with the frame. Mobile layouts of those sections still use the scale. |
 
 ### 5.2 Spacing rules
 
@@ -229,6 +234,24 @@ Transparency values repeat across borders, overlays and inverse text. Always pai
 
 Don't use other alpha steps in new work. Text below 60% opacity is decorative only and must not carry essential information.
 
+### 7.3 Glass material
+
+Frosted glass on dark is one reusable material, applied with the `glass` utility. Its values are tokens in `@theme`, so component CSS never repeats them.
+
+| Token | Value | Role |
+| --- | --- | --- |
+| `--glass-fill` | Subtle top/bottom highlights over `rgb(16 24 26 / 0.45)` | Default fill (navbar pill) |
+| `--glass-fill-dense` | `rgb(18 26 28 / 0.82)` | Panels over content (mobile menu) |
+| `--glass-border` / `-top` / `-bottom` | White at 20% / 34% / 15% | Bevelled 1px hairline |
+| `--glass-blur` | `blur(14px) saturate(140%)` | Backdrop filter |
+| `--shadow-glass` (`shadow-glass`) | `0 10px 30px -10px`, black 45% | Lift under the glass |
+
+```tsx
+<div className="glass rounded-12 p-8">…</div>
+```
+
+To swap the fill, set `--glass-bg` on the element (e.g. `--glass-bg: var(--glass-fill-dense)`). Inside component CSS, use `@apply glass;` (see `.nav-pill::before`).
+
 ---
 
 ## 8. Motion
@@ -277,7 +300,18 @@ Current usage: the navbar wraps `.nav-pill` in a `site-container` inside the ful
 ### 9.2 Breakpoints & scaling
 
 - **Breakpoints** (Tailwind defaults): `sm` 640 · `md` 768 · **`lg` 1024 (desktop layout starts here)** · `xl` 1280 · `2xl` 1536. Design mobile-first, and switch to the desktop composition at `lg:`.
-- Large hero compositions may scale with the frame using the `--u` unit (`calc(var(--u) * N)`, where N is the Figma px value). See `.hero-inner` and `.site-header` in `globals.css`. `--u` is **capped at 1px**, so pixel-locked content stops growing at 1440px, in line with the container. Use `--u` only for pixel-locked hero art. Everything else uses the normal scale plus fluid `type-*` styles.
+- **Frame scale.** A pixel-locked composition (only `.site-header` and `.hero-inner` today) scales its desktop layout with the 1440 frame. Its CSS sets, from `lg` up:
+
+  ```css
+  .hero-inner {
+    @variant lg {
+      --u: clamp(0.72px, 100cqw / 1440, 1px); /* one Figma px; capped at 1px */
+      --spacing: var(--u);                    /* Tailwind spacing/sizing utilities now scale too */
+    }
+  }
+  ```
+
+  Because Tailwind's spacing utilities compile to `calc(var(--spacing) * N)`, the markup stays plain Tailwind (`gap-36`, `w-250`, `lg:h-60`), and the fixed `type-*` styles and `<Button>` follow `--u` too. Below `lg`, `--u` is unset, so 1 unit = 1px. `--u` is **capped at 1px**, so content stops growing at 1440px, in line with the container. Use the frame scale only for pixel-locked hero-style art; ordinary sections use the normal scale and fluid `type-*` styles.
 
 ---
 
@@ -318,7 +352,18 @@ Rules:
 - **Where does it go?** Used on several pages and knows nothing about the page → `ui/`. Site chrome (header, footer) → `layout/`. Belongs to one page → `sections/<page>/<section>/`. An SVG → `icons/`.
 - **One folder per component or section.** The `.tsx` and its `.css` live together. Name the folder in kebab-case (`case-studies/`) and the component in PascalCase (`CaseStudiesSection.tsx`).
 - **Each section exposes one `<Name>Section.tsx`** entry point. Pages only compose sections: `page.tsx` should contain no markup beyond `<Header />`, `<main>` and sections.
-- **Component CSS** goes in `@layer components { … }` in its own file. Register it with an `@import` at the top of `app/globals.css`, with `ui/` first so sections can override primitives. Use token variables only.
+- **Tailwind first, CSS for the rest.** Style in JSX with Tailwind utilities and tokens. A component `.css` file holds only what utilities can't express cleanly:
+
+  | Tailwind in JSX | Component CSS |
+  | --- | --- |
+  | Layout (flex, grid, position, z-index) | Frame-scale and other custom properties (`--u`, `--spacing`, `--gutter-*`) |
+  | Spacing and sizing (`gap-12`, `pt-40`, `size-48`) | `env(safe-area-inset-*)` math |
+  | Typography (`type-*`, `uppercase`) | Pseudo-element layers (`::before` glass) |
+  | Colors, borders, radius, opacity (`text-white/60`, `border-white/12`) | Multi-layer gradients, filters, keyframes |
+  | Simple states (`hover:`, `aria-[current=page]:`, `group-data-open:`, `motion-reduce:`) | Multi-property state transitions (menu open/close with a `visibility` delay) |
+  | Responsive variants (`lg:`, `max-lg:hidden`) | Tuning a primitive for one placement (`.nav-cta`) |
+
+- **Component CSS** goes in `@layer components { … }` in its own file. Register it with an `@import` at the top of `app/globals.css`, with `ui/` first so sections can override primitives. Write it mobile-first with `@variant lg { … }`, and use token variables only. Raw color literals fail `npm run lint` (`scripts/check-tokens.mjs`); the hero's atmospheric background is the one marked exception (`/* token-check: off */`).
 - A section shared by two pages moves up to `sections/shared/<section>/`.
 - Import primitives and icons through their barrels (`@/app/components/ui`, `@/app/components/icons`).
 
@@ -380,15 +425,15 @@ Rules:
 
 | Pattern | Spec |
 | --- | --- |
-| **Glass nav pill** | Transparent at the top of the page; once scrolled, becomes a blurred glass surface (`backdrop-blur`, `border-white/20`, `rounded-[10px]`) with a soft shadow. |
+| **Glass nav pill** | Transparent at the top of the page; once scrolled or opened, the `glass` material (§7.3) fades in on `.nav-pill::before` (10 Figma px radius, frame-scaled). |
 | **Eyebrow / badge** | Brand icon + `type-label-14 uppercase`, 12px gap, above a Display or Heading. |
-| **Tag list** | `type-body-16` at `text-white/60`, hover to near-white, 20–26px gaps. |
-| **Divider strip** | `border-white/12` top and bottom hairlines framing a title and tags row. |
+| **Tag list** | `type-body-16` at `text-white/60`, hover to `text-fg-inverse`, 20–26px gaps. |
+| **Divider strip** | `border-y border-white/12` hairlines framing a title and tags row. |
 
 Component rules:
 
 - Every interactive element needs visible **hover**, **focus-visible** and **disabled** states. A global cyan focus ring is provided in the base layer; don't remove it.
-- Minimum touch target: **44×44px** on touch layouts.
+- Minimum touch target: **44×44px** on touch layouts. A smaller visual control keeps its size and extends its hit area with a pseudo-element, e.g. `relative size-36 before:absolute before:-inset-4` (the menu toggle).
 - Icons inherit `currentColor` and sit at 16px (labels) or 18–20px (headings).
 - Name new component classes by component (`.pricing-card`), not by appearance (`.cyan-box`).
 
@@ -422,6 +467,7 @@ Check this before opening a PR that touches UI:
 
 - [ ] Colors come from semantic tokens (`fg-*`, `surface-*`, `action-*`), or from primitives with an opacity modifier.
 - [ ] No hex or rgb literals and no arbitrary values (`[#…]`, `[13px]`) in new markup or CSS, except inside `@theme`.
+- [ ] Styling is Tailwind in JSX; component CSS only holds what §10.1 allows.
 - [ ] Every piece of text uses a `type-*` utility. Headings use Inter Tight and body uses Inter.
 - [ ] Spacing values are from the scale in §5. Radii are from §6.
 - [ ] At most one cyan primary action per viewport, with black text on cyan.
@@ -429,6 +475,7 @@ Check this before opening a PR that touches UI:
 - [ ] Hover, focus-visible, disabled and reduced-motion states are handled.
 - [ ] Section content sits inside `site-container` (max 1440px); backgrounds, images and effects stay full-width outside it.
 - [ ] The layout works from 320px to 1440px+ with no horizontal scroll.
+- [ ] `npm run lint` passes (ESLint plus the token check).
 
 **Don't:** use Tailwind's default palette (it's disabled), add new grays, put cyan text on light surfaces, stack multiple floating shadows, or use Display styles below the hero.
 
@@ -454,4 +501,4 @@ The original Figma export listed style **names** but not every value. These were
 - Weight and tracking of the Label styles (currently 600, +0.01em for Upper).
 - Button label sizes (13px for `md`, 15px for `lg`) don't map exactly to a Label text style (14/16). Confirm whether Figma has a dedicated button text style.
 - Hover states for the `dark`, `light` and `outline` buttons. The screenshots showed resting states only, so the hover states are inferred.
-- Hero-specific atmospheric colors (teal gradient bloom, tag gray `#A5AAAA`). They sit outside the core palette and are kept local to the hero CSS. Decide whether they become tokens or move to the opacity equivalents (`white/60`, `cyan/20`).
+- Tag list size: the hero tags were 18px in the build but now follow the Tag list pattern (`type-body-16`). Confirm against Figma whether a Body / 18 style exists.

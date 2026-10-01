@@ -65,6 +65,21 @@
   /* ---------- Motion ---------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---------- Effects: glass material (navbar pill, mobile menu) — applied with the `glass` utility ---------- */
+  --glass-fill:
+    linear-gradient(180deg, rgb(255 255 255 / 0.03) 0%, rgb(255 255 255 / 0.025) 15%, transparent 45%, transparent 60%, rgb(255 255 255 / 0.035) 100%),
+    linear-gradient(90deg, rgb(0 0 0 / 0.14) 0%, transparent 18%, transparent 82%, rgb(255 255 255 / 0.025) 100%),
+    rgb(16 24 26 / 0.45);
+  --glass-fill-dense: rgb(18 26 28 / 0.82); /* for panels that sit over content, e.g. the mobile menu */
+  --glass-border: rgb(255 255 255 / 0.2);
+  --glass-border-top: rgb(255 255 255 / 0.34);
+  --glass-border-bottom: rgb(255 255 255 / 0.15);
+  --glass-blur: blur(14px) saturate(140%);
+  --shadow-glass: 0 10px 30px -10px rgb(0 0 0 / 0.45);
+
+  /* ---------- Effects: Display text gradient (white → pale cyan) — the `text-gradient-display` utility ---------- */
+  --gradient-display: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
 }
 
 /* Font families come from next/font CSS variables set on <html> (app/layout.tsx) */
@@ -88,17 +103,31 @@
     max(var(--gutter-end, var(--site-gutter)), env(safe-area-inset-right));
 }
 
+/* ---------- Frame scale ----------
+   A pixel-locked section (header, hero) sets, from lg up:
+     --u: clamp(<min>, 100vw / 1440, 1px);   one Figma px at the current viewport
+     --spacing: var(--u);                    so every Tailwind spacing/sizing utility scales too
+   Fixed-size text styles below and <Button> follow --u as well. Outside such a
+   section --u is unset and 1 Figma px = 1px (0.0625rem for text, so it honours
+   the user's font-size setting). */
+
 /* ---------- Text styles ----------
    One utility per Figma text style. Use these instead of composing
    font-size / leading / tracking by hand. Display and large headings
-   scale fluidly down from their 1440px-frame size. */
+   scale fluidly down from their 1440px-frame size; the fixed sizes
+   follow the frame scale (--u) when one is set. */
 
+/* Two-stage curve: 42px → 10vw → 72px on phones/tablets, then tracks the 1440 frame from lg (72 → 100px) */
 @utility type-display-100 {
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 6.944vw, 6.25rem);
+  font-size: clamp(2.625rem, 10vw, 4.5rem);
   line-height: 0.99;
   letter-spacing: -0.04em;
   font-weight: 500;
+
+  @media (width >= 64rem) {
+    font-size: clamp(4.5rem, 6.944vw, 6.25rem);
+  }
 }
 @utility type-display-80 {
   font-family: var(--font-display);
@@ -144,52 +173,52 @@
 }
 @utility type-heading-24 {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: calc(var(--u, 0.0625rem) * 24);
   line-height: 1.25;
   letter-spacing: -0.01em;
   font-weight: 500;
 }
 @utility type-heading-20 {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: calc(var(--u, 0.0625rem) * 20);
   line-height: 1.3;
   letter-spacing: -0.01em;
   font-weight: 500;
 }
 @utility type-heading-18 {
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: calc(var(--u, 0.0625rem) * 18);
   line-height: 1.3;
   letter-spacing: -0.01em;
   font-weight: 500;
 }
 @utility type-body-20 {
   font-family: var(--font-sans);
-  font-size: 1.25rem;
+  font-size: calc(var(--u, 0.0625rem) * 20);
   line-height: 1.5;
   font-weight: 400;
 }
 @utility type-body-16 {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: calc(var(--u, 0.0625rem) * 16);
   line-height: 1.6;
   font-weight: 400;
 }
 @utility type-body-16-compact {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: calc(var(--u, 0.0625rem) * 16);
   line-height: 1.4;
   font-weight: 400;
 }
 @utility type-body-14 {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: calc(var(--u, 0.0625rem) * 14);
   line-height: 1.5;
   font-weight: 400;
 }
 @utility type-label-16-upper {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: calc(var(--u, 0.0625rem) * 16);
   line-height: 1.2;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -197,15 +226,37 @@
 }
 @utility type-label-16 {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: calc(var(--u, 0.0625rem) * 16);
   line-height: 1.2;
   font-weight: 600;
 }
 @utility type-label-14 {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: calc(var(--u, 0.0625rem) * 14);
   line-height: 1.2;
   font-weight: 600;
+}
+
+/* Display gradient (white → pale cyan). Display styles only: `type-display-100 text-gradient-display` */
+@utility text-gradient-display {
+  background: var(--gradient-display);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Effects ---------- */
+
+/* Frosted glass surface on dark (navbar pill, mobile menu). Set --glass-bg to swap the fill,
+   e.g. --glass-bg: var(--glass-fill-dense) for panels over content. */
+@utility glass {
+  border: 1px solid var(--glass-border);
+  border-top-color: var(--glass-border-top);
+  border-bottom-color: var(--glass-border-bottom);
+  background: var(--glass-bg, var(--glass-fill));
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass);
 }
 
 @layer base {

@@ -44,6 +44,12 @@ _Last updated: 2026-10-01_
 | D11 | **The WhatsApp phone glyph is a cut-out** (`fillRule="evenodd"`), not white | In Figma the phone shows the button's own background (dark on glass, white on light). |
 | D12 | **Primary button has no resting glow**, only a glow on hover | The Figma screenshots show no glow at rest. |
 | D13 | Semantic color roles: `text/primary` → Charcoal, `text/strong` → Black | Assumed; the export didn't say. See open items. |
+| D14 | **Tailwind first; component CSS only for what utilities can't express** (frame-scale vars, safe-area math, pseudo-element layers, complex gradients, multi-property transitions). The table is in DESIGN.md §10.1. | The Navbar and Hero had drifted into ~500 lines of hand-written CSS that bypassed `type-*`, color tokens and the opacity steps. One clear split removes the "Tailwind or CSS?" question. |
+| D15 | **Frame scale drives Tailwind:** frame-scaled sections set `--spacing: var(--u)` from `lg` up, and fixed `type-*` sizes are `calc(var(--u, 0.0625rem) * N)` | Tailwind spacing utilities compile to `calc(var(--spacing) * N)`, so pixel-locked markup can be plain Tailwind (`gap-36`, `w-250`) and still scale with the 1440 frame. Outside a frame, text stays `rem`. |
+| D16 | **Glass is one material**: `--glass-*` tokens plus the `glass` utility. The Display gradient is `--gradient-display` plus `text-gradient-display`. | The navbar pill and mobile menu had separate hard-coded recipes. Literals now live only in `@theme`. |
+| D17 | **The hero background (`.hero`, `.top-right-glow`, `.noise-overlay`, canvas) stays exactly as built**, exempt from the token check (`/* token-check: off */`) | Requested by the user. It's atmospheric art sampled from the design, not reusable UI. This resolves the "hero atmospheric colors" open item. |
+| D18 | **Display / 100 has a two-stage curve**: 42px → `10vw` → 72px below `lg`, then 72 → 100px with the frame | The single `6.944vw` curve made the tablet hero title too small (~53px at 768). The old hero CSS also jumped from 84px to 72px at 1024; the new curve is continuous. The 42px minimum matches what the hero shipped with. |
+| D19 | **Token guardrails in lint**: an ESLint rule bans arbitrary color values in `className`, and `scripts/check-tokens.mjs` bans raw color literals in component CSS | Keeps the drift from coming back without adding dependencies. |
 
 ---
 
@@ -54,7 +60,9 @@ _Last updated: 2026-10-01_
 - **Classes like `text-slate-400` or `rounded-lg` silently produce nothing** (D1). Use tokens.
 - **New component CSS must be registered** with an `@import` at the top of `app/globals.css` (`ui/` first, then `layout/`, then `sections/`), or it won't load.
 - **Don't put `site-container` on an element that has a background**; wrap the content inside it instead.
-- **Inside the header and hero, `<Button>` scales with `--u`.** Outside them, 1 design px = 1px.
+- **Inside the header and hero (from `lg` up), `<Button>`, the fixed `type-*` styles and every Tailwind spacing utility scale with `--u`** because those sections set `--spacing: var(--u)`. Outside them, 1 design px = 1px. Below `lg`, `--u` is unset in both sections.
+- **Component CSS is mobile-first** with `@variant lg { … }`. VS Code's built-in CSS linter flags `@variant`, `@apply`, `@theme` and `@utility` as unknown at-rules; that warning is harmless.
+- **`next/image` with a non-square PNG:** size it with one dimension plus `h-auto` (e.g. `w-16 h-auto`). `size-*` squashes it.
 - **Header CTA on very narrow phones (<360px):** the label is visually hidden but still read by screen readers. Don't switch it to `display: none`.
 - **Local visual checks:** headless Chrome won't render narrower than ~500px, so use an `<iframe width=390>` page for mobile. Don't pass `--virtual-time-budget`, because the hero canvas animation makes it hang. Python is not installed on the dev machine.
 
@@ -70,10 +78,12 @@ Confirm these against Figma, then update `globals.css`, DESIGN.md and this file:
 - [ ] Label style weight and tracking (currently 600, +0.01em for Upper)
 - [ ] Button label sizes: 13px (`md`) and 15px (`lg`) vs the Label 14/16 styles. Is there a dedicated button text style?
 - [ ] Hover states for the `dark`, `light` and `outline` buttons (inferred; the screenshots showed resting states only)
-- [ ] Hero atmospheric colors outside the palette (teal bloom gradient, tag gray `#A5AAAA`): turn them into tokens or replace them with opacity equivalents?
+- [x] ~~Hero atmospheric colors outside the palette~~: the background is kept as is (D17); the tag gray `#A5AAAA` became `text-white/60`.
+- [ ] Hero tags now follow the Tag list pattern (`type-body-16`, was 18px). Is there a Body / 18 style in Figma?
+- [ ] Hero proof line and strip title now use `type-heading-18` / `type-heading-20` (Inter Tight); before they rendered in Inter. Confirm the family in Figma.
 - [ ] Real WhatsApp link (`WHATSAPP_URL` in `Header.tsx` is a `#contact` placeholder)
 - [ ] Hero badge text "Build the systemssss." looks like a typo
-- [ ] The mobile-menu CTA uses `outline` (black label, meant for light surfaces) inside the dark dropdown, so it has low contrast. Confirm the intended mobile design, possibly `tint` or `light`.
+- [ ] The mobile-menu CTA currently uses `tint` inside the dark dropdown. Confirm the intended mobile design.
 - [ ] Hero avatars are Unsplash placeholders; replace them with real team photos
 
 ---
@@ -84,6 +94,7 @@ Newest first. Add one line per meaningful change.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-01 | **Tailwind-first refactor of the Navbar and Hero.** Markup now uses Tailwind utilities, `type-*` styles and color tokens; `header.css` and `hero.css` keep only frame-scale, safe-area, glass and animation rules (mobile-first, `@variant lg`). Added the frame-scale contract (`--spacing: var(--u)`, `--u`-aware text styles), the `glass` and `text-gradient-display` utilities with their tokens, the two-stage Display / 100 curve (min 42px), a 44px touch target on the menu toggle, and lint guardrails (ESLint rule plus `scripts/check-tokens.mjs`). Hero background unchanged. AGENTS.md and DESIGN.md updated. |
 | 2026-10-01 | Navbar "Message us" now matches the new Figma screenshot: added the borderless `tint` Button variant and tuned `.nav-cta` to 142×40, 17px icon, 11px gap, 13.5px label. The mobile-menu CTA was switched to `outline` (by the user). |
 | 2026-10-01 | Added `MEMORY.md` (this file). |
 | 2026-10-01 | Added the `<Button>` component (5 variants, 2 sizes) and the icons `WhatsAppIcon` and `MailIcon`. Restructured components into `ui/`, `icons/`, `layout/` and `sections/`, with colocated CSS. Navbar and hero CTAs now use `<Button>`. Removed the unused `IsoCube` and `CubeIcon`. Added the `--color-deep-teal` token. |

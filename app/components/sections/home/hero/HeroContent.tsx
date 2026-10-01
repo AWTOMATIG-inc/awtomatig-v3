@@ -13,52 +13,61 @@ const TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdT
 
 export default function HeroContent() {
   return (
-    <div className="hero-inner site-container relative z-20 flex flex-1 flex-col">
+    <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-80">
       <div>
-        <div className="hero-badge">
-          <Image src={Logo} alt="AWTOMATIG Logo" width={16} height={16} />
+        <div className="type-label-14 flex items-center gap-12 text-fg-inverse uppercase">
+          <Image src={Logo} alt="" width={16} height={22} className="h-auto w-16 shrink-0" />
           <span>Build the systemssss.</span>
         </div>
 
-        <h1 className="hero-title">
+        <h1 className="type-display-100 text-gradient-display mt-24 w-fit">
           The operational
-          <br /> layer behind modern
-          <br /> businesses.
+          <br className="max-lg:hidden" /> layer behind modern
+          <br className="max-lg:hidden" /> businesses.
         </h1>
       </div>
 
-      <div className="mt-auto pt-[calc(var(--u)*40)]">
-        <div className="hero-row">
-          <p className="hero-copy">
+      <div className="mt-auto pt-40">
+        <div className="flex flex-col items-start gap-40 lg:flex-row lg:items-end lg:justify-between">
+          <p className="type-body-16 max-w-640 text-fg-inverse lg:type-body-20 lg:max-w-720">
             From websites and back-office operations to ERP systems, automation,
-            <br /> and AdTech workflows, AWTOMATIG connects people, process, systems,
-            <br /> and technology into one scalable ecosystem.
+            <br className="max-lg:hidden" /> and AdTech workflows, AWTOMATIG connects people, process, systems,
+            <br className="max-lg:hidden" /> and technology into one scalable ecosystem.
           </p>
 
-          <div className="hero-aside">
-            <div className="hero-avatars">
+          <div className="w-full lg:w-auto">
+            <div className="flex gap-5">
               {AVATARS.map((src) => (
-                <Image key={src} src={src} alt="Team member" width={120} height={120} />
+                <Image
+                  key={src}
+                  src={src}
+                  alt="Team member"
+                  width={120}
+                  height={120}
+                  className="size-48 rounded-6 object-cover lg:size-60"
+                />
               ))}
             </div>
-            <p className="hero-proof">Built by people who understand operations.</p>
+            <p className="type-heading-18 mt-16 text-fg-inverse">Built by people who understand operations.</p>
 
-            <div className="hero-ctas">
-              <Button variant="primary" size="lg" className="hero-btn hero-btn-primary">
+            <div className="mt-24 flex flex-col gap-12 sm:flex-row lg:mt-34">
+              <Button variant="primary" size="lg" className="w-full sm:flex-1 lg:w-250 lg:flex-none">
                 Explore Our Services
               </Button>
-              <Button variant="glass" size="lg" className="hero-btn hero-btn-secondary">
+              <Button variant="glass" size="lg" className="w-full sm:flex-1 lg:w-252 lg:flex-none">
                 Start a Conversation
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="hero-strip">
-          <p className="hero-strip-title">Built for the systems behind the business.</p>
-          <ul className="hero-tags">
+        <div className="mt-40 flex flex-col items-start gap-12 border-y border-white/12 py-20 lg:mt-60 lg:h-102 lg:flex-row lg:items-center lg:justify-between lg:gap-24 lg:py-0">
+          <p className="type-heading-18 text-fg-inverse lg:type-heading-20">Built for the systems behind the business.</p>
+          <ul className="type-body-16 flex flex-wrap gap-x-20 gap-y-8 text-white/60 lg:flex-nowrap lg:gap-26">
             {TAGS.map((tag) => (
-              <li key={tag}>{tag}</li>
+              <li key={tag} className="transition-colors duration-200 hover:text-fg-inverse motion-reduce:transition-none">
+                {tag}
+              </li>
             ))}
           </ul>
         </div>

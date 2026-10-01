@@ -1,7 +1,9 @@
 /* Home hero: full-bleed background layers on .hero, content in .hero-inner (.site-container). Imported by app/globals.css */
 
 @layer components {
-  /* ---------- Hero shell & ambient layers ---------- */
+  /* ---------- Hero shell & ambient layers ----------
+     Atmospheric art sampled from the design: kept exactly as is and exempt from the token check. */
+  /* token-check: off */
 
   .hero {
     container-type: inline-size;
@@ -48,195 +50,23 @@
     transform: translate3d(var(--glow-x, 0px), var(--glow-y, 0px), 0);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  /* token-check: on */
 
-  /* ---------- Hero content ---------- */
+  /* ---------- Hero content ----------
+     Layout, spacing, type and colors are Tailwind classes in HeroContent.tsx.
+     From lg up the content is pixel-locked to the 1440 Figma frame (see "Frame scale" in globals.css). */
 
   .hero-inner {
-    /* Capped at 1px: content stops growing once the hero passes the 1440px frame */
-    --u: clamp(0.72px, 100cqw / 1440, 1px);
-    --gutter-start: calc(var(--u) * 72);
-    --gutter-end: calc(var(--u) * 60);
-    /* Clears the fixed header (20 + 60 design px at the header scale) plus 24 design px of breathing room */
-    padding-top: calc(clamp(0.85px, 100vw / 1440, 1px) * 80 + var(--u) * 24 + env(safe-area-inset-top));
-    padding-bottom: calc(var(--u) * 80);
-  }
+    padding-top: calc(92px + env(safe-area-inset-top)); /* clears the 64px mobile header + 28px */
 
-  .hero-badge {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--u) * 12);
-    font-size: calc(var(--u) * 14.5);
-    line-height: calc(var(--u) * 17);
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--color-white);
-  }
-  .hero-badge svg {
-    width: calc(var(--u) * 16);
-    height: calc(var(--u) * 17);
-    flex-shrink: 0;
-  }
-
-  .hero-title {
-    width: fit-content;
-    margin-top: calc(var(--u) * 24);
-    font-size: calc(var(--u) * 100);
-    line-height: 0.99;
-    font-weight: 500;
-    letter-spacing: -0.04em;
-    background: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .hero-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: calc(var(--u) * 40);
-  }
-
-  .hero-copy {
-    max-width: calc(var(--u) * 720);
-    font-size: calc(var(--u) * 20);
-    line-height: 1.5;
-    color: var(--color-white);
-  }
-
-  .hero-avatars {
-    display: flex;
-    gap: calc(var(--u) * 5);
-  }
-  .hero-avatars img {
-    width: calc(var(--u) * 60);
-    height: calc(var(--u) * 60);
-    border-radius: calc(var(--u) * 4);
-    object-fit: cover;
-  }
-
-  .hero-proof {
-    margin-top: calc(var(--u) * 16);
-    font-size: calc(var(--u) * 18);
-    line-height: 1.3;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--color-white);
-  }
-
-  .hero-ctas {
-    display: flex;
-    gap: calc(var(--u) * 12);
-    margin-top: calc(var(--u) * 34);
-  }
-
-  /* Look and size come from <Button size="lg">; only the hero's fixed Figma widths live here */
-  .hero-btn-primary {
-    width: calc(var(--u) * 250);
-  }
-  .hero-btn-secondary {
-    width: calc(var(--u) * 252);
-  }
-
-  .hero-strip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: calc(var(--u) * 24);
-    height: calc(var(--u) * 102);
-    margin-top: calc(var(--u) * 60);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  }
-  .hero-strip-title {
-    font-size: calc(var(--u) * 21);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--color-white);
-  }
-  .hero-tags {
-    display: flex;
-    gap: calc(var(--u) * 26);
-    font-size: calc(var(--u) * 18);
-    color: #a5aaaa;
-  }
-  .hero-tags li {
-    transition: color 0.2s ease;
-  }
-  .hero-tags li:hover {
-    color: #e5e7e7;
-  }
-
-  /* ---------- Tablet & mobile: stacked layout ---------- */
-  @media (max-width: 1023px) {
-    .hero-inner {
-      --u: 1px;
-      --gutter-start: var(--site-gutter);
-      --gutter-end: var(--site-gutter);
-      padding-top: calc(92px + env(safe-area-inset-top));
-      padding-bottom: 40px;
-    }
-    .hero-badge {
-      font-size: 13px;
-    }
-    .hero-title {
-      font-size: clamp(42px, 10vw, 84px);
-      line-height: 1.02;
-    }
-    .hero-title br,
-    .hero-copy br {
-      display: none;
-    }
-    .hero-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .hero-copy {
-      max-width: 560px;
-      font-size: 16px;
-    }
-    .hero-aside {
-      width: 100%;
-    }
-    .hero-avatars img {
-      width: 48px;
-      height: 48px;
-    }
-    .hero-proof {
-      font-size: 16px;
-    }
-    .hero-ctas {
-      margin-top: 24px;
-    }
-    .hero-btn {
-      flex: 1;
-      width: auto;
-    }
-    .hero-strip {
-      flex-direction: column;
-      align-items: flex-start;
-      height: auto;
-      margin-top: 48px;
-      padding: 24px 0;
-      gap: 14px;
-    }
-    .hero-strip-title {
-      font-size: 17px;
-    }
-    .hero-tags {
-      flex-wrap: wrap;
-      gap: 8px 20px;
-      font-size: 15px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .hero-ctas {
-      flex-direction: column;
-    }
-    .hero-btn {
-      flex: none;
-      width: 100%;
+    @variant lg {
+      /* Capped at 1px: content stops growing once the hero passes the 1440px frame */
+      --u: clamp(0.72px, 100cqw / 1440, 1px);
+      --spacing: var(--u);
+      --gutter-start: calc(var(--u) * 72);
+      --gutter-end: calc(var(--u) * 60);
+      /* Clears the fixed header (20 + 60 design px at the header scale) plus 24 design px of breathing room */
+      padding-top: calc(clamp(0.85px, 100vw / 1440, 1px) * 80 + var(--u) * 24 + env(safe-area-inset-top));
     }
   }
 }
