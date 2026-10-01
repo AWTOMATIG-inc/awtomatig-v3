@@ -6,9 +6,8 @@
 @layer components {
   /* ---------- Bar ---------- */
 
+  /* Side gutters are the default site edges (globals.css): the pill defines them */
   .site-header {
-    --gutter-start: 16px;
-    --gutter-end: 16px;
     padding-top: calc(12px + env(safe-area-inset-top));
     transition: padding 0.45s var(--ease-out-quint);
 
@@ -16,8 +15,6 @@
     @variant lg {
       --u: clamp(0.85px, 100vw / 1440, 1px);
       --spacing: var(--u);
-      --gutter-start: calc(var(--u) * 49);
-      --gutter-end: calc(var(--u) * 60);
       padding-top: calc(var(--u) * 20 + env(safe-area-inset-top));
     }
   }

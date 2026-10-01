@@ -63,8 +63,6 @@
       /* Capped at 1px: content stops growing once the hero passes the 1440px frame */
       --u: clamp(0.72px, 100cqw / 1440, 1px);
       --spacing: var(--u);
-      --gutter-start: calc(var(--u) * 72);
-      --gutter-end: calc(var(--u) * 60);
       /* Clears the fixed header (20 + 60 design px at the header scale) plus 24 design px of breathing room */
       padding-top: calc(clamp(0.85px, 100vw / 1440, 1px) * 80 + var(--u) * 24 + env(safe-area-inset-top));
     }

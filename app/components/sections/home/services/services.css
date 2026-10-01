@@ -5,12 +5,19 @@
   /* Each card pins as the next one slides over it; DOM order puts later cards on top.
      While covered, it shrinks toward the top of the viewport, rounds its corners and dims. */
   .service-card {
+    /* Extra scroll while a card is pinned full screen, before the next card starts sliding over it */
+    --stack-hold: 50svh;
     position: sticky;
     top: var(--stack-top, 0px);
     overflow: clip;
+    will-change: transform;
     transform-origin: 50% calc(var(--stack-top, 0px) * -1);
     transform: scale(calc(1 - var(--stack-progress, 0) * 0.06));
     border-radius: calc(var(--stack-progress, 0) * var(--radius-34));
+  }
+
+  .service-card:not(:last-child) {
+    margin-bottom: var(--stack-hold);
   }
 
   .service-card::after {
@@ -22,14 +29,17 @@
     pointer-events: none;
   }
 
-  /* The points panel sits wider than the header content (Figma: 20px from the frame edge) */
+  /* The points panel breaks out past the site edges by --panel-bleed (Figma: 40 frame px) on both sides;
+     its padding brings the bullets back onto the site edges, in line with the navbar and the title. */
   .service-panel {
-    --gutter-start: 12px;
-    --gutter-end: 12px;
+    --panel-bleed: 8px;
+    --gutter-start: calc(var(--site-edge-start) - var(--panel-bleed));
+    --gutter-end: var(--gutter-start);
+    --panel-pad-start: var(--panel-bleed);
+    --panel-pad-end: calc(var(--site-edge-end) - var(--gutter-end));
 
     @variant lg {
-      --gutter-start: 20px;
-      --gutter-end: 20px;
+      --panel-bleed: calc(var(--site-edge-u) * 40);
     }
   }
 

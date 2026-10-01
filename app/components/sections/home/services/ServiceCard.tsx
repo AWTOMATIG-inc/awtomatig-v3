@@ -15,7 +15,7 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
   const titleId = `${service.id}-title`;
 
   return (
-    <article id={service.id} aria-labelledby={titleId} data-stack-card className={`service-card ${theme.card}`}>
+    <article id={service.id} aria-labelledby={titleId} data-stack-card className={`service-card flex min-h-dvh flex-col ${theme.card}`}>
       <div className="site-container pt-40 lg:pt-70">
         <div className="flex flex-col gap-20 lg:flex-row lg:items-start lg:justify-between lg:gap-40">
           <div className="flex items-baseline-last gap-12 lg:gap-0">
@@ -52,9 +52,9 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
         </div>
       </div>
 
-      <div className="service-panel site-container mt-32 lg:mt-50">
-        <div className={`overflow-hidden rounded-t-16 ${theme.panel}`}>
-          <ul className="grid px-12 pt-8 sm:grid-cols-2 sm:gap-x-20 lg:grid-flow-col lg:grid-cols-4 lg:grid-rows-2 lg:gap-x-25 lg:px-40 lg:pt-16">
+      <div className="service-panel site-container mt-32 flex flex-1 flex-col lg:mt-50">
+        <div className={`flex flex-1 flex-col overflow-hidden rounded-t-16 ${theme.panel}`}>
+          <ul className="grid pt-8 pr-(--panel-pad-end) pl-(--panel-pad-start) sm:grid-cols-2 sm:gap-x-20 lg:grid-flow-col lg:grid-cols-4 lg:grid-rows-2 lg:gap-x-25 lg:pt-16">
             {service.points.map((point) => (
               <li key={point} className={`type-body-16 flex items-center gap-12 border-b pt-16 pb-12 ${theme.divider}`}>
                 <span aria-hidden="true" className="size-6 shrink-0 rounded-full bg-current" />
@@ -63,7 +63,8 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
             ))}
           </ul>
 
-          <div className="mt-32 flex justify-center overflow-hidden lg:mt-50">
+          {/* mt-auto keeps the image on the card's bottom edge when the card stretches to fill the screen */}
+          <div className="mt-auto flex justify-center overflow-hidden pt-32 lg:pt-50">
             <Image
               src={service.image}
               alt={service.imageAlt}

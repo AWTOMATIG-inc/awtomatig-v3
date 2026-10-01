@@ -293,8 +293,8 @@ Current usage: the navbar wraps `.nav-pill` in a `site-container` inside the ful
 
 | Rule | Detail |
 | --- | --- |
-| Gutters (side padding) | Built into `site-container`: **60px** at ≥1024px and **24px** below, through `--site-gutter`. Safe-area insets (`env(safe-area-inset-*)`) are included automatically. |
-| Per-section gutters | When a Figma frame uses different side padding, set `--gutter-start` / `--gutter-end` on the container element in that section's CSS (the navbar uses 49/60, the hero 72/60, mobile nav 16). Don't add `px-*` to the container. |
+| Site edges (side padding) | Built into `site-container`: the **navbar pill's outer edges**, `--site-edge-start` / `--site-edge-end`. That is **16px** below 1024px, and **49 / 60 Figma px** from 1024px up, scaled with the viewport like the header (`clamp(0.85px, 100vw / 1440, 1px)`, so 49 / 60px at 1440). All text (navbar, hero, cards) starts and ends on these two lines. Safe-area insets (`env(safe-area-inset-*)`) are included automatically. |
+| Breaking out | Content must not invent its own side padding. Only an element that deliberately extends past the edges sets `--gutter-start` / `--gutter-end`, derived from the site edges, and pads its content back onto them (the service panel: `--panel-bleed`, 8px on mobile and 40 frame px on desktop). Don't add `px-*` to the container. |
 | Don't nest | Never put a `site-container` inside another one. |
 | Never cap the section | Don't put `max-w-*` or `site-container` on the element that carries a background. |
 | Fixed elements | A fixed or sticky bar (like the header) is full-width; its inner content uses `site-container`. |
@@ -438,7 +438,7 @@ Rules:
 | **Eyebrow / badge** | Brand icon + `type-label-14 uppercase`, 12px gap, above a Display or Heading. |
 | **Tag list** | `type-body-16` at `text-white/60`, hover to `text-fg-inverse`, 20–26px gaps. |
 | **Divider strip** | `border-y border-white/12` hairlines framing a title and tags row. |
-| **Stacking cards** | Full-bleed cards that are `position: sticky` and pile up on scroll (home services). `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
+| **Stacking cards** | Full-bleed cards that are `position: sticky`, at least one screen tall (`min-h-dvh`, with the panel stretching and the image held on the bottom edge), that pile up on scroll (home services). Each card except the last holds full screen for `--stack-hold` (50svh of scroll) before the next one starts sliding over it. `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
 | **Service card** | Index `NN/` (`type-heading-34`, regular weight, `black/40` or `white/40`) on the last baseline of a `type-heading-60` title; on the right, `type-body-16` copy plus an `lg` button 250px wide. Below that, a points panel (radius/16 top corners, 20px from the frame edge) with a 4-column grid of points (`type-body-16`, 6px dot, 12px gap, hairline under each), then the showcase image at full panel width, flush with the card bottom. Surfaces: white/off-white, cyan/bright cyan (`dark` button), off-white/white, ink/charcoal (`light` button). |
 
 Component rules:
