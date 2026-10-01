@@ -1,0 +1,172 @@
+/* Button: see Button.tsx and DESIGN.md §10. Imported by app/globals.css.
+   Sizes are Figma px multiplied by the section's --u frame scale when one is set
+   (header, hero); everywhere else --u is unset and 1 design px = 1px. */
+
+@layer components {
+  .btn {
+    --btn-u: var(--u, 1px);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--btn-u) * 10);
+    border: 1px solid transparent;
+    border-radius: var(--radius-6);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-decoration: none;
+    user-select: none;
+    transition:
+      background-color 0.25s var(--ease-out-expo),
+      border-color 0.25s var(--ease-out-expo),
+      color 0.25s var(--ease-out-expo),
+      box-shadow 0.25s var(--ease-out-expo),
+      transform 0.25s var(--ease-out-expo);
+  }
+
+  .btn-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  .btn-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---------- Sizes ---------- */
+
+  /* md: 40px — navbar, inline and compact actions */
+  .btn-md {
+    height: calc(var(--btn-u) * 40);
+    padding-inline: calc(var(--btn-u) * 16);
+    font-size: calc(var(--btn-u) * 13);
+  }
+  .btn-md .btn-icon {
+    width: calc(var(--btn-u) * 16);
+    height: calc(var(--btn-u) * 16);
+  }
+
+  /* lg: 54px — hero and section CTAs (50px below the desktop breakpoint) */
+  .btn-lg {
+    height: calc(var(--btn-u) * 54);
+    padding-inline: calc(var(--btn-u) * 24);
+    font-size: calc(var(--btn-u) * 15);
+  }
+  .btn-lg .btn-icon {
+    width: calc(var(--btn-u) * 18);
+    height: calc(var(--btn-u) * 18);
+  }
+  @media (max-width: 1023px) {
+    .btn-lg {
+      height: 50px;
+      padding-inline: 16px;
+      font-size: 13px;
+    }
+  }
+
+  .btn-full {
+    width: 100%;
+  }
+
+  /* ---------- Variants ---------- */
+
+  /* primary: cyan fill, black label. One per viewport. */
+  .btn-primary {
+    background-color: var(--color-action-primary);
+    color: var(--color-on-action);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-action-primary-bright);
+    box-shadow: var(--shadow-glow-strong);
+    transform: translateY(-1px);
+  }
+
+  /* glass: translucent dark teal with a hairline border. Dark surfaces only. */
+  .btn-glass {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-deep-teal) 45%, transparent) 0%,
+      color-mix(in srgb, var(--color-deep-teal) 5%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--color-white) 12%, transparent);
+    color: var(--color-fg-inverse);
+  }
+  .btn-glass:hover {
+    background-color: color-mix(in srgb, var(--color-deep-teal) 40%, transparent);
+    border-color: color-mix(in srgb, var(--color-white) 20%, transparent);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--color-cyan) 14%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* tint: borderless dark tint over the surface behind it, white label. Dark / glass surfaces (navbar). */
+  .btn-tint {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-black) 25%, transparent) 0%,
+      color-mix(in srgb, var(--color-black) 35%, transparent) 45%,
+      color-mix(in srgb, var(--color-black) 30%, transparent) 100%
+    );
+    color: var(--color-fg-inverse);
+  }
+  .btn-tint:hover {
+    background-color: color-mix(in srgb, var(--color-black) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* dark: charcoal fill, white label. Light or cyan surfaces. */
+  .btn-dark {
+    background-color: var(--color-surface-inverse);
+    color: var(--color-fg-inverse);
+  }
+  .btn-dark:hover {
+    background-color: var(--color-black);
+    transform: translateY(-1px);
+  }
+
+  /* light: white fill, black label. Dark or off-white surfaces. */
+  .btn-light {
+    background-color: var(--color-surface);
+    color: var(--color-fg-strong);
+  }
+  .btn-light:hover {
+    background-color: var(--color-off-white);
+    transform: translateY(-1px);
+  }
+
+  /* outline: transparent with a gray border. Light surfaces only. */
+  .btn-outline {
+    background-color: transparent;
+    border-color: var(--color-border);
+    color: var(--color-fg-strong);
+  }
+  .btn-outline:hover {
+    background-color: color-mix(in srgb, var(--color-white) 60%, transparent);
+    border-color: color-mix(in srgb, var(--color-charcoal) 40%, transparent);
+  }
+
+  /* ---------- States ---------- */
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.4;
+    pointer-events: none;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
+    .btn:hover {
+      transform: none;
+    }
+  }
+}

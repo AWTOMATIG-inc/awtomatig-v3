@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* Component styles live next to their components and are inlined here, so the
+   cascade layers (theme → base → components → utilities) keep one order. */
+@import "./components/ui/button/button.css";
+@import "./components/layout/header/header.css";
+@import "./components/sections/home/hero/hero.css";
+
+/* =====================================================================
+   AWTOMATIG DESIGN TOKENS — the single source of truth. See DESIGN.md.
+   Tailwind's default colors / radii / shadows are cleared so only
+   design-system values can be used.
+   ===================================================================== */
+
+@theme {
+  /* ---------- Color: primitives ---------- */
+  --color-*: initial;
+  --color-black: #000000;
+  --color-charcoal: #1e1e1e;
+  --color-off-white: #f0f0f0;
+  --color-white: #ffffff;
+  --color-gray: #d9d9d9;
+  --color-cyan: #02d5e8;
+  --color-cyan-bright: #00eaff;
+  --color-warning: #e86d02;
+  --color-deep-teal: #002022; /* tint for glass surfaces on dark (glass button); use with transparency */
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* ---------- Color: semantic roles (prefer these in product UI) ---------- */
+  --color-fg-primary: var(--color-charcoal);
+  --color-fg-strong: var(--color-black);
+  --color-fg-inverse: var(--color-white);
+  --color-surface: var(--color-white);
+  --color-surface-subtle: var(--color-off-white);
+  --color-surface-inverse: var(--color-charcoal);
+  --color-action-primary: var(--color-cyan);
+  --color-action-primary-bright: var(--color-cyan-bright);
+  --color-on-action: var(--color-black);
+  --color-border: var(--color-gray);
+  --color-status-warning: var(--color-warning);
+
+  /* ---------- Spacing: 1 unit = 1px, so `gap-16` = 16px (Figma px) ---------- */
+  --spacing: 1px;
+
+  /* ---------- Radius ---------- */
+  --radius-*: initial;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-34: 34px;
+  --radius-90: 90px;
+
+  /* ---------- Effects ---------- */
+  --shadow-*: initial;
+  --shadow-card: 0 4px 16px -4px rgb(0 0 0 / 0.12), 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-floating: 0 40px 80px -24px rgb(0 0 0 / 0.35), 0 12px 32px -12px rgb(0 0 0 / 0.2);
+  --shadow-glow: 0 0 20px rgb(2 213 232 / 0.18);
+  --shadow-glow-strong: 0 0 32px rgb(2 213 232 / 0.45);
+
+  /* ---------- Layout: the Figma frame width; content never grows past it ---------- */
+  --container-site: 1440px;
+
+  /* ---------- Motion ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Font families come from next/font CSS variables set on <html> (app/layout.tsx) */
+@theme inline {
+  --font-*: initial;
+  --font-sans: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-inter-tight), "Inter Tight", var(--font-inter), "Inter", sans-serif;
+}
+
+/* ---------- Site container ----------
+   Wraps the CONTENT of every section (and the navbar) so it never exceeds the
+   1440px Figma frame. Backgrounds, images and effects stay on the full-width
+   section element outside it. Side padding defaults to --site-gutter; a section
+   may set --gutter-start / --gutter-end to match its Figma frame exactly. */
+
+@utility site-container {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter-start, var(--site-gutter)), env(safe-area-inset-left))
+    max(var(--gutter-end, var(--site-gutter)), env(safe-area-inset-right));
+}
+
+/* ---------- Text styles ----------
+   One utility per Figma text style. Use these instead of composing
+   font-size / leading / tracking by hand. Display and large headings
+   scale fluidly down from their 1440px-frame size. */
+
+@utility type-display-100 {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6.944vw, 6.25rem);
+  line-height: 0.99;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+@utility type-display-80 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5.556vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+@utility type-heading-60 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4.167vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+@utility type-heading-50 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.472vw, 3.125rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+@utility type-heading-40 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2.778vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+@utility type-heading-34 {
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 2.361vw, 2.125rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+@utility type-heading-28 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.944vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
+@utility type-heading-24 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+@utility type-heading-20 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+@utility type-heading-18 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+@utility type-body-20 {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+@utility type-body-16 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+@utility type-body-16-compact {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+@utility type-body-14 {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+@utility type-label-16-upper {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+@utility type-label-16 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+@utility type-label-14 {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+@layer base {
+  :root {
+    --site-gutter: 24px;
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --site-gutter: 60px;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-surface-inverse);
+    color: var(--color-fg-inverse);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-action-primary);
+    outline-offset: 2px;
+  }
+
+  /* Tailwind v4 dropped the pointer cursor on buttons that v3 preflight had */
+  button {
+    cursor: pointer;
+  }
+}

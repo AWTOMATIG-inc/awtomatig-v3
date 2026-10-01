@@ -1,0 +1,264 @@
+/* Site header: fixed full-width bar; content sits in .site-container. Imported by app/globals.css */
+
+@layer components {
+  /* ---------- Navigation ----------
+     Fixed header: transparent at the top of the page, floating glass pill once scrolled.
+     Sizes are in 1440px-frame design pixels: calc(var(--u) * N) */
+
+  .site-header {
+    /* Capped at 1px: the nav stops growing once the viewport passes the 1440px frame */
+    --u: clamp(0.85px, 100vw / 1440, 1px);
+    --nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    /* Side gutters for the inner .site-container */
+    --gutter-start: calc(var(--u) * 49);
+    --gutter-end: calc(var(--u) * 60);
+    padding-top: calc(var(--u) * 20 + env(safe-area-inset-top));
+    transition: padding 0.45s var(--nav-ease);
+  }
+  .site-header[data-scrolled] {
+    padding-top: calc(var(--u) * 12 + env(safe-area-inset-top));
+  }
+
+  .nav-pill {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    height: calc(var(--u) * 60);
+    padding: 0 calc(var(--u) * 10) 0 calc(var(--u) * 18);
+  }
+
+  /* The glass surface lives on its own layer so it can fade in smoothly */
+  .nav-pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgba(255, 255, 255, 0.34);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    border-radius: calc(var(--u) * 10);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.025) 15%, transparent 45%, transparent 60%, rgba(255, 255, 255, 0.035) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0%, transparent 18%, transparent 82%, rgba(255, 255, 255, 0.025) 100%),
+      rgba(16, 24, 26, 0.45);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transform: scale(0.985);
+    transition: opacity 0.45s var(--nav-ease), transform 0.45s var(--nav-ease);
+    pointer-events: none;
+  }
+  .site-header[data-scrolled] .nav-pill::before,
+  .site-header[data-open] .nav-pill::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .nav-logo {
+    justify-self: start;
+    display: block;
+  }
+  .nav-logo img {
+    height: calc(var(--u) * 36);
+    width: auto;
+  }
+
+  /* Centred on the pill itself, independent of the logo/button widths */
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: calc(var(--u) * 36);
+    font-size: calc(var(--u) * 14);
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.94);
+  }
+  .nav-links a {
+    transition: color 0.2s ease;
+  }
+  .nav-links a.is-active {
+    color: var(--color-white);
+  }
+  .nav-links a:hover {
+    color: var(--color-cyan);
+  }
+
+  .nav-actions {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* <Button variant="tint" size="md">, tuned to the Figma navbar CTA: 142×40, 17px icon, 11px gap */
+  .nav-cta {
+    width: calc(var(--u) * 142);
+    gap: calc(var(--u) * 11);
+    font-size: calc(var(--u) * 13.5);
+  }
+  .nav-cta .btn-icon {
+    width: calc(var(--u) * 17);
+    height: calc(var(--u) * 17);
+  }
+
+  /* Hamburger + dropdown: only below 1024px */
+  .nav-toggle,
+  .nav-menu {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .site-header {
+      --gutter-start: 16px;
+      --gutter-end: 16px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+    }
+    .site-header[data-scrolled] {
+      padding-top: calc(8px + env(safe-area-inset-top));
+    }
+
+    .nav-pill {
+      height: 52px;
+      padding: 0 8px 0 14px;
+    }
+    .nav-pill::before {
+      border-radius: 10px;
+    }
+    .nav-logo img {
+      height: 30px;
+    }
+    .nav-links {
+      display: none;
+    }
+
+    /* Compact bar CTA so it lines up with the 36px hamburger */
+    .nav-cta {
+      width: auto;
+      height: 36px;
+      padding-inline: 12px;
+      gap: 8px;
+      font-size: 11px;
+    }
+    .nav-cta .btn-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    .nav-toggle {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background-color: rgba(0, 0, 0, 0.25);
+      transition: background-color 0.2s ease;
+    }
+    .nav-toggle:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .nav-toggle span {
+      display: block;
+      width: 16px;
+      height: 1.5px;
+      border-radius: 1px;
+      background-color: var(--color-white);
+      transition: transform 0.35s var(--nav-ease), opacity 0.2s ease;
+    }
+    .site-header[data-open] .nav-toggle span:nth-child(1) {
+      transform: translateY(5.5px) rotate(45deg);
+    }
+    .site-header[data-open] .nav-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+    .site-header[data-open] .nav-toggle span:nth-child(3) {
+      transform: translateY(-5.5px) rotate(-45deg);
+    }
+
+    .nav-menu {
+      display: block;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: max(16px, env(safe-area-inset-left));
+      right: max(16px, env(safe-area-inset-right));
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-top-color: rgba(255, 255, 255, 0.26);
+      border-radius: 12px;
+      background: rgba(18, 26, 28, 0.82);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      backdrop-filter: blur(18px) saturate(140%);
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.98);
+      transform-origin: top center;
+      transition: opacity 0.3s var(--nav-ease), transform 0.35s var(--nav-ease), visibility 0s linear 0.35s;
+    }
+    .site-header[data-open] .nav-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity 0.3s var(--nav-ease), transform 0.35s var(--nav-ease), visibility 0s;
+    }
+
+    .nav-menu-links {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-menu-links a {
+      padding: 14px 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.78);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .nav-menu-links a + a {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .nav-menu-links a.is-active {
+      color: var(--color-white);
+    }
+    .nav-menu-links a:hover {
+      color: var(--color-cyan);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    /* <Button variant="glass" size="lg" fullWidth> */
+    .nav-menu-cta {
+      margin-top: 8px;
+    }
+  }
+
+  /* Very narrow phones: the WhatsApp button stays in the menu, the bar keeps just the icon */
+  @media (max-width: 359px) {
+    .nav-cta .btn-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .nav-cta {
+      width: 36px;
+      padding: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .nav-pill::before,
+    .nav-menu,
+    .nav-toggle span {
+      transition: none;
+    }
+  }
+}
