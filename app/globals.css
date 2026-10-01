@@ -5,6 +5,7 @@
 @import "./components/ui/button/button.css";
 @import "./components/layout/header/header.css";
 @import "./components/sections/home/hero/hero.css";
+@import "./components/sections/home/services/services.css";
 
 /* =====================================================================
    AWTOMATIG DESIGN TOKENS — the single source of truth. See DESIGN.md.
@@ -24,6 +25,7 @@
   --color-cyan-bright: #00eaff;
   --color-warning: #e86d02;
   --color-deep-teal: #002022; /* tint for glass surfaces on dark (glass button); use with transparency */
+  --color-ink: #111111; /* deepest dark surface, below charcoal panels (Ad Tech service card) */
   --color-transparent: transparent;
   --color-current: currentColor;
 
@@ -34,6 +36,7 @@
   --color-surface: var(--color-white);
   --color-surface-subtle: var(--color-off-white);
   --color-surface-inverse: var(--color-charcoal);
+  --color-surface-deep: var(--color-ink);
   --color-action-primary: var(--color-cyan);
   --color-action-primary-bright: var(--color-cyan-bright);
   --color-on-action: var(--color-black);

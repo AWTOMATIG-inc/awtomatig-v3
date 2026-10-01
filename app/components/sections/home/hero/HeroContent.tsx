@@ -65,7 +65,7 @@ export default function HeroContent() {
           <p className="type-heading-18 text-fg-inverse lg:type-heading-20">Built for the systems behind the business.</p>
           <ul className="type-body-16 flex flex-wrap gap-x-20 gap-y-8 text-white/60 lg:flex-nowrap lg:gap-26">
             {TAGS.map((tag) => (
-              <li key={tag} className="transition-colors duration-200 hover:text-fg-inverse motion-reduce:transition-none">
+              <li key={tag} className="transition-colors duration-200 hover:text-fg-inverse cursor-pointer motion-reduce:transition-none">
                 {tag}
               </li>
             ))}

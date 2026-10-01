@@ -19,11 +19,12 @@ _Last updated: 2026-10-01_
 | Icons (WhatsApp, Mail) | ✅ Implemented | `app/components/icons/` |
 | Navbar | ✅ Built | `app/components/layout/header/` |
 | Home → Hero | ✅ Built | `app/components/sections/home/hero/` |
+| Home → Services (4 stacking cards) | ✅ Built | `app/components/sections/home/services/` |
 | Home → other sections | ⏳ Waiting for Figma designs | `app/components/sections/home/<section>/` |
 | Footer | ⏳ Not designed yet | goes in `app/components/layout/footer/` |
 | Other pages (Services, Case Studies, Contact, About) | ⏳ Not designed yet | Nav links currently point to `#anchors` |
 
-**Next up:** build the next Figma section, and confirm the inferred values in [§4](#4-open-items).
+**Next up:** build the next Figma section after Services, and confirm the inferred values in [§4](#4-open-items).
 
 ---
 
@@ -47,9 +48,12 @@ _Last updated: 2026-10-01_
 | D14 | **Tailwind first; component CSS only for what utilities can't express** (frame-scale vars, safe-area math, pseudo-element layers, complex gradients, multi-property transitions). The table is in DESIGN.md §10.1. | The Navbar and Hero had drifted into ~500 lines of hand-written CSS that bypassed `type-*`, color tokens and the opacity steps. One clear split removes the "Tailwind or CSS?" question. |
 | D15 | **Frame scale drives Tailwind:** frame-scaled sections set `--spacing: var(--u)` from `lg` up, and fixed `type-*` sizes are `calc(var(--u, 0.0625rem) * N)` | Tailwind spacing utilities compile to `calc(var(--spacing) * N)`, so pixel-locked markup can be plain Tailwind (`gap-36`, `w-250`) and still scale with the 1440 frame. Outside a frame, text stays `rem`. |
 | D16 | **Glass is one material**: `--glass-*` tokens plus the `glass` utility. The Display gradient is `--gradient-display` plus `text-gradient-display`. | The navbar pill and mobile menu had separate hard-coded recipes. Literals now live only in `@theme`. |
-| D17 | **The hero background (`.hero`, `.top-right-glow`, `.noise-overlay`, canvas) stays exactly as built**, exempt from the token check (`/* token-check: off */`) | Requested by the user. It's atmospheric art sampled from the design, not reusable UI. This resolves the "hero atmospheric colors" open item. |
+| D17 | **The hero background (`.hero`, `.top-right-glow`, `.noise-overlay`, canvas) is atmospheric art matched to the Figma screenshots**, exempt from the token check (`/* token-check: off */`). Change it only to match the design, by measuring the screenshot. | It is art sampled from the design, not reusable UI. This resolves the "hero atmospheric colors" open item. Canvas spec (2026-10-01): white sawtooth bands every 78 design px (crisp edge on the corner side, even fade over one period) generated across the whole hero, top-left corner included, with a radial mask from the top-right measured from the full-frame screenshot (≈100% top-right, ≈35% beside the headline, ≈20% bottom and middle-left, ≈5% bottom-left), plus two crisp lasers with a white → cyan → fade gradient along their length. The design measures ≈2.6% band strength and laser 1 at ≈102 design px from the corner; `BAND_ALPHA` (0.054) and `LASER_OFFSET` (20) are currently set by hand above those. |
 | D18 | **Display / 100 has a two-stage curve**: 42px → `10vw` → 72px below `lg`, then 72 → 100px with the frame | The single `6.944vw` curve made the tablet hero title too small (~53px at 768). The old hero CSS also jumped from 84px to 72px at 1024; the new curve is continuous. The 42px minimum matches what the hero shipped with. |
 | D19 | **Token guardrails in lint**: an ESLint rule bans arbitrary color values in `className`, and `scripts/check-tokens.mjs` bans raw color literals in component CSS | Keeps the drift from coming back without adding dependencies. |
+| D20 | **Service cards are one layout mapped over data** (`ServiceCard.tsx` + `services.ts`); only the content and a theme (`light`, `cyan`, `subtle`, `dark`) change per card | The four Figma cards share one structure and differ only in copy, image and surface colors. |
+| D21 | **Stacking uses CSS `position: sticky` plus a small client measurer** (`StackingCards.tsx`), not a scroll library. Sticky `top = min(0, viewport − card height)`; a covered card scales to 94%, rounds to radius/34 and dims to 40% black | Native sticky reverses on scroll up for free. Measuring the height lets cards taller than the viewport (every card on phones) be read in full before they pin. The section is not frame-scaled; it uses the normal scale and fluid `type-*`. |
+| D22 | **New token `--color-ink` (#111111) with the semantic `surface-deep`** for the Ad Tech card | Measured from the screenshot: the card is #111111 under a charcoal (#1E1E1E) panel, and no existing token matched. |
 
 ---
 
@@ -85,6 +89,9 @@ Confirm these against Figma, then update `globals.css`, DESIGN.md and this file:
 - [ ] Hero badge text "Build the systemssss." looks like a typo
 - [ ] The mobile-menu CTA currently uses `tint` inside the dark dropdown. Confirm the intended mobile design.
 - [ ] Hero avatars are Unsplash placeholders; replace them with real team photos
+- [ ] Service card CTAs ("Explore our services") point to `#contact` until the Services page exists (`href` in `services.ts`)
+- [ ] Confirm `--color-ink` (#111111) for the Ad Tech card in Figma (D22)
+- [ ] Service card values measured from screenshots, not Figma: top padding 70px (outside the spacing scale), title `type-heading-60` (measured ≈60–63px), index `type-heading-34` at regular weight, panel 20px from the frame edge, 25px column gap (an "observed" value). The bottom of each card was cropped in the screenshots, so the panel is assumed flush with the card bottom.
 
 ---
 
@@ -94,6 +101,9 @@ Newest first. Add one line per meaningful change.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-01 | **Home → Services section built**: four full-bleed stacking cards (Website Infrastructure, Back-Office Operations, ERP & Business Systems, Ad Tech) rendered from one `ServiceCard` layout and a `SERVICES` array. Cards pile up on scroll (sticky + `StackingCards` client measurer) and reverse on scroll up. Layout and colors are pixel-sampled from the screenshots; responsive from 320px (1-column points, center-cropped image) to 1440px+. Added the `ink` / `surface-deep` token. DESIGN.md (palette, folder tree, Stacking cards / Service card patterns) and AGENTS.md updated. |
+| 2026-10-01 | **Hero bands now cover the top of the hero.** Bands are generated from the top-left corner to the bottom edge (before, they started just above the top-right corner, leaving the top-middle and top-left empty), and the fade mask was re-measured from the full-frame screenshot so band strength per region matches the design within ~0.1. |
+| 2026-10-01 | **Hero background matched to the Figma screenshot.** Bands are now white sawtooth stripes (78px period, 2.4%) generated from the hero height, so they cover it top to bottom instead of fading out near the top; they sway in step so spacing stays even. Lasers are a single crisp stroke with a white → light cyan → cyan → fade gradient (laser 2 shortened to 180px); a cyan glow only appears near the pointer. Measured against the design: laser colours within a few RGB levels along their length. |
 | 2026-10-01 | **Tailwind-first refactor of the Navbar and Hero.** Markup now uses Tailwind utilities, `type-*` styles and color tokens; `header.css` and `hero.css` keep only frame-scale, safe-area, glass and animation rules (mobile-first, `@variant lg`). Added the frame-scale contract (`--spacing: var(--u)`, `--u`-aware text styles), the `glass` and `text-gradient-display` utilities with their tokens, the two-stage Display / 100 curve (min 42px), a 44px touch target on the menu toggle, and lint guardrails (ESLint rule plus `scripts/check-tokens.mjs`). Hero background unchanged. AGENTS.md and DESIGN.md updated. |
 | 2026-10-01 | Navbar "Message us" now matches the new Figma screenshot: added the borderless `tint` Button variant and tuned `.nav-cta` to 142×40, 17px icon, 11px gap, 13.5px label. The mobile-menu CTA was switched to `outline` (by the user). |
 | 2026-10-01 | Added `MEMORY.md` (this file). |

@@ -74,6 +74,7 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 | Bright cyan | `#00EAFF` | `bg-cyan-bright` | `--color-cyan-bright` |
 | Warning | `#E86D02` | `text-warning` | `--color-warning` |
 | Deep teal | `#002022` | (CSS only) | `--color-deep-teal`: tint for glass surfaces on dark (glass button). Always use it with transparency. |
+| Ink | `#111111` | `bg-ink` | `--color-ink`: the deepest dark surface, under charcoal panels (Ad Tech service card). Prefer `surface-deep`. |
 
 `transparent` and `current` (currentColor) are also available.
 
@@ -87,6 +88,7 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 | `surface` | White | `bg-surface` | Default light page or card background |
 | `surface-subtle` | Off white | `bg-surface-subtle` | Alternating sections, inset panels, inputs |
 | `surface-inverse` | Charcoal | `bg-surface-inverse` | Dark sections (hero, footer), dark cards |
+| `surface-deep` | Ink | `bg-surface-deep` | A dark section that holds charcoal panels, so the panel still reads as raised |
 | `action-primary` | Cyan | `bg-action-primary` | Primary buttons, links, active states |
 | `action-primary-bright` | Bright cyan | `hover:bg-action-primary-bright` | Hover or pressed state of primary actions |
 | `on-action` | Black | `text-on-action` | Text and icons placed on cyan |
@@ -340,11 +342,17 @@ app/
     │       └── header.css
     └── sections/                    # page-specific sections, grouped by page
         └── home/
-            └── hero/
-                ├── HeroSection.tsx  # the section entry point used by page.tsx
-                ├── InteractiveHero.tsx
-                ├── HeroContent.tsx
-                └── hero.css
+            ├── hero/
+            │   ├── HeroSection.tsx  # the section entry point used by page.tsx
+            │   ├── InteractiveHero.tsx
+            │   ├── HeroContent.tsx
+            │   └── hero.css
+            └── services/
+                ├── ServicesSection.tsx
+                ├── ServiceCard.tsx      # one card layout, rendered per item
+                ├── StackingCards.tsx    # client: sticky stack offsets + cover progress
+                ├── services.ts          # content + per-surface themes
+                └── services.css
 ```
 
 Rules:
@@ -364,6 +372,7 @@ Rules:
   | Responsive variants (`lg:`, `max-lg:hidden`) | Tuning a primitive for one placement (`.nav-cta`) |
 
 - **Component CSS** goes in `@layer components { … }` in its own file. Register it with an `@import` at the top of `app/globals.css`, with `ui/` first so sections can override primitives. Write it mobile-first with `@variant lg { … }`, and use token variables only. Raw color literals fail `npm run lint` (`scripts/check-tokens.mjs`); the hero's atmospheric background is the one marked exception (`/* token-check: off */`).
+- **Repeated cards are data-driven.** Write the layout once (`ServiceCard.tsx`) and map over an array of content (`services.ts`). Per-item surface colors go in a theme map of full class strings, so Tailwind can detect them.
 - A section shared by two pages moves up to `sections/shared/<section>/`.
 - Import primitives and icons through their barrels (`@/app/components/ui`, `@/app/components/icons`).
 
@@ -429,6 +438,8 @@ Rules:
 | **Eyebrow / badge** | Brand icon + `type-label-14 uppercase`, 12px gap, above a Display or Heading. |
 | **Tag list** | `type-body-16` at `text-white/60`, hover to `text-fg-inverse`, 20–26px gaps. |
 | **Divider strip** | `border-y border-white/12` hairlines framing a title and tags row. |
+| **Stacking cards** | Full-bleed cards that are `position: sticky` and pile up on scroll (home services). `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
+| **Service card** | Index `NN/` (`type-heading-34`, regular weight, `black/40` or `white/40`) on the last baseline of a `type-heading-60` title; on the right, `type-body-16` copy plus an `lg` button 250px wide. Below that, a points panel (radius/16 top corners, 20px from the frame edge) with a 4-column grid of points (`type-body-16`, 6px dot, 12px gap, hairline under each), then the showcase image at full panel width, flush with the card bottom. Surfaces: white/off-white, cyan/bright cyan (`dark` button), off-white/white, ink/charcoal (`light` button). |
 
 Component rules:
 

@@ -1,0 +1,45 @@
+/* Home services: stacking cards. Layout, type and colors are Tailwind classes in ServiceCard.tsx;
+   --stack-top and --stack-progress are set by StackingCards.tsx. Imported by app/globals.css */
+
+@layer components {
+  /* Each card pins as the next one slides over it; DOM order puts later cards on top.
+     While covered, it shrinks toward the top of the viewport, rounds its corners and dims. */
+  .service-card {
+    position: sticky;
+    top: var(--stack-top, 0px);
+    overflow: clip;
+    transform-origin: 50% calc(var(--stack-top, 0px) * -1);
+    transform: scale(calc(1 - var(--stack-progress, 0) * 0.06));
+    border-radius: calc(var(--stack-progress, 0) * var(--radius-34));
+  }
+
+  .service-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-black);
+    opacity: calc(var(--stack-progress, 0) * 0.4);
+    pointer-events: none;
+  }
+
+  /* The points panel sits wider than the header content (Figma: 20px from the frame edge) */
+  .service-panel {
+    --gutter-start: 12px;
+    --gutter-end: 12px;
+
+    @variant lg {
+      --gutter-start: 20px;
+      --gutter-end: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-card {
+      transform: none;
+      border-radius: 0;
+    }
+    .service-card::after {
+      display: none;
+    }
+  }
+}
