@@ -1,6 +1,5 @@
 import Image from "next/image";
-import Logo from "@/public/images/awtomatig-logo.png";
-import { Button } from "@/app/components/ui";
+import { Button, Eyebrow } from "@/app/components/ui";
 
 const AVATARS = [
   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
@@ -15,10 +14,7 @@ export default function HeroContent() {
   return (
     <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-80">
       <div>
-        <div className="type-label-14 flex items-center gap-12 text-fg-inverse uppercase">
-          <Image src={Logo} alt="" width={16} height={22} className="h-auto w-16 shrink-0" />
-          <span>Build the systemssss.</span>
-        </div>
+        <Eyebrow className="text-fg-inverse">Build the systemssss.</Eyebrow>
 
         <h1 className="type-display-100 text-gradient-display mt-24 w-fit">
           The operational

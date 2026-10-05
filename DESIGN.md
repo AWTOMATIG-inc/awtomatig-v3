@@ -45,10 +45,10 @@ This document is the reference for building UI in this project. It covers the de
 | Color, spacing, radius, shadow, easing tokens | `app/globals.css` → `@theme { … }` | Tailwind v4 generates the utilities from these, e.g. `bg-surface-inverse`, `rounded-12`, `shadow-card`. |
 | Font families | `app/globals.css` → `@theme inline { … }` | `font-sans` = Inter, `font-display` = Inter Tight. |
 | Font loading | `app/layout.tsx` | `next/font/google` self-hosts Inter (`--font-inter`) and Inter Tight (`--font-inter-tight`) and puts both variables on `<html>`. |
-| Text styles | `app/globals.css` → `@utility type-*` | One utility per Figma text style, e.g. `type-heading-40`. |
+| Text styles | `app/globals.css` → `@utility type-*` | One utility per Figma text style, e.g. `type-heading-40`, plus `type-wordmark` (the footer's container-wide wordmark). |
 | Content container | `app/globals.css` → `@utility site-container` | 1440px max-width wrapper for every section's content (see §9). |
-| Effect utilities | `app/globals.css` → `@utility glass`, `@utility text-gradient-display` | Frosted glass surface (§7.3) and the Display title gradient (§4.3). |
-| Component styles | `app/components/**/<name>.css`, `@import`ed at the top of `globals.css` | Colocated with each component (see §10.1). |
+| Shared utilities | `app/globals.css` → `@utility glass`, `glass-dense`, `text-gradient-display`, `frame-scale`, `pt-safe-*`, `dot-grid`, `bg-awlabs-glow` | Frosted glass (§7.3), the Display title gradient (§4.3), the header's frame scale (§9.2) and notch-safe top padding (§9.2). |
+| Effect styles | `app/components/**/<name>.css`, `@import`ed at the top of `globals.css` | Only for effects (the animated lines background, the hero frame scale, stacking cards); UI components are Tailwind only (see §10.1). |
 | Base styles | `app/globals.css` → `@layer base` | Body defaults to `surface-inverse` with `fg-inverse` text. `h1`–`h6` use Inter Tight. Focus ring uses `action-primary`. |
 
 **Tailwind's default palette, radii and shadows are disabled** (`--color-*: initial`, etc.). Classes like `text-slate-400`, `rounded-lg` and `shadow-md` do not exist in this project. This is deliberate: only design-system values are available.
@@ -74,6 +74,8 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 | Bright cyan | `#00EAFF` | `bg-cyan-bright` | `--color-cyan-bright` |
 | Warning | `#E86D02` | `text-warning` | `--color-warning` |
 | Deep teal | `#002022` | (CSS only) | `--color-deep-teal`: tint for glass surfaces on dark (glass button). Always use it with transparency. |
+| Red | `#E94738` | `bg-red` | `--color-red`: status only (broken connection dots in the Operations mockups). Prefer `status-error`. |
+| Amber | `#E8AB02` | `bg-amber` | `--color-amber`: status only ("Needs review" dot). Prefer `status-caution`. |
 | Ink | `#111111` | `bg-ink` | `--color-ink`: the deepest dark surface, under charcoal panels (Ad Tech service card). Prefer `surface-deep`. |
 
 `transparent` and `current` (currentColor) are also available.
@@ -94,6 +96,8 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 | `on-action` | Black | `text-on-action` | Text and icons placed on cyan |
 | `border` | Gray | `border-border` | Hairlines and dividers on light surfaces |
 | `status-warning` | Warning | `text-status-warning` | Warnings and caution states only |
+| `status-error` | Red | `bg-status-error`, `fill-status-error` | Errors and broken states (status dots) |
+| `status-caution` | Amber | `bg-status-caution` | Low-priority caution ("needs review" dots) |
 
 ### 3.3 Color rules
 
@@ -139,6 +143,7 @@ The fixed sizes (24px and below) are written as `calc(var(--u, 0.0625rem) * N)`.
 | Body / 16 | `type-body-16` | Inter | 16px | 1.60 | 0 | 400 |
 | Body / 16 Compact | `type-body-16-compact` | Inter | 16px | 1.40 | 0 | 400 |
 | Body / 14 | `type-body-14` | Inter | 14px | 1.50 | 0 | 400 |
+| Caption / 12 | `type-caption-12` | Inter | 12px | 1.20 | 0 | 400 (measured from the case study screenshot; used `uppercase` for meta labels) |
 | Label / 16 Upper | `type-label-16-upper` | Inter | 16px | 1.20 | 0.01em | 600, UPPERCASE |
 | Label / 16 | `type-label-16` | Inter | 16px | 1.20 | 0 | 600 |
 | Label / 14 | `type-label-14` | Inter | 14px | 1.20 | 0 | 600 |
@@ -199,6 +204,7 @@ The specimen text from Figma shows how each group is meant to be used: Display (
 | --- | --- | --- |
 | `radius/6` | `rounded-6` | Small controls: buttons, inputs, tags, nav CTA |
 | `radius/8` | `rounded-8` | Menu items, small cards, dropdowns |
+| `radius/10` | `rounded-10` | The glass nav pill (Figma) |
 | `radius/12` | `rounded-12` | Standard cards, popovers, mobile menu |
 | `radius/16` | `rounded-16` | Large cards, media frames |
 | `radius/34` | `rounded-34` | Expressive panels: hero mockups, feature showcases |
@@ -220,6 +226,7 @@ The specimen text from Figma shows how each group is meant to be used: Display (
 | Floating / Ambient | `shadow-floating` | Prominent floating product imagery or mockups only |
 | Glow | `shadow-glow` | Resting state of the cyan primary button on dark surfaces |
 | Glow strong | `shadow-glow-strong` | Hover state of the cyan primary button |
+| Glow subtle | `shadow-glow-subtle` | Hover state of the glass button |
 
 **Rules:** use shadows for intentional depth, not decoration. Use at most one `shadow-floating` element per viewport. Glows belong only to cyan elements on dark surfaces.
 
@@ -252,7 +259,7 @@ Frosted glass on dark is one reusable material, applied with the `glass` utility
 <div className="glass rounded-12 p-8">…</div>
 ```
 
-To swap the fill, set `--glass-bg` on the element (e.g. `--glass-bg: var(--glass-fill-dense)`). Inside component CSS, use `@apply glass;` (see `.nav-pill::before`).
+For panels that sit over content, add `glass-dense` (`glass glass-dense`), which swaps the fill to `--glass-fill-dense`. The navbar pill draws its glass on an `aria-hidden` `<span>` behind the content, so it can fade in on scroll.
 
 ---
 
@@ -289,7 +296,7 @@ To swap the fill, set `--glass-bg` on the element (e.g. `--glass-bg: var(--glass
 </section>
 ```
 
-Current usage: the navbar wraps `.nav-pill` in a `site-container` inside the full-width fixed `<header>`. The hero's background (gradient, glow, noise, canvas) stays on `.hero`, and `.hero-inner` is the `site-container`.
+Current usage: the navbar wraps its pill in a `site-container` inside the full-width fixed `<header>`. The hero and the CTA section are `<LinesBackground>` sections (gradient, glow, grain and canvas on the full-width section), with their content in a `site-container` (`.hero-inner` in the hero).
 
 | Rule | Detail |
 | --- | --- |
@@ -301,8 +308,9 @@ Current usage: the navbar wraps `.nav-pill` in a `site-container` inside the ful
 
 ### 9.2 Breakpoints & scaling
 
-- **Breakpoints** (Tailwind defaults): `sm` 640 · `md` 768 · **`lg` 1024 (desktop layout starts here)** · `xl` 1280 · `2xl` 1536. Design mobile-first, and switch to the desktop composition at `lg:`.
-- **Frame scale.** A pixel-locked composition (only `.site-header` and `.hero-inner` today) scales its desktop layout with the 1440 frame. Its CSS sets, from `lg` up:
+- **Breakpoints** (Tailwind defaults plus `xs`): `xs` 360 (only for `max-xs:`, very narrow phones) · `sm` 640 · `md` 768 · **`lg` 1024 (desktop layout starts here)** · `xl` 1280 · `2xl` 1536. Design mobile-first, and switch to the desktop composition at `lg:`.
+- **Notch-safe top padding:** `pt-safe-N` = N spacing units plus `env(safe-area-inset-top)` (the fixed header: `pt-safe-12 data-scrolled:pt-safe-8 lg:pt-safe-20`).
+- **Frame scale.** A pixel-locked composition (only the header and `.hero-inner` today) scales its desktop layout with the 1440 frame. The header uses the `lg:frame-scale` utility; the hero, which measures its own width, sets it in `hero.css`, from `lg` up:
 
   ```css
   .hero-inner {
@@ -323,55 +331,85 @@ Current usage: the navbar wraps `.nav-pill` in a `site-container` inside the ful
 
 ```
 app/
-├── globals.css                      # tokens, type-* utilities, base styles; @imports every component CSS file
+├── globals.css                      # tokens, type-* and shared utilities, base styles; @imports the effect CSS files
 ├── layout.tsx                       # fonts + <html>/<body>
 ├── page.tsx                         # Home: composes layout + home sections only
 └── components/
     ├── ui/                          # reusable primitives, no page knowledge
-    │   ├── index.ts                 # barrel: import { Button } from "@/app/components/ui"
-    │   └── button/
-    │       ├── Button.tsx
-    │       └── button.css
+    │   ├── index.ts                 # barrel: import { Button, Eyebrow, LinesBackground } from "@/app/components/ui"
+    │   ├── button/
+    │   │   └── Button.tsx           # variants and sizes are Tailwind class maps
+    │   ├── eyebrow/
+    │   │   └── Eyebrow.tsx          # brand mark + uppercase label above a section title
+    │   └── lines-background/
+    │       ├── LinesBackground.tsx  # client: animated bands + lasers on a canvas, driven by a preset
+    │       └── lines-background.css # effect: the glow and film-grain layers
     ├── icons/                       # SVG icon components
     │   ├── index.ts                 # import { WhatsAppIcon, MailIcon } from "@/app/components/icons"
-    │   ├── MailIcon.tsx
-    │   └── WhatsAppIcon.tsx
+    │   ├── MailIcon.tsx, WhatsAppIcon.tsx
+    │   ├── PeopleIcon.tsx, ProgressIcon.tsx, GearIcon.tsx, LayersIcon.tsx   # Operations pillars
+    │   ├── GearClusterIcon.tsx, GearBulbIcon.tsx, SitemapIcon.tsx, ChatGearIcon.tsx   # Why AWTOMATIG reasons
+    │   ├── ArrowUpRightIcon.tsx     # trailing "go to" arrow (Button iconEnd)
+    │   └── CloudIcon.tsx, DatabaseIcon.tsx, TableIcon.tsx, StorefrontIcon.tsx, BarChartIcon.tsx, ChevronRightIcon.tsx
     ├── layout/                      # site chrome shared by every page
-    │   └── header/
-    │       ├── Header.tsx
-    │       └── header.css
+    │   ├── header/
+    │   │   └── Header.tsx
+    │   └── footer/
+    │       └── Footer.tsx
     └── sections/                    # page-specific sections, grouped by page
+        ├── shared/                  # sections used on several pages
+        │   └── cta/
+        │       ├── CtaSection.tsx   # "Let's talk" CTA; every text, button and tag is a prop
+        │       └── ctaLines.ts      # its LinesBackground preset (horizontal lines)
         └── home/
+            ├── case-studies/
+            │   ├── CaseStudiesSection.tsx  # sticky intro + scrolling case study cards
+            │   ├── CaseStudyCard.tsx      # one card layout: image + details
+            │   └── caseStudies.ts         # CASE_STUDIES content
+            ├── why-awtomatig/
+            │   ├── WhyAwtomatigSection.tsx  # heading + AWLABS card + 2×2 reasons card
+            │   ├── AwlabsCard.tsx       # dark AWLABS teaser card
+            │   └── whyAwtomatig.ts      # REASONS content
             ├── hero/
             │   ├── HeroSection.tsx  # the section entry point used by page.tsx
-            │   ├── InteractiveHero.tsx
             │   ├── HeroContent.tsx
-            │   └── hero.css
+            │   ├── heroLines.ts     # its LinesBackground preset (diagonal lines)
+            │   └── hero.css         # effect: hero frame scale
+            ├── operations/
+            │   ├── OperationsSection.tsx  # pillars + "When things break down" cards
+            │   ├── operations.ts        # PILLARS and PROBLEMS content
+            │   ├── ProblemCard.tsx      # one card layout; picks its mockup
+            │   └── SystemsMockup.tsx, WorkflowsMockup.tsx, VisibilityMockup.tsx
             └── services/
                 ├── ServicesSection.tsx
                 ├── ServiceCard.tsx      # one card layout, rendered per item
                 ├── StackingCards.tsx    # client: sticky stack offsets + cover progress
                 ├── services.ts          # content + per-surface themes
-                └── services.css
+                └── services.css     # effect: scroll-driven stacking math
 ```
 
 Rules:
 
 - **Where does it go?** Used on several pages and knows nothing about the page → `ui/`. Site chrome (header, footer) → `layout/`. Belongs to one page → `sections/<page>/<section>/`. An SVG → `icons/`.
-- **One folder per component or section.** The `.tsx` and its `.css` live together. Name the folder in kebab-case (`case-studies/`) and the component in PascalCase (`CaseStudiesSection.tsx`).
+- **One folder per component or section**, holding its `.tsx` files (and a `.ts` data file if needed). A folder gets a `.css` file **only** for an effect (below), never by default. Name the folder in kebab-case (`case-studies/`) and the component in PascalCase (`CaseStudiesSection.tsx`).
 - **Each section exposes one `<Name>Section.tsx`** entry point. Pages only compose sections: `page.tsx` should contain no markup beyond `<Header />`, `<main>` and sections.
-- **Tailwind first, CSS for the rest.** Style in JSX with Tailwind utilities and tokens. A component `.css` file holds only what utilities can't express cleanly:
+- **Tailwind only; CSS files only for effects.** Everything is styled in JSX with Tailwind utilities and tokens. UI components (`Button`, `Header`, cards) have **no `.css` file**:
 
-  | Tailwind in JSX | Component CSS |
+  | Need | Tailwind way |
   | --- | --- |
-  | Layout (flex, grid, position, z-index) | Frame-scale and other custom properties (`--u`, `--spacing`, `--gutter-*`) |
-  | Spacing and sizing (`gap-12`, `pt-40`, `size-48`) | `env(safe-area-inset-*)` math |
-  | Typography (`type-*`, `uppercase`) | Pseudo-element layers (`::before` glass) |
-  | Colors, borders, radius, opacity (`text-white/60`, `border-white/12`) | Multi-layer gradients, filters, keyframes |
-  | Simple states (`hover:`, `aria-[current=page]:`, `group-data-open:`, `motion-reduce:`) | Multi-property state transitions (menu open/close with a `visibility` delay) |
-  | Responsive variants (`lg:`, `max-lg:hidden`) | Tuning a primitive for one placement (`.nav-cta`) |
+  | Layout, spacing, sizing, typography, colors | Utilities and tokens (`flex gap-12`, `type-body-16`, `text-white/60`) |
+  | Gradients | `bg-linear-to-b from-black/25 via-black/35 to-black/30` |
+  | States driven by a parent | `group` plus `group-data-open:`, `group-data-scrolled:`, `aria-[current=page]:` |
+  | A layer behind the content | An `aria-hidden` `<span className="absolute inset-0 -z-1 …">` (the nav glass), or `before:` / `after:` |
+  | Open/close animations | `opacity-0 -translate-y-8 group-data-open:opacity-100 …`, plus `inert` on the closed element |
+  | Component variants | A class map in the component (`VARIANTS` / `SIZES` in `Button.tsx`) |
+  | Something Tailwind lacks, reusable or one-off (a `cqw` font size, font-metric margins, a material) | A token in `@theme` or a small `@utility` in `globals.css` (`glass`, `pt-safe-*`, `frame-scale`, `mockup-scale`, `type-wordmark`) |
 
-- **Component CSS** goes in `@layer components { … }` in its own file. Register it with an `@import` at the top of `app/globals.css`, with `ui/` first so sections can override primitives. Write it mobile-first with `@variant lg { … }`, and use token variables only. Raw color literals fail `npm run lint` (`scripts/check-tokens.mjs`); the hero's atmospheric background is the one marked exception (`/* token-check: off */`).
+  A component `.css` file is allowed only for an **effect**: an animated or generated background (`hero.css`), or scroll-driven motion whose math reads custom properties set by JS (`services.css`). There, `calc()` on variables would otherwise turn into long arbitrary values in the markup.
+
+  **Before creating a `.css` file, ask:** is this an animated or generated background, or motion driven by JS-set variables? If not, it is not an effect: static values (even unusual ones, like the footer wordmark's `17.9cqw` size) go in a `@utility`. `npm run lint` fails on any `.css` file under `app/components` that isn't in the `EFFECT_CSS` allowlist of `scripts/check-tokens.mjs`. Add a file there only for a real effect, and record why in MEMORY.md.
+
+- **Effect CSS** goes in `@layer components { … }` in its own file. Register it with an `@import` at the top of `app/globals.css`. Write it mobile-first with `@variant lg { … }`, and use token variables only. Raw color literals fail `npm run lint` (`scripts/check-tokens.mjs`); the hero's atmospheric background is the one marked exception (`/* token-check: off */`).
 - **Repeated cards are data-driven.** Write the layout once (`ServiceCard.tsx`) and map over an array of content (`services.ts`). Per-item surface colors go in a theme map of full class strings, so Tailwind can detect them.
 - A section shared by two pages moves up to `sections/shared/<section>/`.
 - Import primitives and icons through their barrels (`@/app/components/ui`, `@/app/components/icons`).
@@ -386,28 +424,33 @@ There are six variants, taken from the Figma button set. Pick the variant by the
 | --- | --- | --- | --- |
 | `primary` | Cyan fill, black label | Any surface | The one main CTA per viewport ("Explore our services") |
 | `glass` | Translucent deep-teal gradient, `white/12` hairline, white label | Dark surfaces | Secondary CTA next to a primary on dark ("Start a conversation") |
-| `tint` | Borderless dark tint (black 25% → 35% → 30%) over whatever is behind it, white label | Dark or glass surfaces | Navbar "Message us" (tuned in `header.css` to 142×40, 17px icon, 11px gap, 13.5px label) |
+| `tint` | Borderless dark tint (black 25% → 35% → 30%) over whatever is behind it, white label | Dark or glass surfaces | Navbar "Message us" (`size="nav"`) |
 | `dark` | Charcoal fill, white label | Cyan, white, off-white | Primary-strength action on a cyan band or light section |
 | `light` | White fill, black label, no border | Dark or off-white | Strong action on dark sections; secondary on off-white |
 | `outline` | Transparent, gray (`border`) 1px border, black label | White / off-white | Tertiary actions ("Email us") |
 
 | Size | Height | Label | Icon | Use for |
 | --- | --- | --- | --- | --- |
-| `md` (default) | 40px | 13px | 16px | Navbar, inline, cards |
+| `md` (default) | 40px | 13px | 16px | Inline, cards |
 | `lg` | 54px (50px below 1024px) | 15px (13px below 1024px) | 18px | Hero and section CTAs, mobile menu |
+| `card` | 46px (50px below 1024px) | 15px (13px below 1024px) | 18px | Case study cards ("View case study", `className="w-full sm:w-205"`). Measured from the screenshot. |
+| `card` | 46px (50px below 1024px) | 15px (13px below 1024px) | 18px | Case study cards ("View case study", `className="w-full sm:w-205"`) and the AWLABS card (`primary`, `iconEnd` arrow). 14px icon gap. Measured from the screenshots. |
+| `xl` | 56px (50px below 1024px) | 15px (13px below 1024px) | 20px | Stacked full-width CTAs in the footer. Radius `radius/12`, 14px icon gap. |
+| `nav` | 40px (36px below 1024px) | 13.5px (11px below 1024px) | 17px (15px) | Navbar CTA only (Figma: 142 wide via `className="lg:w-142"`, 11px gap). Below 360px it shows the icon only; the label stays readable to screen readers. |
 
-All variants share: radius `radius/6`, Inter 600 UPPERCASE label, 10px icon gap, and a `-1px` hover lift (except outline). The disabled state is 40% opacity. Inside a section that defines the `--u` frame scale (header, hero), the button scales with it.
+All variants share: Inter 600 UPPERCASE label and a `-1px` hover lift (except outline). The radius and icon gap come with the size: `radius/6` and 10px for `md` and `lg`, `radius/12` and 14px for `xl`. The disabled state is 40% opacity. Inside a section that defines the `--u` frame scale (header, hero), the button scales with it.
 
 Props:
 
 | Prop | Type | Notes |
 | --- | --- | --- |
 | `variant` | `"primary" \| "glass" \| "tint" \| "dark" \| "light" \| "outline"` | Default `primary` |
-| `size` | `"md" \| "lg"` | Default `md` |
+| `size` | `"md" \| "lg" \| "card" \| "xl" \| "nav"` | Default `md` |
 | `icon` | `ReactNode` | Leading icon, e.g. `<WhatsAppIcon />` |
+| `iconEnd` | `ReactNode` | Trailing icon after the label, e.g. `<ArrowUpRightIcon />`; same slot size as `icon` |
 | `fullWidth` | `boolean` | Stretches to its container (mobile stacks) |
 | `href` | `string` | Renders a link: `next/link` for `/…`, plain `<a>` for `#…`, `mailto:`, `tel:` and external URLs |
-| `className` | `string` | **Layout only** (width, margin, flex). Never restyle colors. |
+| `className` | `string` | **Layout only** (width, margin, flex). Never repeat a property the button sets (height, padding, font size, colors): two Tailwind classes for one property don't resolve by class order. Add a size or variant instead. |
 | other props | | Any `<button>` or `<a>` attributes (`onClick`, `disabled`, `type`, `target`, `aria-*`) |
 
 ```tsx
@@ -421,23 +464,31 @@ Rules:
 
 - Write labels in normal case in JSX ("Message us"). CSS uppercases them, which keeps screen readers from spelling them out.
 - Use `href` for navigation and `onClick` only for in-page actions. Never nest a `<Button>` inside an `<a>`.
-- A button that shows only an icon must still have text. Visually hide the label in CSS (see `.nav-cta .btn-label` on narrow screens) or pass `aria-label`.
-- Need a new look? Add a variant to `button.css` and `ButtonVariant`, and document it here. Don't override colors at the call site.
+- A button that shows only an icon must still have text. Hide the label with `sr-only` (see the `nav` size below 360px) or pass `aria-label`.
+- Need a new look? Add an entry to `VARIANTS` (or `SIZES`) and `ButtonVariant` in `Button.tsx`, and document it here. Don't override colors at the call site. Label sizes are the `text-button-*` tokens, which follow the frame scale.
 
 ### 10.3 Icons
 
 - One component per icon in `components/icons/`, exported from `icons/index.ts`.
-- Use `viewBox="0 0 24 24"` and `aria-hidden="true"`, and spread `...props`. The size comes from the parent (e.g. `.btn-icon`).
+- Use `viewBox="0 0 24 24"` and `aria-hidden="true"`, and spread `...props`. The size comes from the parent (e.g. the button's icon slot sizes its child with `*:size-full`).
 - UI icons use `currentColor` (stroke 1.5). Brand marks such as WhatsApp keep their brand color. Parts meant to show the surface behind them, like the WhatsApp phone, are cut out with `fillRule="evenodd"`, not filled white.
 
 ### 10.4 Other patterns
 
 | Pattern | Spec |
 | --- | --- |
-| **Glass nav pill** | Transparent at the top of the page; once scrolled or opened, the `glass` material (§7.3) fades in on `.nav-pill::before` (10 Figma px radius, frame-scaled). |
-| **Eyebrow / badge** | Brand icon + `type-label-14 uppercase`, 12px gap, above a Display or Heading. |
+| **Glass nav pill** | Transparent at the top of the page; once scrolled or opened, the `glass` material (§7.3) fades in on an `aria-hidden` span behind the pill (`rounded-10`, `group-data-scrolled:opacity-100`). |
+| **Hide-on-scroll header** | Past the first 120px, the header slides up and fades out (`data-hidden`, 450ms `ease-out-quint`) after 8px of scrolling down, and returns after 8px of scrolling up. It never hides while the mobile menu is open, and it reappears when it receives keyboard focus. |
+| **Footer** | Off-white (`surface-subtle`) on the site edges, three bands split by `border-border` hairlines. (1) Dark logo (`awtomatig-full-logo-dark.png`, 72px tall), a `type-heading-60` statement (`max-w-[8em]`, so it breaks in the same places at every size) and a `type-body-16` intro aligned to the statement's bottom. Desktop columns are 346 / 565 / 409 fr. (2) Three link columns in `type-heading-24` (`type-heading-20` below `lg`, 46px touch targets) and a stack of three `xl` buttons (primary, light + WhatsApp, outline + mail), 12px apart. Desktop columns are 281 / 396 / 234 / 409 fr, and the button tops align with the link cap height. (3) Copyright and legal links in `type-body-16`, then the uppercase `AWTOMATIG` wordmark (`type-wordmark`): Inter Tight 500, -0.02em (the W and T collide at -0.04em), 17.9cqw so the ink spans the container edge to edge, with its baseline on the footer's bottom edge. |
+| **Eyebrow / badge** | `<Eyebrow>` (`ui/eyebrow/`): brand mark (16×22) + `type-label-14 uppercase`, 12px gap, above a Display or Heading. The text color is inherited (`className="text-fg-inverse"` on dark). Next to a `type-heading-60` title, give it `self-start lg:mt-10` so the mark's top lines up with the title's cap height. |
+| **Pillar grid** | Home Operations: four columns (`lg:grid-cols-4 lg:gap-70`), each split by a 1px `bg-border` divider centred in the gap (`lg:not-first:before:-left-35`). Each pillar has a 48px white icon tile (`rounded-8`, 28px icon), its number `01`–`04` top-right in `type-body-16 text-black/40`, a `type-heading-28` title 48px below the tile, and a `type-body-16` description. |
+| **Problem card** | Home Operations: white card, `rounded-16`, a 3px white border around an off-white illustration panel, then a `type-heading-28` title and a `type-body-16` description (`max-w-345`), with 20px padding. The panel is a fixed 421×293 composition drawn in design px inside `mockup-scale` (the panel is an `@container`): spacing and fixed `type-*` sizes shrink with the card below 421px and cap at 1:1. Mockups are `aria-hidden`; white chips and rows use `rounded-8`, and status dots use `status-*` colors. |
 | **Tag list** | `type-body-16` at `text-white/60`, hover to `text-fg-inverse`, 20–26px gaps. |
 | **Divider strip** | `border-y border-white/12` hairlines framing a title and tags row. |
+| **Lines background** | `<LinesBackground preset={…}>` (`ui/lines-background/`) renders a full-bleed `<section>` with the animated art of the hero and the CTA: a base gradient, a cyan glow that drifts with the pointer, film grain, and a canvas of white sawtooth bands (crisp edge on the top-right side, even fade over one period) with two lasers (near-white → cyan → fade) that bend away from the pointer. Everything design-specific is a `LinesPreset` measured from the screenshot and kept next to its section (`heroLines.ts`, `ctaLines.ts`): `background`, `angleDeg` (the hero's lines rise at −28.3°, the CTA's are horizontal), `bandPeriod`, `bandAlpha`, `lasers` (distance from the top-right corner, width, alpha, fade length), `mask` (band strength across the section) and `rest` (where the pointer rests, away from the lasers). Give the content `relative z-20`. |
+| **CTA section** | `<CtaSection>` (`sections/shared/cta/`), for any page. Desktop: the eyebrow on the site edge, top-aligned with a `type-heading-60` title in a column that starts 359px further in; a `type-body-16` paragraph 16px below; two `xl` buttons 256px wide, 12px apart, 40px below (primary, then glass + WhatsApp); then, 80px below, a 72px divider strip whose five `type-body-16` tags are spread edge to edge (60px in from the hairline ends). Padding 100 top, 92 bottom. Mobile: stacked, buttons full width, tags wrap. Props: `eyebrow`, `title`, `description`, `primary`, `secondary` (`null` hides it), `tags` (`[]` hides the strip), `id` (default `contact`). Use `<br className="max-lg:hidden" />` for desktop line breaks. |
+| **Case studies (sticky intro)** | Home `CaseStudiesSection`, off-white. Desktop grid `403fr / 928fr` (the cards start at x 452 in the 1440 frame). The left intro (`<Eyebrow>` with `lg:mt-10`, a `type-heading-60` title 20px below, and a `type-body-16` paragraph pushed to the bottom with `mt-auto`) is `max-w-320`, `lg:min-h-525` (one card tall) and **plain CSS `position: sticky` at `top-120`**, its own offset in the section. It pins as soon as the section reaches the viewport top, stays while the cards scroll past, and releases when its bottom meets the last card's bottom; the "View all" button sits in a second grid below so it doesn't extend the sticky range. No JS and no effect CSS. Cards: the 551×525 showcase image (rounded frame baked into the PNG, `max-w-551`) and, from `xl`, a 337fr details column centred beside it with a 40px gap: `type-heading-28` title, `type-body-16` summary, a `Client:` / `Service:` `<dl>` (`type-caption-12 uppercase text-black/60` over `type-body-16 font-medium`), the description and a `light` `card`-size button. Cards are 40px apart; below them, a 551px `primary` `xl` "View all case studies". Padding 120 top, 115 bottom. Below `xl` the details stack under the image; below `lg` everything stacks and nothing is sticky. |
+| **Why AWTOMATIG** | Home `WhyAwtomatigSection`, off-white, `lg:pt-116` / `lg:pb-73`. A header row like Operations (eyebrow, then a `type-heading-60` title with a desktop `<br>`) on a `375fr / 956fr` grid, so the right column starts at x 424 and ends on the right site edge at 1440. 79px below, the same grid: on the left the **AWLABS card** (280×398 at `lg`, `rounded-16`, `surface-inverse`, `px-24 pt-20 pb-24`): three 5px cyan squares, the `AW`**`LABS`** wordmark (`type-heading-28 font-normal tracking-normal`, `LABS` in cyan), a 18×2 `white/40` dash, a cyan 1px-border prompt box (`rounded-8`, `type-label-16 font-normal`, chevron + two lines), a `type-body-16-compact text-white/40` list (`/ tools`, `/ experiments`, `/ what’s next`) and a full-width `primary` `card` button with a trailing arrow pinned to the bottom. Behind its content: `bg-awlabs-glow` (cyan rising from the bottom edge, from the `--gradient-awlabs-glow` token) and `dot-grid text-white/40` (11.6px dots fading in over the bottom 127px), both `-z-10` in an `isolate` card. On the right, one white `rounded-16` card with a 2×2 grid of reasons: 35px side padding; 48px `surface-subtle` icon tile (`rounded-8`, 28px icon) with its number `01`–`04` top-right (`type-body-16 text-black/40`); a `type-heading-28` title 58px below the tile; and a `type-body-16` description (`max-w-400`, which makes it wrap like the design). Dividers are 1px `surface-subtle`: a full-height line left of the right column and a hairline above the second row inset 21 / 22px, both pseudo-elements on the cells so rows can grow on their own (min height 261). Below `lg` the AWLABS card sits above the reasons, which stack in one column below `md` (the dividers become top borders). |
 | **Stacking cards** | Full-bleed cards that are `position: sticky`, at least one screen tall (`min-h-dvh`, with the panel stretching and the image held on the bottom edge), that pile up on scroll (home services). Each card except the last holds full screen for `--stack-hold` (50svh of scroll) before the next one starts sliding over it. `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
 | **Service card** | Index `NN/` (`type-heading-34`, regular weight, `black/40` or `white/40`) on the last baseline of a `type-heading-60` title; on the right, `type-body-16` copy plus an `lg` button 250px wide. Below that, a points panel (radius/16 top corners, 20px from the frame edge) with a 4-column grid of points (`type-body-16`, 6px dot, 12px gap, hairline under each), then the showcase image at full panel width, flush with the card bottom. Surfaces: white/off-white, cyan/bright cyan (`dark` button), off-white/white, ink/charcoal (`light` button). |
 
@@ -446,7 +497,7 @@ Component rules:
 - Every interactive element needs visible **hover**, **focus-visible** and **disabled** states. A global cyan focus ring is provided in the base layer; don't remove it.
 - Minimum touch target: **44×44px** on touch layouts. A smaller visual control keeps its size and extends its hit area with a pseudo-element, e.g. `relative size-36 before:absolute before:-inset-4` (the menu toggle).
 - Icons inherit `currentColor` and sit at 16px (labels) or 18–20px (headings).
-- Name new component classes by component (`.pricing-card`), not by appearance (`.cyan-box`).
+- Don't invent component classes for styling; use utilities. The only custom classes are in effect CSS, named by component (`.service-card`, `.hero-inner`), not by appearance (`.cyan-box`).
 
 ---
 
@@ -478,7 +529,7 @@ Check this before opening a PR that touches UI:
 
 - [ ] Colors come from semantic tokens (`fg-*`, `surface-*`, `action-*`), or from primitives with an opacity modifier.
 - [ ] No hex or rgb literals and no arbitrary values (`[#…]`, `[13px]`) in new markup or CSS, except inside `@theme`.
-- [ ] Styling is Tailwind in JSX; component CSS only holds what §10.1 allows.
+- [ ] Styling is Tailwind in JSX. No new `.css` file unless it is an effect on the `EFFECT_CSS` allowlist (§10.1); `npm run lint` checks this.
 - [ ] Every piece of text uses a `type-*` utility. Headings use Inter Tight and body uses Inter.
 - [ ] Spacing values are from the scale in §5. Radii are from §6.
 - [ ] At most one cyan primary action per viewport, with black text on cyan.

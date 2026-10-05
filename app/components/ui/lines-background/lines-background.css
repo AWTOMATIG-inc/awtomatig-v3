@@ -1,0 +1,38 @@
+/* LinesBackground (hero, CTA): the glow and film-grain layers of the animated lines background. Imported by app/globals.css.
+   The base gradient and the canvas art are per-section presets in TypeScript (see LinesBackground.tsx). */
+
+@layer components {
+  /* Atmospheric art sampled from the design, exempt from the token check. */
+  /* token-check: off */
+
+  /* Soft cyan bloom in the top-right corner; JS sets --glow-x / --glow-y as it drifts with the pointer */
+  .lines-bg-glow {
+    position: absolute;
+    top: -22%;
+    right: -12%;
+    width: 75vw;
+    height: 125vh;
+    background: radial-gradient(
+      ellipse at 78% 28%,
+      rgba(2, 213, 232, 0.05) 0%,
+      rgba(2, 160, 170, 0.02) 38%,
+      transparent 75%
+    );
+    filter: blur(75px);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate3d(var(--glow-x, 0px), var(--glow-y, 0px), 0);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Subtle film grain texture for tactile depth */
+  .lines-bg-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 4;
+  }
+  /* token-check: on */
+}

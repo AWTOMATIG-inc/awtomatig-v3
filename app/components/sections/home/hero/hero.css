@@ -1,56 +1,10 @@
-/* Home hero: full-bleed background layers on .hero, content in .hero-inner (.site-container). Imported by app/globals.css */
+/* Home hero: .hero is the full-bleed LinesBackground section, content in .hero-inner (.site-container). Imported by app/globals.css */
 
 @layer components {
-  /* ---------- Hero shell & ambient layers ----------
-     Atmospheric art sampled from the design: kept exactly as is and exempt from the token check. */
-  /* token-check: off */
-
+  /* The background (gradient, glow, grain, canvas) is the shared LinesBackground; see heroLines.ts. */
   .hero {
     container-type: inline-size;
-    /* Neutral var(--color-charcoal) base with the teal bloom from the top-right corner (sampled from the design) */
-    background: radial-gradient(
-      ellipse 96% 135% at 100% 0%,
-      #1b4145 0%,
-      #1c3437 36%,
-      #1d3032 54%,
-      #1d2627 72%,
-      #1d2121 88%,
-      var(--color-charcoal) 100%
-    );
   }
-
-  /* Subtle film grain texture overlay for tactile depth */
-  .noise-overlay {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.025;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    z-index: 4;
-  }
-
-  /* Soft light bloom in the top right corner, drifts with the pointer */
-  .top-right-glow {
-    position: absolute;
-    top: -22%;
-    right: -12%;
-    width: 75vw;
-    height: 125vh;
-    background: radial-gradient(
-      ellipse at 78% 28%,
-      rgba(2, 213, 232, 0.05) 0%,
-      rgba(2, 160, 170, 0.02) 38%,
-      transparent 75%
-    );
-    filter: blur(75px);
-    pointer-events: none;
-    z-index: 1;
-    transform: translate3d(var(--glow-x, 0px), var(--glow-y, 0px), 0);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  /* token-check: on */
 
   /* ---------- Hero content ----------
      Layout, spacing, type and colors are Tailwind classes in HeroContent.tsx.

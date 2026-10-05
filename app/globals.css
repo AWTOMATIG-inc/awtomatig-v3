@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /* Component styles live next to their components and are inlined here, so the
-   cascade layers (theme → base → components → utilities) keep one order. */
-@import "./components/ui/button/button.css";
-@import "./components/layout/header/header.css";
+   cascade layers (theme → base → components → utilities) keep one order.
+   Only effects get a CSS file (DESIGN.md §10.1); everything else is Tailwind in JSX. */
+@import "./components/ui/lines-background/lines-background.css";
 @import "./components/sections/home/hero/hero.css";
 @import "./components/sections/home/services/services.css";
 
@@ -24,6 +24,8 @@
   --color-cyan: #02d5e8;
   --color-cyan-bright: #00eaff;
   --color-warning: #e86d02;
+  --color-red: #e94738; /* status dots: broken connection (Operations section mockups) */
+  --color-amber: #e8ab02; /* status dots: needs review (Operations section mockups) */
   --color-deep-teal: #002022; /* tint for glass surfaces on dark (glass button); use with transparency */
   --color-ink: #111111; /* deepest dark surface, below charcoal panels (Ad Tech service card) */
   --color-transparent: transparent;
@@ -42,6 +44,8 @@
   --color-on-action: var(--color-black);
   --color-border: var(--color-gray);
   --color-status-warning: var(--color-warning);
+  --color-status-error: var(--color-red);
+  --color-status-caution: var(--color-amber);
 
   /* ---------- Spacing: 1 unit = 1px, so `gap-16` = 16px (Figma px) ---------- */
   --spacing: 1px;
@@ -50,6 +54,7 @@
   --radius-*: initial;
   --radius-6: 6px;
   --radius-8: 8px;
+  --radius-10: 10px; /* glass nav pill */
   --radius-12: 12px;
   --radius-16: 16px;
   --radius-34: 34px;
@@ -61,9 +66,13 @@
   --shadow-floating: 0 40px 80px -24px rgb(0 0 0 / 0.35), 0 12px 32px -12px rgb(0 0 0 / 0.2);
   --shadow-glow: 0 0 20px rgb(2 213 232 / 0.18);
   --shadow-glow-strong: 0 0 32px rgb(2 213 232 / 0.45);
+  --shadow-glow-subtle: 0 0 24px rgb(2 213 232 / 0.14); /* hover of the glass button */
 
   /* ---------- Layout: the Figma frame width; content never grows past it ---------- */
   --container-site: 1440px;
+
+  /* ---------- Breakpoints: Tailwind defaults plus xs for very narrow phones ---------- */
+  --breakpoint-xs: 22.5rem; /* 360px */
 
   /* ---------- Motion ---------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -81,8 +90,30 @@
   --glass-blur: blur(14px) saturate(140%);
   --shadow-glass: 0 10px 30px -10px rgb(0 0 0 / 0.45);
 
+  /* ---------- Effects: AWLABS card glow (Why AWTOMATIG): cyan rising from the bottom edge, measured from the screenshot; the bg-awlabs-glow utility ---------- */
+  --gradient-awlabs-glow: radial-gradient(
+    ellipse 660px 150px at 50% 100%,
+    rgb(2 213 232 / 0.54) 0,
+    rgb(2 213 232 / 0.47) 6.7%,
+    rgb(2 213 232 / 0.2) 44%,
+    rgb(2 213 232 / 0.14) 53%,
+    rgb(2 213 232 / 0.09) 65%,
+    rgb(2 213 232 / 0.055) 75%,
+    rgb(2 213 232 / 0.02) 90%,
+    transparent 100%
+  );
+
   /* ---------- Effects: Display text gradient (white → pale cyan) — the `text-gradient-display` utility ---------- */
   --gradient-display: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
+}
+
+/* Button label sizes. Inline so var(--u) resolves on the button itself and follows a section's
+   frame scale (header, hero); outside one it is plain rem. Used as text-button-md etc. */
+@theme inline {
+  --text-button-sm: calc(var(--u, 0.0625rem) * 11); /* navbar CTA, mobile */
+  --text-button-md: calc(var(--u, 0.0625rem) * 13);
+  --text-button-nav: calc(var(--u, 0.0625rem) * 13.5); /* navbar CTA, Figma */
+  --text-button-lg: calc(var(--u, 0.0625rem) * 15);
 }
 
 /* Font families come from next/font CSS variables set on <html> (app/layout.tsx) */
@@ -220,6 +251,13 @@
   line-height: 1.5;
   font-weight: 400;
 }
+/* Small meta captions (case study "Client:" / "Service:"), measured from the screenshot: 12px */
+@utility type-caption-12 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 12);
+  line-height: 1.2;
+  font-weight: 400;
+}
 @utility type-label-16-upper {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 16);
@@ -241,6 +279,22 @@
   font-weight: 600;
 }
 
+/* Footer wordmark: sized in cqw so the ink spans its @container edge to edge (measured from Figma
+   at 1440). The negative margins are Inter Tight metrics: the start margin pulls the "A" past its
+   side bearing, and the bottom margin (descent 0.242em - half-leading) puts the baseline on the
+   box bottom, so the uppercase word sits on the footer edge (overflow clips the O/G overshoot).
+   Tracking is -0.02em, not Display's -0.04em, because the W and T collide in caps at -0.04em. */
+@utility type-wordmark {
+  font-family: var(--font-display);
+  font-size: 17.9cqw;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-inline-start: -0.013em;
+  margin-bottom: -0.136em;
+}
+
 /* Display gradient (white → pale cyan). Display styles only: `type-display-100 text-gradient-display` */
 @utility text-gradient-display {
   background: var(--gradient-display);
@@ -250,6 +304,21 @@
 }
 
 /* ---------- Effects ---------- */
+
+/* Dot grid in the current color, fading in from the top (AWLABS card): `dot-grid text-white/40`.
+   11.6px pitch, measured from the screenshot. */
+@utility dot-grid {
+  background-image: radial-gradient(circle, currentColor 0.7px, transparent 1px);
+  background-size: 11.6px 11.6px;
+  background-position: 5.6px 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black);
+  mask-image: linear-gradient(to bottom, transparent, black);
+}
+
+/* The AWLABS card's cyan glow from the bottom edge (see --gradient-awlabs-glow) */
+@utility bg-awlabs-glow {
+  background-image: var(--gradient-awlabs-glow);
+}
 
 /* Frosted glass surface on dark (navbar pill, mobile menu). Set --glass-bg to swap the fill,
    e.g. --glass-bg: var(--glass-fill-dense) for panels over content. */
@@ -261,6 +330,33 @@
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-glass);
+}
+
+/* Denser glass fill for panels over content (mobile menu): `glass glass-dense` */
+@utility glass-dense {
+  --glass-bg: var(--glass-fill-dense);
+}
+
+/* ---------- Layout helpers ---------- */
+
+/* Frame scale for a pixel-locked section (see "Frame scale" above): `lg:frame-scale`.
+   Tracks the viewport like the site edges, so the header lines up with them. */
+@utility frame-scale {
+  --u: clamp(0.85px, 100vw / 1440, 1px);
+  --spacing: var(--u);
+}
+
+/* Mockup scale: inside an @container, a 1px design unit that shrinks with the container so a fixed
+   composition (the Operations card mockups, designed `--mockup-w` px wide) keeps its proportions.
+   Spacing utilities and fixed type-* sizes follow it; capped at 1px. */
+@utility mockup-scale {
+  --u: min(1px, 100cqw / var(--mockup-w, 421));
+  --spacing: var(--u);
+}
+
+/* Top padding that also clears the notch / dynamic island: `pt-safe-12` = 12 units + safe area */
+@utility pt-safe-* {
+  padding-top: calc(var(--spacing) * --value(integer) + env(safe-area-inset-top));
 }
 
 @layer base {

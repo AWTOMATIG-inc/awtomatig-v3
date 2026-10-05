@@ -1,2 +1,17 @@
+export { default as ArrowUpRightIcon } from "./ArrowUpRightIcon";
+export { default as BarChartIcon } from "./BarChartIcon";
+export { default as ChatGearIcon } from "./ChatGearIcon";
+export { default as ChevronRightIcon } from "./ChevronRightIcon";
+export { default as CloudIcon } from "./CloudIcon";
+export { default as DatabaseIcon } from "./DatabaseIcon";
+export { default as GearBulbIcon } from "./GearBulbIcon";
+export { default as GearClusterIcon } from "./GearClusterIcon";
+export { default as GearIcon } from "./GearIcon";
+export { default as LayersIcon } from "./LayersIcon";
 export { default as MailIcon } from "./MailIcon";
+export { default as PeopleIcon } from "./PeopleIcon";
+export { default as ProgressIcon } from "./ProgressIcon";
+export { default as SitemapIcon } from "./SitemapIcon";
+export { default as StorefrontIcon } from "./StorefrontIcon";
+export { default as TableIcon } from "./TableIcon";
 export { default as WhatsAppIcon } from "./WhatsAppIcon";
