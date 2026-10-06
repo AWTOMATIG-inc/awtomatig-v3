@@ -47,7 +47,7 @@ This document is the reference for building UI in this project. It covers the de
 | Font loading | `app/layout.tsx` | `next/font/google` self-hosts Inter (`--font-inter`) and Inter Tight (`--font-inter-tight`) and puts both variables on `<html>`. |
 | Text styles | `app/globals.css` → `@utility type-*` | One utility per Figma text style, e.g. `type-heading-40`, plus `type-wordmark` (the footer's container-wide wordmark). |
 | Content container | `app/globals.css` → `@utility site-container` | 1440px max-width wrapper for every section's content (see §9). |
-| Shared utilities | `app/globals.css` → `@utility glass`, `glass-dense`, `text-gradient-display`, `frame-scale`, `pt-safe-*`, `dot-grid`, `bg-awlabs-glow` | Frosted glass (§7.3), the Display title gradient (§4.3), the header's frame scale (§9.2) and notch-safe top padding (§9.2). |
+| Shared utilities | `app/globals.css` → `@utility glass`, `glass-dense`, `text-gradient-display`, `frame-scale`, `pt-safe-*`, `dot-grid`, `bg-awlabs-glow`, `ribs`, `ribs-dark` | Frosted glass (§7.3), the Display title gradient (§4.3), the header's frame scale (§9.2) and notch-safe top padding (§9.2). |
 | Effect styles | `app/components/**/<name>.css`, `@import`ed at the top of `globals.css` | Only for effects (the animated lines background, the hero frame scale, stacking cards); UI components are Tailwind only (see §10.1). |
 | Base styles | `app/globals.css` → `@layer base` | Body defaults to `surface-inverse` with `fg-inverse` text. `h1`–`h6` use Inter Tight. Focus ring uses `action-primary`. |
 
@@ -87,6 +87,7 @@ Raw values sampled from the homepage's repeated fills and strokes. Use cyan spar
 | `fg-primary` | Charcoal | `text-fg-primary` | Default text on light surfaces |
 | `fg-strong` | Black | `text-fg-strong` | Headlines and emphasis on light surfaces |
 | `fg-inverse` | White | `text-fg-inverse` | Text on charcoal, black or imagery |
+| `fg-muted` | Black at 70% | `text-fg-muted` | Secondary lead copy on light surfaces (renders #484848 on off-white; Services "What we do"). Measured; outside the 12/20/40/60 steps, so it is a token rather than `text-black/70` |
 | `surface` | White | `bg-surface` | Default light page or card background |
 | `surface-subtle` | Off white | `bg-surface-subtle` | Alternating sections, inset panels, inputs |
 | `surface-inverse` | Charcoal | `bg-surface-inverse` | Dark sections (hero, footer), dark cards |
@@ -130,6 +131,7 @@ The fixed sizes (24px and below) are written as `calc(var(--u, 0.0625rem) * N)`.
 | Figma style | Utility | Family | Size (desktop → min) | Line height | Tracking | Weight |
 | --- | --- | --- | --- | --- | --- | --- |
 | Display / 100 | `type-display-100` | Inter Tight | 100 → 42px | 0.99 | -0.04em | 500 |
+| Display / 120 | `type-display-120` | Inter Tight | 120 → 42px | 0.99 | -0.04em | 500 (How we work step titles; 10vw below `lg`, then 8.333vw up to 120) |
 | Display / 80 | `type-display-80` | Inter Tight | 80 → 40px | 1.00 | -0.04em | 500 |
 | Heading / 60 | `type-heading-60` | Inter Tight | 60 → 36px | 1.05 | -0.03em | 500 |
 | Heading / 50 | `type-heading-50` | Inter Tight | 50 → 32px | 1.10 | -0.03em | 500 |
@@ -137,12 +139,17 @@ The fixed sizes (24px and below) are written as `calc(var(--u, 0.0625rem) * N)`.
 | Heading / 34 | `type-heading-34` | Inter Tight | 34 → 26px | 1.15 | -0.02em | 500 |
 | Heading / 28 | `type-heading-28` | Inter Tight | 28 → 24px | 1.20 | -0.015em | 500 |
 | Heading / 24 | `type-heading-24` | Inter Tight | 24px | 1.25 | -0.01em | 500 |
+| Heading / 22 | `type-heading-22` | Inter Tight | 22px | 1.25 | -0.015em | 500 (Operations problem card titles, measured) |
 | Heading / 20 | `type-heading-20` | Inter Tight | 20px | 1.30 | -0.01em | 500 |
 | Heading / 18 | `type-heading-18` | Inter Tight | 18px | 1.30 | -0.01em | 500 |
+| Body / 22 | `type-body-22` | Inter | 22px | 1.40 | -0.01em | 400 (Services "What we do" lead, measured: widths and 30.8px pitch) |
 | Body / 20 | `type-body-20` | Inter | 20px | 1.50 | 0 | 400 |
 | Body / 16 | `type-body-16` | Inter | 16px | 1.60 | 0 | 400 |
 | Body / 16 Compact | `type-body-16-compact` | Inter | 16px | 1.40 | 0 | 400 |
 | Body / 14 | `type-body-14` | Inter | 14px | 1.50 | 0 | 400 |
+| Body / 18.6 | `type-body-18` | Inter | 18.6 → 16px | 1.50 | 0 | 400 (How we work copy, measured; 1.292vw) |
+| Body / 15 | `type-body-15` | Inter | 15px | 1.50 | 0 | 400 (step counter, measured) |
+| Numeral | `type-numeral` | Inter Tight | 408 → 160px | 1.00 | 0 | 200 (oversized step number, 28.33vw) |
 | Caption / 12 | `type-caption-12` | Inter | 12px | 1.20 | 0 | 400 (measured from the case study screenshot; used `uppercase` for meta labels) |
 | Label / 16 Upper | `type-label-16-upper` | Inter | 16px | 1.20 | 0.01em | 600, UPPERCASE |
 | Label / 16 | `type-label-16` | Inter | 16px | 1.20 | 0 | 600 |
@@ -341,15 +348,19 @@ app/
     │   │   └── Button.tsx           # variants and sizes are Tailwind class maps
     │   ├── eyebrow/
     │   │   └── Eyebrow.tsx          # brand mark + uppercase label above a section title
+    │   ├── video-player/
+    │   │   └── VideoPlayer.tsx      # client: video with a big play button and a glass control bar
     │   └── lines-background/
     │       ├── LinesBackground.tsx  # client: animated bands + lasers on a canvas, driven by a preset
     │       └── lines-background.css # effect: the glow and film-grain layers
     ├── icons/                       # SVG icon components
     │   ├── index.ts                 # import { WhatsAppIcon, MailIcon } from "@/app/components/icons"
     │   ├── MailIcon.tsx, WhatsAppIcon.tsx
+    │   ├── PersonIcon.tsx, MailFilledIcon.tsx   # Operations mockups
     │   ├── PeopleIcon.tsx, ProgressIcon.tsx, GearIcon.tsx, LayersIcon.tsx   # Operations pillars
     │   ├── GearClusterIcon.tsx, GearBulbIcon.tsx, SitemapIcon.tsx, ChatGearIcon.tsx   # Why AWTOMATIG reasons
     │   ├── ArrowUpRightIcon.tsx     # trailing "go to" arrow (Button iconEnd)
+    │   ├── ArrowDownIcon.tsx        # trailing "jump down" arrow (Services hero CTA)
     │   └── CloudIcon.tsx, DatabaseIcon.tsx, TableIcon.tsx, StorefrontIcon.tsx, BarChartIcon.tsx, ChevronRightIcon.tsx
     ├── layout/                      # site chrome shared by every page
     │   ├── header/
@@ -357,7 +368,15 @@ app/
     │   └── footer/
     │       └── Footer.tsx
     └── sections/                    # page-specific sections, grouped by page
+        ├── services/                # Services page (app/services/page.tsx)
+        │   ├── hero/
+        │   │   └── ServicesHeroSection.tsx  # full-screen hero on the shared HERO_LINES background
+        │   └── what-we-do/
+        │       └── WhatWeDoSection.tsx      # eyebrow, heading, lead paragraph, brand-mark decoration
         ├── shared/                  # sections used on several pages
+        │   ├── hero/
+        │   │   ├── heroLines.ts     # HERO_LINES: the page heroes' LinesBackground preset (diagonal lines)
+        │   │   └── hero.css         # effect: page hero frame scale (.hero, .hero-inner)
         │   └── cta/
         │       ├── CtaSection.tsx   # "Let's talk" CTA; every text, button and tag is a prop
         │       └── ctaLines.ts      # its LinesBackground preset (horizontal lines)
@@ -366,20 +385,26 @@ app/
             │   ├── CaseStudiesSection.tsx  # sticky intro + scrolling case study cards
             │   ├── CaseStudyCard.tsx      # one card layout: image + details
             │   └── caseStudies.ts         # CASE_STUDIES content
+            ├── how-we-work/
+            │   ├── HowWeWorkSection.tsx   # four steps in the horizontal scroller
+            │   ├── HorizontalScroller.tsx # client: vertical scroll → sideways slide (sticky + eased progress)
+            │   ├── StepSlide.tsx          # one full-screen slide
+            │   └── steps.ts               # STEPS content + per-slide surface themes
             ├── why-awtomatig/
             │   ├── WhyAwtomatigSection.tsx  # heading + AWLABS card + 2×2 reasons card
             │   ├── AwlabsCard.tsx       # dark AWLABS teaser card
             │   └── whyAwtomatig.ts      # REASONS content
+            ├── human-operations/
+            │   ├── HumanOperationsSection.tsx  # eyebrow, title, paragraph, team photo + stats panel
+            │   └── humanOperations.ts   # STATS content and the photo
             ├── hero/
             │   ├── HeroSection.tsx  # the section entry point used by page.tsx
-            │   ├── HeroContent.tsx
-            │   ├── heroLines.ts     # its LinesBackground preset (diagonal lines)
-            │   └── hero.css         # effect: hero frame scale
+            │   └── HeroContent.tsx
             ├── operations/
             │   ├── OperationsSection.tsx  # pillars + "When things break down" cards
             │   ├── operations.ts        # PILLARS and PROBLEMS content
             │   ├── ProblemCard.tsx      # one card layout; picks its mockup
-            │   └── SystemsMockup.tsx, WorkflowsMockup.tsx, VisibilityMockup.tsx
+            │   └── SystemsMockup.tsx, WorkflowsMockup.tsx, StatusListMockup.tsx (+ VisibilityMockup / OwnershipMockup)
             └── services/
                 ├── ServicesSection.tsx
                 ├── ServiceCard.tsx      # one card layout, rendered per item
@@ -405,7 +430,7 @@ Rules:
   | Component variants | A class map in the component (`VARIANTS` / `SIZES` in `Button.tsx`) |
   | Something Tailwind lacks, reusable or one-off (a `cqw` font size, font-metric margins, a material) | A token in `@theme` or a small `@utility` in `globals.css` (`glass`, `pt-safe-*`, `frame-scale`, `mockup-scale`, `type-wordmark`) |
 
-  A component `.css` file is allowed only for an **effect**: an animated or generated background (`hero.css`), or scroll-driven motion whose math reads custom properties set by JS (`services.css`). There, `calc()` on variables would otherwise turn into long arbitrary values in the markup.
+  A component `.css` file is allowed only for an **effect**: an animated or generated background (`lines-background.css`; `hero.css`, the page heroes' frame scale), or scroll-driven motion whose math reads custom properties set by JS (`services.css`). There, `calc()` on variables would otherwise turn into long arbitrary values in the markup.
 
   **Before creating a `.css` file, ask:** is this an animated or generated background, or motion driven by JS-set variables? If not, it is not an effect: static values (even unusual ones, like the footer wordmark's `17.9cqw` size) go in a `@utility`. `npm run lint` fails on any `.css` file under `app/components` that isn't in the `EFFECT_CSS` allowlist of `scripts/check-tokens.mjs`. Add a file there only for a real effect, and record why in MEMORY.md.
 
@@ -482,14 +507,19 @@ Rules:
 | **Footer** | Off-white (`surface-subtle`) on the site edges, three bands split by `border-border` hairlines. (1) Dark logo (`awtomatig-full-logo-dark.png`, 72px tall), a `type-heading-60` statement (`max-w-[8em]`, so it breaks in the same places at every size) and a `type-body-16` intro aligned to the statement's bottom. Desktop columns are 346 / 565 / 409 fr. (2) Three link columns in `type-heading-24` (`type-heading-20` below `lg`, 46px touch targets) and a stack of three `xl` buttons (primary, light + WhatsApp, outline + mail), 12px apart. Desktop columns are 281 / 396 / 234 / 409 fr, and the button tops align with the link cap height. (3) Copyright and legal links in `type-body-16`, then the uppercase `AWTOMATIG` wordmark (`type-wordmark`): Inter Tight 500, -0.02em (the W and T collide at -0.04em), 17.9cqw so the ink spans the container edge to edge, with its baseline on the footer's bottom edge. |
 | **Eyebrow / badge** | `<Eyebrow>` (`ui/eyebrow/`): brand mark (16×22) + `type-label-14 uppercase`, 12px gap, above a Display or Heading. The text color is inherited (`className="text-fg-inverse"` on dark). Next to a `type-heading-60` title, give it `self-start lg:mt-10` so the mark's top lines up with the title's cap height. |
 | **Pillar grid** | Home Operations: four columns (`lg:grid-cols-4 lg:gap-70`), each split by a 1px `bg-border` divider centred in the gap (`lg:not-first:before:-left-35`). Each pillar has a 48px white icon tile (`rounded-8`, 28px icon), its number `01`–`04` top-right in `type-body-16 text-black/40`, a `type-heading-28` title 48px below the tile, and a `type-body-16` description. |
-| **Problem card** | Home Operations: white card, `rounded-16`, a 3px white border around an off-white illustration panel, then a `type-heading-28` title and a `type-body-16` description (`max-w-345`), with 20px padding. The panel is a fixed 421×293 composition drawn in design px inside `mockup-scale` (the panel is an `@container`): spacing and fixed `type-*` sizes shrink with the card below 421px and cap at 1:1. Mockups are `aria-hidden`; white chips and rows use `rounded-8`, and status dots use `status-*` colors. |
+| **Problem card** | Home Operations, four cards (Disconnected systems, Limited visibility, Manual workflows, Unclear ownership): `md:grid-cols-2 xl:grid-cols-4`, 20px gap. White card, `rounded-16`, a 3px white border around an off-white illustration panel, then a `type-heading-22` title and a `type-body-16` description (`mt-8 max-w-268`, which makes the lines wrap like the design), with 20px padding (16 below). The panel is a fixed 309×253 composition drawn 1:1 in design px inside `mockup-scale` (`[--mockup-w:309]`; the panel is an `@container`): spacing and fixed `type-*` sizes shrink with the card below 309px and cap at 1:1. Mockup text is `type-caption-12` (workflow rows use `type-body-14`); `StatusListMockup` (title, subtitle, optional pill, four rows with icon, dot status and chevron) serves both the Visibility and Ownership cards. Mockups are `aria-hidden`; white chips and rows use `rounded-8`, and status dots use `status-*` colors. |
+| **Human operations** | Home `HumanOperationsSection`, off-white. Header row on a `365fr / 631fr / 317fr` grid (eyebrow with `lg:mt-10`, `type-heading-60` title, `type-body-16` paragraph bottom-aligned). 72px below, a `935fr / 317fr` grid (60px gap): a 441px-tall `rounded-16` photo (`object-cover`) and a column with a white `rounded-6` 40px "Operational team view" label (`type-label-14 uppercase`) and three 136px stat rows split by `border-border` hairlines: `type-heading-40` number, `type-body-14 uppercase` label and an 8px cyan dot top-right. Below `lg` everything stacks (photo 4:3). |
+| **Video player** | `<VideoPlayer src label poster? className>` (`ui/video-player/`): `object-cover` video filling a box you size (radius, aspect). Paused: a 80px (90 at `lg`) cyan play button centred (`shadow-glow`). Controls: a `glass glass-dense` `rounded-12` bar 12/16px from the edges with play/pause, elapsed time, a 4px seek track (cyan fill; an invisible range input handles pointer, touch and keys), duration, mute and fullscreen (44px targets). While playing, the bar and scrim fade out after 2.2s without pointer or focus activity; motion is `motion-safe:`. `preload="metadata"`, `playsInline`. |
 | **Tag list** | `type-body-16` at `text-white/60`, hover to `text-fg-inverse`, 20–26px gaps. |
 | **Divider strip** | `border-y border-white/12` hairlines framing a title and tags row. |
 | **Lines background** | `<LinesBackground preset={…}>` (`ui/lines-background/`) renders a full-bleed `<section>` with the animated art of the hero and the CTA: a base gradient, a cyan glow that drifts with the pointer, film grain, and a canvas of white sawtooth bands (crisp edge on the top-right side, even fade over one period) with two lasers (near-white → cyan → fade) that bend away from the pointer. Everything design-specific is a `LinesPreset` measured from the screenshot and kept next to its section (`heroLines.ts`, `ctaLines.ts`): `background`, `angleDeg` (the hero's lines rise at −28.3°, the CTA's are horizontal), `bandPeriod`, `bandAlpha`, `lasers` (distance from the top-right corner, width, alpha, fade length), `mask` (band strength across the section) and `rest` (where the pointer rests, away from the lasers). Give the content `relative z-20`. |
 | **CTA section** | `<CtaSection>` (`sections/shared/cta/`), for any page. Desktop: the eyebrow on the site edge, top-aligned with a `type-heading-60` title in a column that starts 359px further in; a `type-body-16` paragraph 16px below; two `xl` buttons 256px wide, 12px apart, 40px below (primary, then glass + WhatsApp); then, 80px below, a 72px divider strip whose five `type-body-16` tags are spread edge to edge (60px in from the hairline ends). Padding 100 top, 92 bottom. Mobile: stacked, buttons full width, tags wrap. Props: `eyebrow`, `title`, `description`, `primary`, `secondary` (`null` hides it), `tags` (`[]` hides the strip), `id` (default `contact`). Use `<br className="max-lg:hidden" />` for desktop line breaks. |
 | **Case studies (sticky intro)** | Home `CaseStudiesSection`, off-white. Desktop grid `403fr / 928fr` (the cards start at x 452 in the 1440 frame). The left intro (`<Eyebrow>` with `lg:mt-10`, a `type-heading-60` title 20px below, and a `type-body-16` paragraph pushed to the bottom with `mt-auto`) is `max-w-320`, `lg:min-h-525` (one card tall) and **plain CSS `position: sticky` at `top-120`**, its own offset in the section. It pins as soon as the section reaches the viewport top, stays while the cards scroll past, and releases when its bottom meets the last card's bottom; the "View all" button sits in a second grid below so it doesn't extend the sticky range. No JS and no effect CSS. Cards: the 551×525 showcase image (rounded frame baked into the PNG, `max-w-551`) and, from `xl`, a 337fr details column centred beside it with a 40px gap: `type-heading-28` title, `type-body-16` summary, a `Client:` / `Service:` `<dl>` (`type-caption-12 uppercase text-black/60` over `type-body-16 font-medium`), the description and a `light` `card`-size button. Cards are 40px apart; below them, a 551px `primary` `xl` "View all case studies". Padding 120 top, 115 bottom. Below `xl` the details stack under the image; below `lg` everything stacks and nothing is sticky. |
 | **Why AWTOMATIG** | Home `WhyAwtomatigSection`, off-white, `lg:pt-116` / `lg:pb-73`. A header row like Operations (eyebrow, then a `type-heading-60` title with a desktop `<br>`) on a `375fr / 956fr` grid, so the right column starts at x 424 and ends on the right site edge at 1440. 79px below, the same grid: on the left the **AWLABS card** (280×398 at `lg`, `rounded-16`, `surface-inverse`, `px-24 pt-20 pb-24`): three 5px cyan squares, the `AW`**`LABS`** wordmark (`type-heading-28 font-normal tracking-normal`, `LABS` in cyan), a 18×2 `white/40` dash, a cyan 1px-border prompt box (`rounded-8`, `type-label-16 font-normal`, chevron + two lines), a `type-body-16-compact text-white/40` list (`/ tools`, `/ experiments`, `/ what’s next`) and a full-width `primary` `card` button with a trailing arrow pinned to the bottom. Behind its content: `bg-awlabs-glow` (cyan rising from the bottom edge, from the `--gradient-awlabs-glow` token) and `dot-grid text-white/40` (11.6px dots fading in over the bottom 127px), both `-z-10` in an `isolate` card. On the right, one white `rounded-16` card with a 2×2 grid of reasons: 35px side padding; 48px `surface-subtle` icon tile (`rounded-8`, 28px icon) with its number `01`–`04` top-right (`type-body-16 text-black/40`); a `type-heading-28` title 58px below the tile; and a `type-body-16` description (`max-w-400`, which makes it wrap like the design). Dividers are 1px `surface-subtle`: a full-height line left of the right column and a hairline above the second row inset 21 / 22px, both pseudo-elements on the cells so rows can grow on their own (min height 261). Below `lg` the AWLABS card sits above the reasons, which stack in one column below `md` (the dividers become top borders). |
-| **Stacking cards** | Full-bleed cards that are `position: sticky`, at least one screen tall (`min-h-dvh`, with the panel stretching and the image held on the bottom edge), that pile up on scroll (home services). Each card except the last holds full screen for `--stack-hold` (50svh of scroll) before the next one starts sliding over it. `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
+| **Horizontal scroll carousel (How we work)** | Home `HowWeWorkSection`. The `<section>` is `(1 + (count − 1) × MOVE + count × HOLD) × 100svh` tall (MOVE 1, HOLD 0.5: 600svh for four slides); inside, a `sticky top-0 h-svh overflow-clip` viewport holds a flex track `count × 100%` wide. `HorizontalScroller` (client) maps the scroll position to `--hww-progress` (0 → 1) and the track is `translate3d(calc(var(--hww-progress) * -75%), 0, 0)`: the scroll runs hold → move → hold → … → hold: every slide (the first and last included) **pauses for half a screen of scrolling** once it is fully in, and between pauses the slides move by exactly the distance scrolled (one screen per slide), never snapping. The step dots scroll to the middle of a slide's pause. The progress eases towards the real position (14% per frame) so wheel notches glide; reduced motion follows the scroll directly. The step dots (`[data-step]`) and keyboard focus scroll the page to a slide. Each slide is one `StepSlide` (`site-container`, content vertically centred): eyebrow on the site edge (`self-start lg:mt-10`), then on a `342fr / 989fr` grid a `type-display-120 uppercase` title, a `type-body-18 max-w-540` paragraph 30px below and a counter row 30px below that (`type-body-15` `NN / 04` + four 11px dots, 5px apart, the current one cyan, the rest a 1px outline). The oversized `type-numeral` (`NN`, 408px, weight 200) sits behind the text, centred vertically and starting 489px right of the title. Backgrounds per slide (`STEP_THEMES`): white with a faint bottom-centre shade, off-white, a left-to-right fade from off-white to charcoal (`from-6% … to-105%`), and charcoal. Each has fluted bars (`ribs` / `ribs-dark`: a 108px sawtooth ramp from the left site edge, masked to an ellipse centred on the bottom edge) and a numeral at 1–30% opacity. Below `lg` the pitch is 54px and the numeral sits at the right. |
+| **Page hero** | Every page hero (Home, Services) is `<LinesBackground preset={HERO_LINES} className="hero …">` with its content in `.hero-inner site-container` (both from `sections/shared/hero/`), so the background and the 1440 frame scale are identical across pages. **Services hero** (`sections/services/hero/`): `<Eyebrow>`, a three-line `type-display-100 text-gradient-display` title, then a row aligned at the bottom and pushed to the bottom of the screen (`mt-auto`, at least 43px below the title): a `type-body-20` paragraph on the left and a 514px column on the right with a 2×2 list of the four service areas (column by column, `type-body-15`, 5px cyan dot, 12px gap, `white/12` hairline, rows 18 / 14 padding, 26px column gap) and, 32px below, the hero's button pair (250px `primary` with a trailing ↓, 252px `glass`). Bottom padding 113. Full screen like the home hero (`min-h-svh`); on screens shorter than its content (800px at 1440) it grows to fit. Below `sm` the list is one column and the buttons stack. |
+| **What we do (Services)** | Off-white section (`id="what-we-do"`, the hero's "Explore our services ↓" target). `<Eyebrow>` (`lg:mt-5`, mark top 3px above the title's cap) in a `349fr / 982fr` grid so the title starts at x 398 at 1440; a three-line `type-heading-60` title; 32px below, a four-line `type-body-22 text-fg-muted` lead with desktop `<br>`s. Padding 121 top, 117 bottom (582px tall at 1440). The brand mark `awtomatig-mark-decor.png` at `opacity-20` is cropped by the top edge: 317px wide, 125px above and 85px past the right edge from `xl`; 240px below `xl` (it would touch the lead at 1024) and 160px on phones. |
+| **Stacking cards** | Full-bleed cards that are `position: sticky`, at least one screen tall (`min-h-dvh`, with the panel stretching and the image held on the bottom edge), that pile up on scroll (home services). Every card, **the last one included**, holds full screen for `--stack-hold` (50svh of scroll): cards followed by another card get it as a bottom margin (`:has(~ .service-card)`), and the last card gets an `aria-hidden` spacer (`.service-stack-hold`) after it. A spacer, not padding: sticky positioning ends at the stack's content box, so bottom padding would let the last card scroll away at once and leave an empty gap. `StackingCards` pins each card once its bottom reaches the viewport bottom (`--stack-top`), so tall cards are read in full, and sets `--stack-progress` (0 → 1) while the next card covers it. The covered card scales to 94% toward the viewport top, rounds to `radius/34` and dims under black at up to 40%. Reduced motion keeps the stacking but drops the scale and dim. |
 | **Service card** | Index `NN/` (`type-heading-34`, regular weight, `black/40` or `white/40`) on the last baseline of a `type-heading-60` title; on the right, `type-body-16` copy plus an `lg` button 250px wide. Below that, a points panel (radius/16 top corners, 20px from the frame edge) with a 4-column grid of points (`type-body-16`, 6px dot, 12px gap, hairline under each), then the showcase image at full panel width, flush with the card bottom. Surfaces: white/off-white, cyan/bright cyan (`dark` button), off-white/white, ink/charcoal (`light` button). |
 
 Component rules:

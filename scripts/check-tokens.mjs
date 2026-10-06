@@ -14,7 +14,7 @@ const COLOR_LITERAL = /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?)\(/i;
 // background, or scroll-driven motion whose math reads JS-set custom properties) and record why in MEMORY.md.
 const EFFECT_CSS = new Set([
   "app/components/ui/lines-background/lines-background.css", // animated lines background (hero, CTA): glow + grain
-  "app/components/sections/home/hero/hero.css", // interactive background + frame scale
+  "app/components/sections/shared/hero/hero.css", // page heroes (Home, Services): frame scale
   "app/components/sections/home/services/services.css", // scroll-driven stacking math
 ]);
 

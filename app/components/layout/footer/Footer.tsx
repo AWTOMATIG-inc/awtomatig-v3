@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import Logo from "@/public/images/awtomatig-full-logo-dark.png";
 import { Button } from "@/app/components/ui";
 import { MailIcon, WhatsAppIcon } from "@/app/components/icons";
@@ -11,11 +12,11 @@ const LINK_COLUMNS = [
   {
     label: "Pages",
     links: [
-      { href: "#home", label: "Home" },
-      { href: "#services", label: "Services" },
-      { href: "#case-studies", label: "Case Studies" },
-      { href: "#contact", label: "Contact" },
-      { href: "#about", label: "About" },
+      { href: "/", label: "Home" },
+      { href: "/services", label: "Services" },
+      { href: "/#case-studies", label: "Case Studies" },
+      { href: "/#contact", label: "Contact" },
+      { href: "/#about", label: "About" },
     ],
   },
   {
@@ -23,10 +24,10 @@ const LINK_COLUMNS = [
     // Phones: the long service names get a full row, below Pages and Elsewhere
     className: "max-sm:order-1 max-sm:col-span-full",
     links: [
-      { href: "#website-infrastructure", label: "Website Infrastructure" },
-      { href: "#back-office-operations", label: "Back-Office Operations" },
-      { href: "#erp-business-systems", label: "ERP & Business Systems" },
-      { href: "#ad-tech", label: "AdTech" },
+      { href: "/#website-infrastructure", label: "Website Infrastructure" },
+      { href: "/#back-office-operations", label: "Back-Office Operations" },
+      { href: "/#erp-business-systems", label: "ERP & Business Systems" },
+      { href: "/#ad-tech", label: "AdTech" },
     ],
   },
   {
@@ -51,10 +52,10 @@ export default function Footer() {
       <div className="site-container @container">
         {/* Logo, statement and intro */}
         <div className="grid gap-32 pt-60 pb-40 lg:grid-cols-[346fr_565fr_409fr] lg:gap-0 lg:pt-98 lg:pb-60">
-          <a href="#home" className="block self-start" aria-label="AWTOMATIG home">
+          <Link href="/" className="block self-start" aria-label="AWTOMATIG home">
             {/* 2x the 213x72 display size; the source PNG is 3239x1099 */}
             <Image src={Logo} alt="AWTOMATIG" width={426} height={145} className="h-56 w-auto lg:h-72" />
-          </a>
+          </Link>
           <p className="type-heading-60 max-w-[8em] text-fg-strong">Connecting the systems that keep business moving.</p>
           <p className="type-body-16 max-w-410 self-end text-fg-strong">
             We help businesses build, connect and operate the systems behind growth from digital infrastructure and
@@ -72,12 +73,12 @@ export default function Footer() {
                 {column.links.map((link) => (
                   <li key={link.label}>
                     {/* py-10 gives a 46px touch target below lg */}
-                    <a
+                    <Link
                       href={link.href}
                       className="type-heading-20 lg:type-heading-24 inline-block py-10 text-fg-strong lg:py-0 transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

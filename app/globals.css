@@ -4,7 +4,7 @@
    cascade layers (theme → base → components → utilities) keep one order.
    Only effects get a CSS file (DESIGN.md §10.1); everything else is Tailwind in JSX. */
 @import "./components/ui/lines-background/lines-background.css";
-@import "./components/sections/home/hero/hero.css";
+@import "./components/sections/shared/hero/hero.css";
 @import "./components/sections/home/services/services.css";
 
 /* =====================================================================
@@ -35,6 +35,7 @@
   --color-fg-primary: var(--color-charcoal);
   --color-fg-strong: var(--color-black);
   --color-fg-inverse: var(--color-white);
+  --color-fg-muted: rgb(0 0 0 / 0.7); /* secondary copy on light surfaces (#484848 on off-white; Services "What we do") */
   --color-surface: var(--color-white);
   --color-surface-subtle: var(--color-off-white);
   --color-surface-inverse: var(--color-charcoal);
@@ -213,6 +214,14 @@
   letter-spacing: -0.01em;
   font-weight: 500;
 }
+/* Heading / 22 (Operations problem cards, 4-up), measured from the screenshot */
+@utility type-heading-22 {
+  font-family: var(--font-display);
+  font-size: calc(var(--u, 0.0625rem) * 22);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
 @utility type-heading-20 {
   font-family: var(--font-display);
   font-size: calc(var(--u, 0.0625rem) * 20);
@@ -227,9 +236,51 @@
   letter-spacing: -0.01em;
   font-weight: 500;
 }
+/* Display / 120 (How we work step titles). Below lg it follows Display / 100's curve; from lg it tracks the
+   frame (8.333vw = 120px at 1440) and stops at 120. */
+@utility type-display-120 {
+  font-family: var(--font-display);
+  font-size: clamp(2.625rem, 10vw, 4.5rem);
+  line-height: 0.99;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  @variant lg {
+    font-size: clamp(4.5rem, 8.333vw, 7.5rem);
+  }
+}
+/* Oversized step numeral (How we work): extralight Inter Tight, 408px at 1440, measured from the screenshots */
+@utility type-numeral {
+  font-family: var(--font-display);
+  font-size: clamp(10rem, 28.33vw, 25.5rem);
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 200;
+}
+/* Body / 22 (Services "What we do" lead), measured: 22px, 1.4 line height (30.8px pitch), -0.01em */
+@utility type-body-22 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 22);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
 @utility type-body-20 {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 20);
+  line-height: 1.5;
+  font-weight: 400;
+}
+/* Body / 18.6 (How we work step copy), measured from the screenshots: 16px on phones, 18.6px at 1440 */
+@utility type-body-18 {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.292vw, 1.1625rem);
+  line-height: 1.5;
+  font-weight: 400;
+}
+/* Step counter (How we work): 15px, measured */
+@utility type-body-15 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 15);
   line-height: 1.5;
   font-weight: 400;
 }
@@ -313,6 +364,30 @@
   background-position: 5.6px 0;
   -webkit-mask-image: linear-gradient(to bottom, transparent, black);
   mask-image: linear-gradient(to bottom, transparent, black);
+}
+
+/* Ribbed ("fluted glass") bars across a full-width slide (How we work): a 108px sawtooth ramp from transparent to
+   currentColor, starting at the left site edge, strongest at the bottom centre and fading out upwards and
+   sideways. `ribs text-white/30` lightens each bar towards its right end; `ribs-dark text-black/3` darkens it at its left. */
+@utility ribs {
+  background-image: linear-gradient(90deg, transparent, currentColor);
+  background-size: var(--ribs-pitch, 54px) 100%;
+  background-position: var(--site-edge-start) 0;
+  -webkit-mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
+  mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
+  @variant lg {
+    --ribs-pitch: 108px;
+  }
+}
+@utility ribs-dark {
+  background-image: linear-gradient(90deg, currentColor, transparent);
+  background-size: var(--ribs-pitch, 54px) 100%;
+  background-position: var(--site-edge-start) 0;
+  -webkit-mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
+  mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
+  @variant lg {
+    --ribs-pitch: 108px;
+  }
 }
 
 /* The AWLABS card's cyan glow from the bottom edge (see --gradient-awlabs-glow) */

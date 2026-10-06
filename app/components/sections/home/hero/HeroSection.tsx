@@ -1,6 +1,6 @@
 import { LinesBackground } from "@/app/components/ui";
 import HeroContent from "./HeroContent";
-import { HERO_LINES } from "./heroLines";
+import { HERO_LINES } from "../../shared/hero/heroLines";
 
 // Home hero: full-bleed animated lines background with content in the site container
 export default function HeroSection() {

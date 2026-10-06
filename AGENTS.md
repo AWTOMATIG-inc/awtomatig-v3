@@ -21,7 +21,7 @@ Marketing site for AWTOMATIG, built with Next.js 16 (App Router, Turbopack), Rea
 ## Structure
 
 - `app/layout.tsx`: root layout. Loads the Inter and Inter Tight fonts through `next/font/google`.
-- `app/page.tsx`: home page. It only composes `<Header />` and section components.
+- `app/page.tsx`: home page; `app/services/page.tsx`: Services page. Pages only compose `<Header />`, section components and `<Footer />`. Nav and footer links are routes (`/`, `/services`) or `/#…` anchors for sections that only exist on Home.
 - `app/globals.css`: design tokens (`@theme`), `site-container`, text-style utilities (`@utility type-*`), shared utilities (`glass`, `frame-scale`, …), base styles, and the `@import` list of the effect CSS files
 - `app/components/ui/`: reusable primitives (`Button`, `Eyebrow`, …), imported from `@/app/components/ui`
 - `app/components/icons/`: SVG icon components, imported from `@/app/components/icons`

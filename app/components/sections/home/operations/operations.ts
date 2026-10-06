@@ -12,13 +12,18 @@ export const PILLARS: Pillar[] = [
   { title: "Technology", description: "Automation, APIs, infrastructure, monitoring and reporting.", icon: LayersIcon },
 ];
 
-export type Problem = { title: string; description: string; mockup: "systems" | "workflows" | "visibility" };
+export type Problem = { title: string; description: string; mockup: "systems" | "visibility" | "workflows" | "ownership" };
 
 export const PROBLEMS: Problem[] = [
   {
     title: "Disconnected systems",
-    description: "Too many systems. Not enough connection. Information gets duplicated, delayed or lost between tools.",
+    description: "Too many tools, not enough connection. Information gets lost between systems.",
     mockup: "systems",
+  },
+  {
+    title: "Limited visibility",
+    description: "Operations shouldn’t require guesswork. Teams need clear status, ownership and reporting.",
+    mockup: "visibility",
   },
   {
     title: "Manual workflows",
@@ -26,8 +31,8 @@ export const PROBLEMS: Problem[] = [
     mockup: "workflows",
   },
   {
-    title: "Limited visibility",
-    description: "Operations shouldn’t require guesswork. Teams need clear status, ownership and reporting.",
-    mockup: "visibility",
+    title: "Unclear ownership",
+    description: "When ownership is unclear, small issues linger and routine work slows down.",
+    mockup: "ownership",
   },
 ];

@@ -1,4 +1,5 @@
-/* Home hero: .hero is the full-bleed LinesBackground section, content in .hero-inner (.site-container). Imported by app/globals.css */
+/* Page heroes (Home, Services): .hero is the full-bleed LinesBackground section with HERO_LINES,
+   content in .hero-inner (.site-container). Imported by app/globals.css */
 
 @layer components {
   /* The background (gradient, glow, grain, canvas) is the shared LinesBackground; see heroLines.ts. */

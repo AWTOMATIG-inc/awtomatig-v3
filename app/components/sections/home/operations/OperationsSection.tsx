@@ -52,7 +52,7 @@ export default function OperationsSection() {
           </p>
         </div>
 
-        <ul className="mt-40 grid gap-20 pb-60 lg:mt-77 lg:grid-cols-3 lg:pb-104">
+        <ul className="mt-40 grid gap-20 pb-60 lg:mt-77 md:grid-cols-2 xl:grid-cols-4 lg:pb-104">
           {PROBLEMS.map((problem) => (
             <li key={problem.title} className="flex">
               <ProblemCard problem={problem} />

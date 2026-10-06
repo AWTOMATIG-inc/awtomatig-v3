@@ -8,6 +8,7 @@ const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
  * Drives the sticky stack of `[data-stack-card]` children (styles in services.css):
  * --stack-top    pins a card once its bottom reaches the viewport bottom, so cards taller than the screen are read in full
  * --stack-progress  0 → 1 as the next card slides over this one; scales and dims it
+ * Every card, the last one included, holds full screen for --stack-hold of scroll (services.css).
  */
 export default function StackingCards({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -59,5 +60,10 @@ export default function StackingCards({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return <div ref={ref}>{children}</div>;
+  return (
+    <div ref={ref} className="service-stack">
+      {children}
+      <div aria-hidden="true" className="service-stack-hold" />
+    </div>
+  );
 }

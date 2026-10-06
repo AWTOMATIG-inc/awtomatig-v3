@@ -1,18 +1,13 @@
-import Image from "next/image";
+import { BarChartIcon, CloudIcon, DatabaseIcon, ImageFrameIcon } from "@/app/components/icons";
 import { Button, Eyebrow } from "@/app/components/ui";
 
-const AVATARS = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80",
-];
+const ECOSYSTEM_ICONS = [ImageFrameIcon, CloudIcon, BarChartIcon, DatabaseIcon];
 
 const TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdTech"];
 
 export default function HeroContent() {
   return (
-    <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-80">
+    <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-80 lg:pt-140">
       <div>
         <Eyebrow className="text-fg-inverse">Build the systemssss.</Eyebrow>
 
@@ -33,18 +28,13 @@ export default function HeroContent() {
 
           <div className="w-full lg:w-auto">
             <div className="flex gap-5">
-              {AVATARS.map((src) => (
-                <Image
-                  key={src}
-                  src={src}
-                  alt="Team member"
-                  width={120}
-                  height={120}
-                  className="size-48 rounded-6 object-cover lg:size-60"
-                />
+              {ECOSYSTEM_ICONS.map((Icon, i) => (
+                <span key={i} aria-hidden className="glass grid h-48 flex-1 place-items-center rounded-6 text-white lg:h-54 lg:w-83 lg:flex-none">
+                  <Icon className="size-24" />
+                </span>
               ))}
             </div>
-            <p className="type-heading-18 mt-16 text-fg-inverse">Built by people who understand operations.</p>
+            <p className="type-body-14 mt-16 text-fg-inverse uppercase">Connected across client ecosystems</p>
 
             <div className="mt-24 flex flex-col gap-12 sm:flex-row lg:mt-34">
               <Button variant="primary" size="lg" className="w-full sm:flex-1 lg:w-250 lg:flex-none">

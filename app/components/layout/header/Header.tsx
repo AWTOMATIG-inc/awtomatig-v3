@@ -2,16 +2,19 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "@/public/images/awtomatig-full-logo.png";
 import { Button } from "@/app/components/ui";
 import { WhatsAppIcon } from "@/app/components/icons";
 
+// Pages are routes; sections that only exist on Home are "/#…" anchors until they get their own page
 const NAV_LINKS = [
-  { href: "#home", label: "Home", active: true },
-  { href: "#services", label: "Services" },
-  { href: "#case-studies", label: "Case Studies" },
-  { href: "#contact", label: "Contact" },
-  { href: "#about", label: "About" },
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
+  { href: "/#case-studies", label: "Case Studies" },
+  { href: "/#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
 ];
 
 // Replace with your WhatsApp link, e.g. https://wa.me/<number>
@@ -106,6 +109,7 @@ export default function Header() {
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
+  const pathname = usePathname();
 
   return (
     <header
@@ -125,22 +129,22 @@ export default function Header() {
             className="glass pointer-events-none absolute inset-0 -z-1 scale-98 rounded-10 opacity-0 transition-[opacity,scale] duration-450 ease-out-quint group-data-open:scale-100 group-data-open:opacity-100 group-data-scrolled:scale-100 group-data-scrolled:opacity-100 motion-reduce:transition-none"
           />
 
-          <a href="#home" className="block" aria-label="AWTOMATIG home" onClick={closeMenu}>
+          <Link href="/" className="block" aria-label="AWTOMATIG home" onClick={closeMenu}>
             {/* 2x the ~106x36 display size; the source PNG is 3239x1099 */}
             <Image src={Logo} alt="AWTOMATIG" width={260} height={100} priority className="h-30 w-auto lg:h-36" />
-          </a>
+          </Link>
 
           {/* Centred on the pill itself, independent of the logo and button widths */}
           <nav className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 gap-36 lg:flex" aria-label="Main">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
-                aria-current={link.active ? "page" : undefined}
+                aria-current={link.href === pathname ? "page" : undefined}
                 className="type-body-14 text-fg-inverse transition-colors duration-200 hover:text-action-primary motion-reduce:transition-none"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -172,15 +176,15 @@ export default function Header() {
           >
             <nav className="flex flex-col" aria-label="Mobile">
               {NAV_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  aria-current={link.active ? "page" : undefined}
+                  aria-current={link.href === pathname ? "page" : undefined}
                   onClick={closeMenu}
                   className="type-body-16 rounded-8 border-t border-white/12 p-12 text-white/60 transition-colors duration-200 first:border-t-0 hover:bg-white/12 hover:text-action-primary aria-[current=page]:text-fg-inverse motion-reduce:transition-none"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </nav>
             <Button
