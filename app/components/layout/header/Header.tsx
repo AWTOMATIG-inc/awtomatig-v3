@@ -12,7 +12,7 @@ import { WhatsAppIcon } from "@/app/components/icons";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "/#case-studies", label: "Case Studies" },
+  { href: "/case-studies", label: "Case Studies" },
   { href: "/#contact", label: "Contact" },
   { href: "/#about", label: "About" },
 ];

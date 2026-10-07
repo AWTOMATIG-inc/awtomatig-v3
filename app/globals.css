@@ -104,6 +104,26 @@
     transparent 100%
   );
 
+  /* ---------- Effects: Services "One operating ecosystem" stack card, measured from the screenshot; the bg-ecosystem-card utility.
+     Layers, top first: a cyan glow from the top-right, a softer one rising from the bottom edge, a charcoal fade that hides
+     the ribs towards the top, then 35px sawtooth ribs (lighter at each bar's right end) on charcoal. ---------- */
+  --gradient-ecosystem-card:
+    radial-gradient(
+      ellipse 104% 36% at 85% 0,
+      rgb(2 213 232 / 0.82) 0,
+      rgb(2 213 232 / 0.8) 15%,
+      rgb(2 213 232 / 0.62) 30%,
+      rgb(2 213 232 / 0.46) 45%,
+      rgb(2 213 232 / 0.29) 60%,
+      rgb(2 213 232 / 0.19) 70%,
+      rgb(2 213 232 / 0.09) 84%,
+      transparent 100%
+    ),
+    radial-gradient(ellipse 97% 27.5% at 50% 100%, rgb(2 213 232 / 0.25), transparent),
+    linear-gradient(to bottom, var(--color-charcoal) 20%, rgb(30 30 30 / 0) 100%),
+    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px),
+    var(--color-charcoal);
+
   /* ---------- Effects: Display text gradient (white → pale cyan) — the `text-gradient-display` utility ---------- */
   --gradient-display: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
 }
@@ -393,6 +413,11 @@
 /* The AWLABS card's cyan glow from the bottom edge (see --gradient-awlabs-glow) */
 @utility bg-awlabs-glow {
   background-image: var(--gradient-awlabs-glow);
+}
+
+/* The Services ecosystem card's glows and ribs (see --gradient-ecosystem-card) */
+@utility bg-ecosystem-card {
+  background: var(--gradient-ecosystem-card);
 }
 
 /* Frosted glass surface on dark (navbar pill, mobile menu). Set --glass-bg to swap the fill,

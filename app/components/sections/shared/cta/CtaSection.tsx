@@ -1,4 +1,6 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
+import Mark from "@/public/images/awtomatig-logo.png";
 import { WhatsAppIcon } from "@/app/components/icons";
 import { Button, Eyebrow, LinesBackground } from "@/app/components/ui";
 import { CTA_LINES } from "./ctaLines";
@@ -9,6 +11,15 @@ const WHATSAPP_URL = "#contact";
 const DEFAULT_TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdTech"];
 
 type CtaAction = { label: string; href: string };
+
+type CtaNote = { title: string; description: ReactNode };
+
+// Desktop composition per page, measured from each screenshot. Services lines the title up with the other
+// Services sections (x ≈ 420 at 1440) and uses 250px buttons.
+const LAYOUTS = {
+  home: { section: "lg:pt-100", eyebrow: "lg:w-359", actions: "lg:mt-40", button: "lg:w-256" },
+  services: { section: "lg:pt-104", eyebrow: "lg:w-372", actions: "lg:mt-36", button: "lg:w-250" },
+};
 
 type CtaSectionProps = {
   id?: string;
@@ -22,6 +33,9 @@ type CtaSectionProps = {
   secondary?: CtaAction | null;
   /** Tag strip under the buttons; `[]` hides it */
   tags?: string[];
+  /** Brand mark + short note in the strip under the buttons, replacing the tags (Services page) */
+  note?: CtaNote;
+  layout?: keyof typeof LAYOUTS;
 };
 
 /** "Let's talk" call to action on the animated lines background, shared by every page (DESIGN.md §10.4). */
@@ -43,23 +57,26 @@ export default function CtaSection({
   primary = { label: "Start a conversation", href: "#contact" },
   secondary = { label: "Message us", href: WHATSAPP_URL },
   tags = DEFAULT_TAGS,
+  note,
+  layout = "home",
 }: CtaSectionProps) {
+  const l = LAYOUTS[layout];
   return (
-    <LinesBackground preset={CTA_LINES} id={id} className="pt-60 pb-40 lg:pt-100 lg:pb-92">
+    <LinesBackground preset={CTA_LINES} id={id} className={`pt-60 pb-40 lg:pb-92 ${l.section}`}>
       <div className="site-container relative z-20">
         <div className="flex flex-col gap-20 lg:flex-row lg:gap-0">
-          <Eyebrow className="self-start text-fg-inverse lg:mt-2 lg:w-359 lg:shrink-0">{eyebrow}</Eyebrow>
+          <Eyebrow className={`self-start text-fg-inverse lg:mt-2 lg:shrink-0 ${l.eyebrow}`}>{eyebrow}</Eyebrow>
 
           <div>
             <h2 className="type-heading-60 text-fg-inverse">{title}</h2>
             <p className="type-body-16 mt-16 max-w-560 text-fg-inverse">{description}</p>
 
-            <div className="mt-32 flex flex-col gap-12 sm:flex-row lg:mt-40">
+            <div className={`mt-32 flex flex-col gap-12 sm:flex-row ${l.actions}`}>
               <Button
                 variant="primary"
                 size="xl"
                 href={primary.href}
-                className="w-full sm:flex-1 lg:w-256 lg:flex-none"
+                className={`w-full sm:flex-1 lg:flex-none ${l.button}`}
               >
                 {primary.label}
               </Button>
@@ -69,7 +86,7 @@ export default function CtaSection({
                   size="xl"
                   href={secondary.href}
                   icon={<WhatsAppIcon />}
-                  className="w-full sm:flex-1 lg:w-256 lg:flex-none"
+                  className={`w-full sm:flex-1 lg:flex-none ${l.button}`}
                 >
                   {secondary.label}
                 </Button>
@@ -78,7 +95,15 @@ export default function CtaSection({
           </div>
         </div>
 
-        {tags.length > 0 && (
+        {note ? (
+          <div className="mt-40 flex items-start gap-20 border-y border-white/12 py-20 text-fg-inverse lg:mt-78 lg:h-100 lg:items-center lg:gap-32 lg:py-0 lg:pl-40">
+            <Image src={Mark} alt="" className="h-auto w-30 shrink-0 lg:w-38" />
+            <div>
+              <p className="type-heading-20 lg:type-heading-24">{note.title}</p>
+              <p className="type-body-14 mt-6 lg:type-body-16 lg:mt-4">{note.description}</p>
+            </div>
+          </div>
+        ) : tags.length > 0 && (
           <ul className="type-body-16 mt-40 flex flex-wrap gap-x-20 gap-y-8 border-y border-white/12 py-20 text-white/60 lg:mt-80 lg:h-72 lg:flex-nowrap lg:items-center lg:justify-between lg:px-60 lg:py-0">
             {tags.map((tag) => (
               <li key={tag} className="transition-colors duration-200 hover:text-fg-inverse motion-reduce:transition-none">

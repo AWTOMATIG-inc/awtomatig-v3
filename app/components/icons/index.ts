@@ -1,4 +1,6 @@
 export { default as ArrowDownIcon } from "./ArrowDownIcon";
+export { default as ArrowDownThinIcon } from "./ArrowDownThinIcon";
+export { default as ArrowRightIcon } from "./ArrowRightIcon";
 export { default as ArrowUpRightIcon } from "./ArrowUpRightIcon";
 export { default as BarChartIcon } from "./BarChartIcon";
 export { default as ChatGearIcon } from "./ChatGearIcon";

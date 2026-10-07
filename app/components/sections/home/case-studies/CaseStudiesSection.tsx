@@ -1,5 +1,5 @@
 import { Button, Eyebrow } from "@/app/components/ui";
-import { CASE_STUDIES } from "./caseStudies";
+import { CASE_STUDIES } from "../../shared/case-studies/caseStudies";
 import CaseStudyCard from "./CaseStudyCard";
 
 // Desktop: the intro is sticky (top = its own offset, so it pins as the section reaches the viewport top)
@@ -30,7 +30,7 @@ export default function CaseStudiesSection() {
         </div>
 
         <div className="mt-40 lg:grid lg:grid-cols-[403fr_928fr]">
-          <Button href="#case-studies" size="xl" fullWidth className="lg:col-start-2 lg:max-w-551">
+          <Button href="/case-studies" size="xl" fullWidth className="lg:col-start-2 lg:max-w-551">
             View all case studies
           </Button>
         </div>
