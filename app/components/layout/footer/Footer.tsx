@@ -15,8 +15,8 @@ const LINK_COLUMNS = [
       { href: "/", label: "Home" },
       { href: "/services", label: "Services" },
       { href: "/case-studies", label: "Case Studies" },
-      { href: "/#contact", label: "Contact" },
-      { href: "/#about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/about", label: "About" },
     ],
   },
   {

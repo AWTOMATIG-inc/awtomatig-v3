@@ -8,6 +8,9 @@ const SERVICE_AREAS = ["Website Infrastructure", "Back-Office Operations", "ERP 
 
 type HeroAction = { label: string; href: string };
 
+// Desktop width of the primary button, measured per design; the glass button fills the rest of the 514px column
+const PRIMARY_WIDTHS = { wide: "lg:w-250", narrow: "lg:w-198" };
+
 type PageHeroProps = {
   id: string;
   eyebrow: string;
@@ -18,9 +21,13 @@ type PageHeroProps = {
   primary: HeroAction;
   /** Glass button */
   secondary?: HeroAction;
+  /** `wide` (250px, default) or `narrow` (198px, About's short "Our story") */
+  primaryWidth?: keyof typeof PRIMARY_WIDTHS;
+  /** The 2×2 list beside the buttons, listed column by column; defaults to the four service areas */
+  areas?: string[];
 };
 
-/** Full-screen inner-page hero (Services, Case Studies): the home hero's background and frame scale, a gradient
+/** Full-screen inner-page hero (Services, Case Studies, About): the home hero's background and frame scale, a gradient
  *  Display / 100 title at the top, and the intro, service areas and buttons on the bottom edge (DESIGN.md §10.4). */
 export default function PageHero({
   id,
@@ -29,10 +36,12 @@ export default function PageHero({
   description,
   primary,
   secondary = { label: "Start a Conversation", href: "/#contact" },
+  primaryWidth = "wide",
+  areas = SERVICE_AREAS,
 }: PageHeroProps) {
   return (
     <LinesBackground preset={HERO_LINES} id={id} className="hero flex min-h-svh flex-col">
-      <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-113">
+      <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-113 lg:pt-140">
         <Eyebrow className="text-fg-inverse">{eyebrow}</Eyebrow>
 
         <h1 className="type-display-100 text-gradient-display mt-24 w-fit">{title}</h1>
@@ -42,7 +51,7 @@ export default function PageHero({
 
           <div className="w-full lg:w-514 lg:shrink-0">
             <ul className="grid sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-26">
-              {SERVICE_AREAS.map((area) => (
+              {areas.map((area) => (
                 <li key={area} className="type-body-15 flex items-center gap-12 border-b border-white/12 pt-18 pb-14 text-fg-inverse">
                   <span aria-hidden="true" className="size-5 shrink-0 rounded-full bg-action-primary" />
                   {area}
@@ -56,11 +65,11 @@ export default function PageHero({
                 variant="primary"
                 size="lg"
                 iconEnd={<ArrowDownIcon />}
-                className="w-full sm:flex-1 lg:w-250 lg:flex-none"
+                className={`w-full sm:flex-1 lg:flex-none ${PRIMARY_WIDTHS[primaryWidth]}`}
               >
                 {primary.label}
               </Button>
-              <Button href={secondary.href} variant="glass" size="lg" className="w-full sm:flex-1 lg:w-252 lg:flex-none">
+              <Button href={secondary.href} variant="glass" size="lg" className="w-full sm:flex-1">
                 {secondary.label}
               </Button>
             </div>

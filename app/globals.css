@@ -90,6 +90,11 @@
   --glass-border-bottom: rgb(255 255 255 / 0.15);
   --glass-blur: blur(14px) saturate(140%);
   --shadow-glass: 0 10px 30px -10px rgb(0 0 0 / 0.45);
+  /* Light variant for the navbar over white / off-white pages: `glass glass-light` */
+  --glass-fill-light: rgb(255 255 255 / 0.55);
+  --glass-fill-light-dense: rgb(255 255 255 / 0.9);
+  --glass-border-light: rgb(255 255 255 / 0.8);
+  --shadow-glass-light: 0 10px 30px -12px rgb(0 0 0 / 0.18);
 
   /* ---------- Effects: AWLABS card glow (Why AWTOMATIG): cyan rising from the bottom edge, measured from the screenshot; the bg-awlabs-glow utility ---------- */
   --gradient-awlabs-glow: radial-gradient(
@@ -121,6 +126,21 @@
     ),
     radial-gradient(ellipse 97% 27.5% at 50% 100%, rgb(2 213 232 / 0.25), transparent),
     linear-gradient(to bottom, var(--color-charcoal) 20%, rgb(30 30 30 / 0) 100%),
+    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px),
+    var(--color-charcoal);
+
+  /* ---------- Effects: About "How we think" logo card, measured from the screenshot; the bg-logo-card utility.
+     A cyan glow on the right edge (ellipse 60% × 45% at 100% 74%, alpha 0.72 → 0), over the same 35px ribs as the ecosystem card. ---------- */
+  --gradient-logo-card:
+    radial-gradient(
+      ellipse 60% 45% at 100% 74%,
+      rgb(2 213 232 / 0.72) 0,
+      rgb(2 213 232 / 0.46) 25%,
+      rgb(2 213 232 / 0.31) 45%,
+      rgb(2 213 232 / 0.19) 67%,
+      rgb(2 213 232 / 0.07) 90%,
+      transparent 100%
+    ),
     repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px),
     var(--color-charcoal);
 
@@ -399,6 +419,17 @@
     --ribs-pitch: 108px;
   }
 }
+/* Light-page ribs (Contact hero): white bars, strongest at the top edge and fading out downwards */
+@utility ribs-fade-down {
+  background-image: linear-gradient(90deg, transparent, currentColor);
+  background-size: var(--ribs-pitch, 54px) 100%;
+  background-position: var(--site-edge-start) 0;
+  -webkit-mask-image: linear-gradient(180deg, black, transparent 95%);
+  mask-image: linear-gradient(180deg, black, transparent 95%);
+  @variant lg {
+    --ribs-pitch: 108px;
+  }
+}
 @utility ribs-dark {
   background-image: linear-gradient(90deg, currentColor, transparent);
   background-size: var(--ribs-pitch, 54px) 100%;
@@ -420,6 +451,26 @@
   background: var(--gradient-ecosystem-card);
 }
 
+/* The About logo card's glow and ribs (see --gradient-logo-card) */
+@utility bg-logo-card {
+  background: var(--gradient-logo-card);
+}
+
+/* Nine dashed vertical lines in the current color, spread edge to edge and brightening to the right (About logo card):
+   `dash-grid text-action-primary h-62`. 8px dashes with 8px gaps; the first line sits on the left edge, the last on the right. */
+@utility dash-grid {
+  background-image: linear-gradient(90deg, currentColor 1px, transparent 1px);
+  background-size: calc((100% - 1px) / 8) 100%;
+  -webkit-mask-image:
+    repeating-linear-gradient(to bottom, black 0 8px, transparent 8px 16px),
+    linear-gradient(90deg, color-mix(in srgb, black 30%, transparent), black);
+  mask-image:
+    repeating-linear-gradient(to bottom, black 0 8px, transparent 8px 16px),
+    linear-gradient(90deg, color-mix(in srgb, black 30%, transparent), black);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
 /* Frosted glass surface on dark (navbar pill, mobile menu). Set --glass-bg to swap the fill,
    e.g. --glass-bg: var(--glass-fill-dense) for panels over content. */
 @utility glass {
@@ -435,6 +486,16 @@
 /* Denser glass fill for panels over content (mobile menu): `glass glass-dense` */
 @utility glass-dense {
   --glass-bg: var(--glass-fill-dense);
+}
+
+/* Light glass for the navbar and its mobile menu on light pages: `glass glass-light` (add `glass-dense` for the menu) */
+@utility glass-light {
+  --glass-bg: var(--glass-fill-light);
+  border-color: var(--glass-border-light);
+  box-shadow: var(--shadow-glass-light);
+  &.glass-dense {
+    --glass-bg: var(--glass-fill-light-dense);
+  }
 }
 
 /* ---------- Layout helpers ---------- */

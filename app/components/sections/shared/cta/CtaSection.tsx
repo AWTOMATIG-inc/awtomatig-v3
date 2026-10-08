@@ -17,8 +17,9 @@ type CtaNote = { title: string; description: ReactNode };
 // Desktop composition per page, measured from each screenshot. Services lines the title up with the other
 // Services sections (x ≈ 420 at 1440) and uses 250px buttons.
 const LAYOUTS = {
-  home: { section: "lg:pt-100", eyebrow: "lg:w-359", actions: "lg:mt-40", button: "lg:w-256" },
-  services: { section: "lg:pt-104", eyebrow: "lg:w-372", actions: "lg:mt-36", button: "lg:w-250" },
+  home: { section: "lg:pt-100 lg:pb-92", eyebrow: "lg:w-359", actions: "lg:mt-40", button: "lg:w-256", note: "lg:mt-78" },
+  services: { section: "lg:pt-104 lg:pb-92", eyebrow: "lg:w-372", actions: "lg:mt-36", button: "lg:w-250", note: "lg:mt-78" },
+  about: { section: "lg:pt-104 lg:pb-68", eyebrow: "lg:w-330", actions: "lg:mt-36", button: "lg:w-256", note: "lg:mt-105" },
 };
 
 type CtaSectionProps = {
@@ -33,7 +34,7 @@ type CtaSectionProps = {
   secondary?: CtaAction | null;
   /** Tag strip under the buttons; `[]` hides it */
   tags?: string[];
-  /** Brand mark + short note in the strip under the buttons, replacing the tags (Services page) */
+  /** Brand mark + short note in the strip under the buttons, replacing the tags (Services and About pages) */
   note?: CtaNote;
   layout?: keyof typeof LAYOUTS;
 };
@@ -62,7 +63,7 @@ export default function CtaSection({
 }: CtaSectionProps) {
   const l = LAYOUTS[layout];
   return (
-    <LinesBackground preset={CTA_LINES} id={id} className={`pt-60 pb-40 lg:pb-92 ${l.section}`}>
+    <LinesBackground preset={CTA_LINES} id={id} className={`pt-60 pb-40 ${l.section}`}>
       <div className="site-container relative z-20">
         <div className="flex flex-col gap-20 lg:flex-row lg:gap-0">
           <Eyebrow className={`self-start text-fg-inverse lg:mt-2 lg:shrink-0 ${l.eyebrow}`}>{eyebrow}</Eyebrow>
@@ -96,7 +97,7 @@ export default function CtaSection({
         </div>
 
         {note ? (
-          <div className="mt-40 flex items-start gap-20 border-y border-white/12 py-20 text-fg-inverse lg:mt-78 lg:h-100 lg:items-center lg:gap-32 lg:py-0 lg:pl-40">
+          <div className={`mt-40 flex items-start gap-20 border-y border-white/12 py-20 text-fg-inverse ${l.note} lg:h-100 lg:items-center lg:gap-32 lg:py-0 lg:pl-40`}>
             <Image src={Mark} alt="" className="h-auto w-30 shrink-0 lg:w-38" />
             <div>
               <p className="type-heading-20 lg:type-heading-24">{note.title}</p>
