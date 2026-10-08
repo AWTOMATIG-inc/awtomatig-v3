@@ -19,6 +19,7 @@ type CtaNote = { title: string; description: ReactNode };
 const LAYOUTS = {
   home: { section: "lg:pt-100 lg:pb-92", eyebrow: "lg:w-359", actions: "lg:mt-40", button: "lg:w-256", note: "lg:mt-78" },
   services: { section: "lg:pt-104 lg:pb-92", eyebrow: "lg:w-372", actions: "lg:mt-36", button: "lg:w-250", note: "lg:mt-78" },
+  process: { section: "lg:pt-100 lg:pb-68", eyebrow: "lg:w-367", actions: "lg:mt-36", button: "lg:w-250", note: "lg:mt-78" },
   about: { section: "lg:pt-104 lg:pb-68", eyebrow: "lg:w-330", actions: "lg:mt-36", button: "lg:w-256", note: "lg:mt-105" },
 };
 

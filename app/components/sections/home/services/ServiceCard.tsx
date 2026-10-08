@@ -18,8 +18,8 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
     <article id={service.id} aria-labelledby={titleId} data-stack-card className={`service-card flex min-h-dvh flex-col ${theme.card}`}>
       <div className="site-container pt-40 lg:pt-70">
         <div className="flex flex-col gap-20 lg:flex-row lg:items-start lg:justify-between lg:gap-40">
-          <div className="flex items-baseline-last gap-12 lg:gap-0">
-            <span aria-hidden="true" className={`type-heading-34 shrink-0 font-normal lg:w-100 ${theme.index}`}>
+          <div className="flex items-baseline-last justify-between gap-12 lg:justify-start lg:gap-0">
+            <span aria-hidden="true" className={`type-heading-34 order-last shrink-0 font-normal lg:order-first lg:w-100 ${theme.index}`}>
               {number}/
             </span>
             <h3 id={titleId} className="type-heading-60">
@@ -54,9 +54,10 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
 
       <div className="service-panel site-container mt-32 flex flex-1 flex-col lg:mt-50">
         <div className={`flex flex-1 flex-col overflow-hidden rounded-t-16 ${theme.panel}`}>
-          <ul className="grid pt-8 pr-(--panel-pad-end) pl-(--panel-pad-start) sm:grid-cols-2 sm:gap-x-20 lg:grid-flow-col lg:grid-cols-4 lg:grid-rows-2 lg:gap-x-25 lg:pt-16">
-            {service.points.map((point) => (
-              <li key={point} className={`type-body-16 flex items-center gap-12 border-b pt-16 pb-12 ${theme.divider}`}>
+          {/* Below lg the odd items go second, so the rows read like the design (desktop row 1, then row 2) */}
+          <ul className="grid grid-cols-2 gap-x-16 pt-8 pr-(--panel-pad-end) pl-(--panel-pad-start) sm:gap-x-20 lg:grid-flow-col lg:grid-cols-4 lg:grid-rows-2 lg:gap-x-25 lg:pt-16">
+            {service.points.map((point, i) => (
+              <li key={point} className={`${i % 2 ? "max-lg:order-1" : ""} type-body-14 flex items-center gap-10 border-b pt-8 pb-6 sm:pt-16 sm:pb-12 lg:type-body-16 lg:gap-12 ${theme.divider}`}>
                 <span aria-hidden="true" className="size-6 shrink-0 rounded-full bg-current" />
                 {point}
               </li>

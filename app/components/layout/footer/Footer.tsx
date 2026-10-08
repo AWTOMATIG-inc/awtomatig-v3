@@ -14,6 +14,7 @@ const LINK_COLUMNS = [
     links: [
       { href: "/", label: "Home" },
       { href: "/services", label: "Services" },
+      { href: "/process", label: "Process" },
       { href: "/case-studies", label: "Case Studies" },
       { href: "/contact", label: "Contact" },
       { href: "/about", label: "About" },
@@ -21,8 +22,6 @@ const LINK_COLUMNS = [
   },
   {
     label: "Services",
-    // Phones: the long service names get a full row, below Pages and Elsewhere
-    className: "max-sm:order-1 max-sm:col-span-full",
     links: [
       { href: "/#website-infrastructure", label: "Website Infrastructure" },
       { href: "/#back-office-operations", label: "Back-Office Operations" },
@@ -65,17 +64,17 @@ export default function Footer() {
 
         {/* Link columns and contact actions */}
         <div
-          className={`${HAIRLINE} grid grid-cols-2 gap-x-20 gap-y-40 pt-40 pb-40 sm:grid-cols-3 lg:grid-cols-[281fr_396fr_234fr_409fr] lg:gap-0 lg:pt-72 lg:pb-74`}
+          className={`grid grid-cols-[5fr_6fr] gap-x-8 gap-y-40 pb-60 sm:grid-cols-3 sm:gap-x-20 sm:border-t sm:border-border sm:pt-40 sm:pb-40 lg:grid-cols-[281fr_396fr_234fr_409fr] lg:gap-0 lg:pt-72 lg:pb-74`}
         >
           {LINK_COLUMNS.map((column) => (
-            <nav key={column.label} aria-label={column.label} className={column.className}>
+            <nav key={column.label} aria-label={column.label}>
               <ul className="flex flex-col lg:gap-19">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    {/* py-10 gives a 46px touch target below lg */}
+                    {/* Below lg the rows sit 34px apart; the pseudo-element extends the hit area to 44px */}
                     <Link
                       href={link.href}
-                      className="type-heading-20 lg:type-heading-24 inline-block py-10 text-fg-strong lg:py-0 transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none"
+                      className="type-heading-18 lg:type-heading-24 max-lg:tracking-tight max-lg:whitespace-nowrap relative inline-block py-4 text-fg-strong before:absolute before:inset-x-0 before:-inset-y-5 lg:py-0 lg:before:hidden transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none"
                     >
                       {link.label}
                     </Link>
@@ -100,7 +99,7 @@ export default function Footer() {
 
         {/* Copyright and legal */}
         <div
-          className={`${HAIRLINE} flex flex-col gap-6 pt-32 text-fg-strong sm:flex-row sm:items-center sm:justify-between`}
+          className={`${HAIRLINE} flex flex-col-reverse items-center gap-6 pt-10 text-center text-fg-strong sm:flex-row sm:justify-between sm:pt-32 sm:text-left`}
         >
           <p className="type-body-16">© {new Date().getFullYear()} AWTOMATIG. All rights reserved.</p>
           <ul className="type-body-16 flex items-center gap-12 sm:-my-10">

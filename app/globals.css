@@ -23,6 +23,7 @@
   --color-gray: #d9d9d9;
   --color-cyan: #02d5e8;
   --color-cyan-bright: #00eaff;
+  --color-cyan-pale: #bdf4f9; /* the end of the Display gradient: accent word in a hero title */
   --color-warning: #e86d02;
   --color-red: #e94738; /* status dots: broken connection (Operations section mockups) */
   --color-amber: #e8ab02; /* status dots: needs review (Operations section mockups) */
@@ -78,6 +79,14 @@
   /* ---------- Motion ---------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Infinite logo slider: a track of two identical groups slides left by one group, then repeats (animate-marquee) */
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 
   /* ---------- Effects: glass material (navbar pill, mobile menu) — applied with the `glass` utility ---------- */
   --glass-fill:
@@ -324,6 +333,13 @@
   line-height: 1.5;
   font-weight: 400;
 }
+/* Process step copy: 17px, measured from the wrap and the 25.5px pitch */
+@utility type-body-17 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 17);
+  line-height: 1.5;
+  font-weight: 400;
+}
 @utility type-body-16 {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 16);
@@ -384,6 +400,19 @@
   white-space: nowrap;
   margin-inline-start: -0.013em;
   margin-bottom: -0.136em;
+}
+
+/* Horizontal soft edges: the content fades out over the first and last 10% (logo slider) */
+@utility fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* Soft end: the element fades to transparent over its last --fade-length (Process timeline rail). `fade-end [--fade-length:240px]` */
+@utility fade-end {
+  --fade-length: 200px;
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - var(--fade-length)), transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - var(--fade-length)), transparent);
 }
 
 /* Display gradient (white → pale cyan). Display styles only: `type-display-100 text-gradient-display` */

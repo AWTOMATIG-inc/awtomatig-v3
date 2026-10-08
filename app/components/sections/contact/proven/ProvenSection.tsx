@@ -34,17 +34,28 @@ export default function ProvenSection() {
           <span aria-hidden="true" className="h-px flex-1 bg-border" />
         </div>
 
-        <ul className="mt-32 flex flex-wrap items-center justify-center gap-x-32 gap-y-20 lg:mt-26 lg:min-h-80 lg:flex-nowrap lg:justify-between lg:gap-0 lg:px-12">
-          {PARTNERS.map((partner) => (
-            <li key={partner.name}>
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                className={`h-40 w-auto cursor-pointer object-contain transition-[filter,opacity] duration-200 motion-reduce:transition-none ${partner.height} ${partner.tone}`}
-              />
-            </li>
-          ))}
-        </ul>
+        {/* Infinite slider: two identical groups, the track slides left by one group (-50%) and loops; the copy is hidden from assistive tech */}
+        <div className="fade-x mt-32 overflow-hidden lg:mt-26 motion-reduce:[mask-image:none]">
+          <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none">
+            {[0, 1].map((copy) => (
+              <ul
+                key={copy}
+                aria-hidden={copy === 1 || undefined}
+                className="flex shrink-0 items-center py-10 motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-20 lg:min-h-80 motion-reduce:[&:nth-child(2)]:hidden"
+              >
+                {PARTNERS.map((partner) => (
+                  <li key={partner.name} className="px-24 lg:px-40">
+                    <Image
+                      src={partner.logo}
+                      alt={copy === 0 ? partner.name : ""}
+                      className={`h-40 w-auto cursor-pointer object-contain transition-[filter,opacity] duration-200 motion-reduce:transition-none ${partner.height} ${partner.tone}`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
