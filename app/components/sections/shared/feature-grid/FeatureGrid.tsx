@@ -23,14 +23,14 @@ type FeatureGridProps = {
  *  bottom of each cell (Services "One operating ecosystem", About "How we think"; DESIGN.md §10.4). */
 export default function FeatureGrid({ features, descriptionClassName = "max-w-350" }: FeatureGridProps) {
   return (
-    <ul className="grid overflow-hidden rounded-16 bg-surface md:grid-cols-2">
+    <ul className="rounded-16 bg-surface grid overflow-hidden md:grid-cols-2">
       {features.map((feature, i) => (
         <li
           key={feature.title}
-          className={`relative flex flex-col px-20 pt-32 pb-32 max-md:not-first:border-t max-md:not-first:border-surface-subtle md:min-h-230 md:px-34 md:pt-34 md:pb-30 ${CELL_DIVIDERS[i]}`}
+          className={`max-md:not-first:border-surface-subtle relative flex flex-col px-20 pt-32 pb-32 max-md:not-first:border-t md:min-h-230 md:px-34 md:pt-34 md:pb-30 ${CELL_DIVIDERS[i]}`}
         >
           <div className="flex items-start justify-between">
-            <span className="grid size-48 place-items-center rounded-8 bg-surface-subtle">
+            <span className="rounded-8 bg-surface-subtle grid size-48 place-items-center">
               <feature.icon className="size-28" />
             </span>
             <span className="type-heading-20 -mt-5 font-normal text-black/40">{String(i + 1).padStart(2, "0")}</span>

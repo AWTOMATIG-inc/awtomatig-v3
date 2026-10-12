@@ -6,7 +6,11 @@ import ProblemCard from "./ProblemCard";
 
 export default function OperationsSection() {
   return (
-    <section id="operations" aria-labelledby="operations-title" className="relative overflow-hidden bg-surface-subtle text-fg-strong">
+    <section
+      id="operations"
+      aria-labelledby="operations-title"
+      className="bg-surface-subtle text-fg-strong relative overflow-hidden"
+    >
       {/* Brand mark, cropped by the top-right corner */}
       <Image
         src={Decor}
@@ -27,10 +31,10 @@ export default function OperationsSection() {
           {PILLARS.map((pillar, i) => (
             <li
               key={pillar.title}
-              className="relative lg:not-first:before:absolute lg:not-first:before:inset-y-0 lg:not-first:before:-left-35 lg:not-first:before:w-px lg:not-first:before:bg-border"
+              className="lg:not-first:before:bg-border relative lg:not-first:before:absolute lg:not-first:before:inset-y-0 lg:not-first:before:-left-35 lg:not-first:before:w-px"
             >
               <div className="flex items-start justify-between">
-                <span className="grid size-48 place-items-center rounded-8 bg-surface">
+                <span className="rounded-8 bg-surface grid size-48 place-items-center">
                   <pillar.icon className="size-28" />
                 </span>
                 <span className="type-body-16 text-black/40">{String(i + 1).padStart(2, "0")}</span>
@@ -41,7 +45,7 @@ export default function OperationsSection() {
           ))}
         </ul>
 
-        <div className="mt-60 border-t border-border lg:mt-117" />
+        <div className="border-border mt-60 border-t lg:mt-117" />
 
         {/* When things break down */}
         <div className="grid gap-20 pt-60 lg:grid-cols-[365fr_565fr_390fr] lg:gap-0 lg:pt-116">
@@ -52,7 +56,7 @@ export default function OperationsSection() {
           </p>
         </div>
 
-        <ul className="mt-40 grid gap-20 pb-60 lg:mt-77 md:grid-cols-2 xl:grid-cols-4 lg:pb-104">
+        <ul className="mt-40 grid gap-20 pb-60 md:grid-cols-2 lg:mt-77 lg:pb-104 xl:grid-cols-4">
           {PROBLEMS.map((problem) => (
             <li key={problem.title} className="flex">
               <ProblemCard problem={problem} />

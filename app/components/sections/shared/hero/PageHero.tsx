@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { ArrowDownIcon } from "@/app/components/icons";
 import { Button, Eyebrow, LinesBackground } from "@/app/components/ui";
+import { SERVICES } from "@/lib/services";
 import { HERO_LINES } from "./heroLines";
 
 // Listed column by column: the desktop grid flows top-to-bottom in two rows
-const SERVICE_AREAS = ["Website Infrastructure", "Back-Office Operations", "ERP & Business Systems", "AdTech"];
+const SERVICE_AREAS = SERVICES.map((service) => service.name);
 
 type HeroAction = { label: string; href: string };
 
@@ -19,7 +20,7 @@ type PageHeroProps = {
   description: ReactNode;
   /** Cyan button with a trailing ↓, usually jumping to the first section below */
   primary: HeroAction;
-  /** Glass button */
+  /** Glass button; defaults to "Start a Conversation" → /contact */
   secondary?: HeroAction;
   /** `wide` (250px, default) or `narrow` (198px, About's short "Our story") */
   primaryWidth?: keyof typeof PRIMARY_WIDTHS;
@@ -35,25 +36,28 @@ export default function PageHero({
   title,
   description,
   primary,
-  secondary = { label: "Start a Conversation", href: "/#contact" },
+  secondary = { label: "Start a Conversation", href: "/contact" },
   primaryWidth = "wide",
   areas = SERVICE_AREAS,
 }: PageHeroProps) {
   return (
-    <LinesBackground preset={HERO_LINES} id={id} className="hero flex min-h-svh flex-col">
-      <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-113 lg:pt-140">
+    <LinesBackground preset={HERO_LINES} id={id} data-hero className="hero flex min-h-svh flex-col">
+      <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pt-140 lg:pb-113">
         <Eyebrow className="text-fg-inverse">{eyebrow}</Eyebrow>
 
         <h1 className="type-display-100 text-gradient-display mt-24 w-fit">{title}</h1>
 
-        <div className="mt-auto flex flex-col items-start gap-40 pt-40 lg:pt-43 lg:flex-row lg:items-end lg:justify-between lg:gap-24">
-          <p className="type-body-16 max-w-640 text-fg-inverse lg:type-body-20 lg:max-w-none">{description}</p>
+        <div className="mt-auto flex flex-col items-start gap-40 pt-40 lg:flex-row lg:items-end lg:justify-between lg:gap-24 lg:pt-43">
+          <p className="type-body-16 text-fg-inverse lg:type-body-20 max-w-640 lg:max-w-none">{description}</p>
 
           <div className="w-full lg:w-514 lg:shrink-0">
             <ul className="grid sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-26">
               {areas.map((area) => (
-                <li key={area} className="type-body-15 flex items-center gap-12 border-b border-white/12 pt-18 pb-14 text-fg-inverse">
-                  <span aria-hidden="true" className="size-5 shrink-0 rounded-full bg-action-primary" />
+                <li
+                  key={area}
+                  className="type-body-15 text-fg-inverse flex items-center gap-12 border-b border-white/12 pt-18 pb-14"
+                >
+                  <span aria-hidden="true" className="bg-action-primary size-5 shrink-0 rounded-full" />
                   {area}
                 </li>
               ))}

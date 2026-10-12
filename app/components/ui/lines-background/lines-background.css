@@ -12,12 +12,7 @@
     right: -12%;
     width: 75vw;
     height: 125vh;
-    background: radial-gradient(
-      ellipse at 78% 28%,
-      rgba(2, 213, 232, 0.05) 0%,
-      rgba(2, 160, 170, 0.02) 38%,
-      transparent 75%
-    );
+    background: radial-gradient(ellipse at 78% 28%, rgba(2, 213, 232, 0.05) 0%, rgba(2, 160, 170, 0.02) 38%, transparent 75%);
     filter: blur(75px);
     pointer-events: none;
     z-index: 1;

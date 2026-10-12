@@ -12,8 +12,13 @@ export default function ProcessTimeline({ children }: { children: ReactNode }) {
     const ol = list.current;
     const bar = fill.current;
     if (!ol || !bar) return;
-    const steps = Array.from(ol.querySelectorAll<HTMLElement>("[data-step]"));
-    const nodes = steps.map((step) => step.querySelector<HTMLElement>("[data-node]")!);
+    // Every step is expected to render a [data-node], but steps without one (a markup mistake) are dropped
+    // rather than asserted past, so this never dereferences a node that isn't there.
+    const pairs = Array.from(ol.querySelectorAll<HTMLElement>("[data-step]"))
+      .map((step) => ({ step, node: step.querySelector<HTMLElement>("[data-node]") }))
+      .filter((pair): pair is { step: HTMLElement; node: HTMLElement } => pair.node !== null);
+    const steps = pairs.map((pair) => pair.step);
+    const nodes = pairs.map((pair) => pair.node);
     let frame = 0;
 
     const update = () => {
@@ -55,9 +60,9 @@ export default function ProcessTimeline({ children }: { children: ReactNode }) {
       {/* Rail: starts at the first node's centre and runs to the bottom of the section; the grey rail and the cyan fill both end in a soft fade */}
       <span
         aria-hidden="true"
-        className="fade-end absolute top-14 bottom-0 left-9.5 w-9 rounded-full bg-border [--fade-length:260px] lg:top-22 lg:left-15.5"
+        className="fade-end bg-border absolute top-14 bottom-0 left-9.5 w-9 rounded-full [--fade-length:260px] lg:top-22 lg:left-15.5"
       >
-        <span ref={fill} className="fade-end block w-full rounded-full bg-action-primary [--fade-length:240px]" />
+        <span ref={fill} className="fade-end bg-action-primary block w-full rounded-full [--fade-length:240px]" />
       </span>
       {children}
     </ol>

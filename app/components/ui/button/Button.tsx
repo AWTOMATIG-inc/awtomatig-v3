@@ -19,8 +19,7 @@ type BaseProps = {
   children: ReactNode;
 };
 
-type ButtonAsButton = BaseProps &
-  Omit<ComponentPropsWithoutRef<"button">, keyof BaseProps> & { href?: undefined };
+type ButtonAsButton = BaseProps & Omit<ComponentPropsWithoutRef<"button">, keyof BaseProps> & { href?: undefined };
 
 type ButtonAsLink = BaseProps & Omit<ComponentPropsWithoutRef<"a">, keyof BaseProps> & { href: string };
 
@@ -70,7 +69,9 @@ const SIZES: Record<ButtonSize, { root: string; icon: string; label?: string }> 
   },
 };
 
-export function buttonClassName({
+// Not exported: nothing outside this file builds a button's classes today. Export it again (and re-add it to
+// ui/index.ts) if something ever needs the look of a button without rendering an actual <button>/<a>.
+function buttonClassName({
   variant = "primary",
   size = "md",
   fullWidth = false,

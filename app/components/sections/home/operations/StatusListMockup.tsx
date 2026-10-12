@@ -28,15 +28,15 @@ export default function StatusListMockup({ title, subtitle, badge, rows }: Statu
           <p className="type-caption-12 text-black/60">{subtitle}</p>
         </div>
         {badge && (
-          <span className="type-caption-12 mt-4 flex h-33 items-center gap-7 rounded-8 bg-surface px-16 text-fg-primary">
-            <span className="size-6 rounded-full bg-status-warning" />
+          <span className="type-caption-12 rounded-8 bg-surface text-fg-primary mt-4 flex h-33 items-center gap-7 px-16">
+            <span className="bg-status-warning size-6 rounded-full" />
             {badge}
           </span>
         )}
       </div>
       <ul className="mt-15 flex flex-col gap-7">
         {rows.map(({ label, status, tone, icon: Icon }) => (
-          <li key={label} className="type-caption-12 flex h-35 items-center rounded-8 bg-surface pr-11 pl-10 text-fg-primary">
+          <li key={label} className="type-caption-12 rounded-8 bg-surface text-fg-primary flex h-35 items-center pr-11 pl-10">
             <span className="flex w-136 items-center gap-6">
               <Icon className="size-18 shrink-0" />
               {label}

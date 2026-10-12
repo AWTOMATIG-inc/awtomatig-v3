@@ -53,7 +53,7 @@ export default function HorizontalScroller({ id, count, label, heading, children
     const readTarget = () => {
       const distance = section.offsetHeight - sticky.offsetHeight;
       if (distance <= 0 || count < 2) return void (target = 0);
-      const screens = (clamp01(-section.getBoundingClientRect().top / distance) * screensFor(count));
+      const screens = clamp01(-section.getBoundingClientRect().top / distance) * screensFor(count);
       target = slideAt(screens, count) / (count - 1);
     };
     const paint = () => section.style.setProperty("--hww-progress", progressRef.current.toFixed(5));

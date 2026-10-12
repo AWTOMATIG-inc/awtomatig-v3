@@ -37,7 +37,7 @@ export default function SystemsMockup() {
       {CHIPS.map(({ label, icon: Icon, className }) => (
         <span
           key={label}
-          className={`type-caption-12 absolute flex h-30 items-center gap-4 rounded-8 bg-surface px-12 text-fg-primary ${className}`}
+          className={`type-caption-12 rounded-8 bg-surface text-fg-primary absolute flex h-30 items-center gap-4 px-12 ${className}`}
         >
           <Icon className="size-18" />
           {label}

@@ -5,7 +5,7 @@ import { HERO_LINES } from "../../shared/hero/heroLines";
 // Home hero: full-bleed animated lines background with content in the site container
 export default function HeroSection() {
   return (
-    <LinesBackground preset={HERO_LINES} id="hero" className="hero flex min-h-svh flex-col">
+    <LinesBackground preset={HERO_LINES} id="hero" data-hero className="hero flex min-h-svh flex-col">
       <HeroContent />
     </LinesBackground>
   );

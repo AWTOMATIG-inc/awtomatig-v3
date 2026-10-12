@@ -15,7 +15,8 @@ export const STEPS: Step[] = [
   },
   {
     title: "Deliver.",
-    description: "We implement, launch, and operationalize the solution with clarity, quality control, and disciplined execution.",
+    description:
+      "We implement, launch, and operationalize the solution with clarity, quality control, and disciplined execution.",
     theme: "fade",
   },
   {

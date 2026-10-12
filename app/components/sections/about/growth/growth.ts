@@ -1,8 +1,8 @@
 import type { StaticImageData } from "next/image";
-import BroaderCapabilities from "@/public/images/about/broader_capabilities.png";
-import ConnectedWorkflow from "@/public/images/about/connected_workflow.png";
-import IndividualProblems from "@/public/images/about/individual_problems.png";
-import KeepGrowing from "@/public/images/about/keep_growing.png";
+import BroaderCapabilities from "@/public/images/about/broader_capabilities.jpg";
+import ConnectedWorkflow from "@/public/images/about/connected_workflow.jpg";
+import IndividualProblems from "@/public/images/about/individual_problems.jpg";
+import KeepGrowing from "@/public/images/about/keep_growing.jpg";
 
 export type GrowthStep = {
   title: string;

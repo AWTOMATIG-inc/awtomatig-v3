@@ -27,7 +27,7 @@ export default function StepSlide({ step, index }: StepSlideProps) {
           <div className="relative">
             <span
               aria-hidden="true"
-              className={`type-wordmark pointer-events-none absolute top-1/2 right-0 -translate-y-1/2 select-none lg:right-auto lg:left-1/2 lg:-ml-90 ${theme.numeral}`}
+              className={`type-numeral pointer-events-none absolute top-1/2 right-0 -translate-y-1/2 select-none lg:right-auto lg:left-1/2 lg:-ml-90 ${theme.numeral}`}
             >
               {number}
             </span>
@@ -47,8 +47,8 @@ export default function StepSlide({ step, index }: StepSlideProps) {
                     data-step={i}
                     aria-label={`Go to step ${i + 1}: ${target.title.replace(".", "")}`}
                     aria-current={i === index ? "step" : undefined}
-                    className={`relative size-11 rounded-full border transition-colors duration-200 ease-out-expo before:absolute before:-inset-x-2 before:-inset-y-16 motion-reduce:transition-none ${
-                      i === index ? "border-transparent bg-action-primary" : `${theme.dot} hover:border-action-primary`
+                    className={`ease-out-expo relative size-11 rounded-full border transition-colors duration-200 before:absolute before:-inset-x-7 before:-inset-y-16 motion-reduce:transition-none ${
+                      i === index ? "bg-action-primary border-transparent" : `${theme.dot} hover:border-action-primary`
                     }`}
                   />
                 ))}

@@ -15,11 +15,11 @@ export default function WorkflowsMockup() {
       {STEPS.map(({ label, icon: Icon, className }, i) => (
         <li
           key={label}
-          className={`type-body-14 flex h-40 w-259 items-center gap-14 rounded-8 bg-surface pr-3 pl-16 text-fg-primary ${className}`}
+          className={`type-body-14 rounded-8 bg-surface text-fg-primary flex h-40 w-259 items-center gap-14 pr-3 pl-16 ${className}`}
         >
           <span>{String(i + 1).padStart(2, "0")}.</span>
           <span>{label}</span>
-          <span className="ml-auto grid size-34 place-items-center rounded-6 bg-surface-subtle">
+          <span className="rounded-6 bg-surface-subtle ml-auto grid size-34 place-items-center">
             <Icon className="size-18" />
           </span>
         </li>

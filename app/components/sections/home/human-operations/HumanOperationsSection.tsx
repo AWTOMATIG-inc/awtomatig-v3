@@ -11,9 +11,9 @@ export default function HumanOperationsSection() {
           <h2 id="human-operations-title" className="type-heading-60 max-w-[10em]">
             Technology connects the workflow. People keep it moving.
           </h2>
-          <p className="type-body-16 self-end text-fg-primary">
-            AWTOMATIG combines technical systems with structured operational support, helping businesses manage the work
-            that technology alone cannot solve.
+          <p className="type-body-16 text-fg-primary self-end">
+            AWTOMATIG combines technical systems with structured operational support, helping businesses manage the work that
+            technology alone cannot solve.
           </p>
         </div>
 
@@ -22,17 +22,17 @@ export default function HumanOperationsSection() {
             src={TEAM_IMAGE}
             alt={TEAM_IMAGE_ALT}
             sizes="(min-width: 1024px) 935px, 100vw"
-            className="aspect-4/3 w-full rounded-16 object-cover lg:aspect-auto lg:h-441"
+            className="rounded-16 aspect-4/3 w-full object-cover lg:aspect-auto lg:h-441"
           />
 
           <div>
-            <p className="type-label-14 grid h-40 place-items-center rounded-6 bg-surface uppercase">Operational team view</p>
+            <p className="type-label-14 rounded-6 bg-surface grid h-40 place-items-center uppercase">Operational team view</p>
             <ul className="mt-20 lg:mt-25">
               {STATS.map((stat) => (
-                <li key={stat.label} className="relative border-b border-border pt-20 pb-20 last:border-b-0 lg:h-136">
-                  <span aria-hidden className="absolute top-26 right-0 size-8 rounded-full bg-action-primary" />
+                <li key={stat.label} className="border-border relative border-b pt-20 pb-20 last:border-b-0 lg:h-136">
+                  <span aria-hidden className="bg-action-primary absolute top-26 right-0 size-8 rounded-full" />
                   <p className="type-heading-40">{stat.value}</p>
-                  <p className="type-body-14 mt-10 uppercase text-fg-primary">{stat.label}</p>
+                  <p className="type-body-14 text-fg-primary mt-10 uppercase">{stat.label}</p>
                 </li>
               ))}
             </ul>

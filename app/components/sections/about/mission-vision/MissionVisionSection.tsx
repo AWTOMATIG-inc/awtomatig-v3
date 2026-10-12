@@ -45,13 +45,10 @@ export default function MissionVisionSection() {
       <div className="site-container py-40 lg:py-82">
         <ul className="grid gap-20 lg:grid-cols-2">
           {PILLARS.map((pillar) => (
-            <li
-              key={pillar.id}
-              className={`flex flex-col rounded-12 p-24 lg:min-h-321 lg:p-40 ${PILLAR_THEMES[pillar.theme]}`}
-            >
+            <li key={pillar.id} className={`rounded-12 flex flex-col p-24 lg:min-h-321 lg:p-40 ${PILLAR_THEMES[pillar.theme]}`}>
               <Eyebrow markClassName={PILLAR_MARKS[pillar.theme]}>{pillar.eyebrow}</Eyebrow>
               <h2 className="type-heading-40 mt-28 lg:mt-26">{pillar.title}</h2>
-              <p className="type-body-22 mt-32 text-fg-muted lg:mt-auto lg:pt-32">{pillar.description}</p>
+              <p className="type-body-22 text-fg-muted mt-32 lg:mt-auto lg:pt-32">{pillar.description}</p>
             </li>
           ))}
         </ul>

@@ -14,19 +14,22 @@ export default function InquirySection() {
             <br className="max-lg:hidden" /> the systems behind
             <br className="max-lg:hidden" /> growing businesses.
           </h2>
-          <p className="type-body-16-compact mt-20 max-w-540 text-fg-primary lg:mt-26">
+          <p className="type-body-16-compact text-fg-primary mt-20 max-w-540 lg:mt-26">
             Every engagement is different, but the way we approach complexity
             <br className="max-lg:hidden" /> stays structured. Each stage builds on the last, creating clarity before
             <br className="max-lg:hidden" /> execution and control throughout delivery.
           </p>
 
-          <dl className="mt-30 max-w-531 divide-y divide-border border border-border">
+          <dl className="divide-border border-border mt-30 max-w-531 divide-y border">
             {CONTACT_DETAILS.map((item) => (
               <div key={item.label} className="p-16">
                 <dt className="type-caption-12 uppercase">{item.label}</dt>
                 <dd className="type-body-16 mt-10 font-medium">
                   {item.href ? (
-                    <a href={item.href} className="transition-colors duration-200 hover:text-fg-strong/60 motion-reduce:transition-none">
+                    <a
+                      href={item.href}
+                      className="hover:text-fg-strong/60 transition-colors duration-200 motion-reduce:transition-none"
+                    >
                       {item.value}
                     </a>
                   ) : (

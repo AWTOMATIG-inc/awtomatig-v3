@@ -14,14 +14,16 @@ export default function HowWeSupportSection() {
             <br className="max-lg:hidden" /> Improve it.
           </h2>
           <p className="type-body-16 max-w-400 lg:translate-y-4 lg:self-end">
-            Some clients need a defined project. Others need ongoing operational capability. Our services can
-            support both.
+            Some clients need a defined project. Others need ongoing operational capability. Our services can support both.
           </p>
         </div>
 
         <ul className="mt-40 grid gap-20 lg:mt-77 lg:grid-cols-3">
           {SUPPORT_MODES.map((mode) => (
-            <li key={mode.title} className={`flex flex-col overflow-hidden rounded-12 p-24 lg:h-425 ${SUPPORT_THEMES[mode.theme]}`}>
+            <li
+              key={mode.title}
+              className={`rounded-12 flex flex-col overflow-hidden p-24 lg:h-425 ${SUPPORT_THEMES[mode.theme]}`}
+            >
               <div className="flex min-h-0 flex-1 items-center justify-center pb-24">
                 <Image
                   src={mode.image}

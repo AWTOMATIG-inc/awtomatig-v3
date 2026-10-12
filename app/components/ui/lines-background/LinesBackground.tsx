@@ -17,16 +17,16 @@ export type LinesLaser = {
 export type LinesPreset = {
   /** Base gradient of the section (CSS `background`) */
   background: string;
-  /** Angle of the lines: 0 = horizontal, negative = rising to the right */
+  /** Angle of the lines: 0 = horizontal, negative = rising to the right, 90 = vertical (lasers rise from the bottom edge) */
   angleDeg: number;
   /** Faint sawtooth bands: one every `bandPeriod` design px, `bandAlpha` white at their crisp edge */
   bandPeriod: number;
   bandAlpha: number;
   /** Lasers sit on band edges: the band grid starts at the first laser */
   lasers: LinesLaser[];
-  /** Band strength across the section: an ellipse from the top-right corner (radii as a fraction of the
-   *  section width / height) with [radius, strength] stops */
-  mask: { rx: number; ry: number; stops: [radius: number, strength: number][] };
+  /** Band strength across the section: an ellipse (radii as a fraction of the section width / height) centred on
+   *  `origin` (fraction of width / height, default the top-right corner) with [radius, strength] stops */
+  mask: { rx: number; ry: number; origin?: [x: number, y: number]; stops: [radius: number, strength: number][] };
   /** Where the "pointer" rests when nobody hovers (fraction of width / height), away from the lasers */
   rest: [x: number, y: number];
 };
@@ -54,6 +54,10 @@ type LinesBackgroundProps = {
   id?: string;
   /** Layout of the section (display, min-height…). Positioning and clipping are built in. */
   className?: string;
+  /** Marks a hero's section so the header's scroll logic can find it without depending on a CSS class (the `.hero`
+   *  class stays reserved for the frame-scale CSS). Omit on non-hero uses, such as the CTA section. */
+  "data-hero"?: true;
+  "aria-labelledby"?: string;
   children: ReactNode;
 };
 
@@ -62,7 +66,14 @@ type LinesBackgroundProps = {
  * base gradient, a pointer-following glow, film grain and a canvas of sawtooth bands and two lasers
  * that bend away from the pointer. Content goes in `children` (give it `relative z-20`).
  */
-export default function LinesBackground({ preset, id, className, children }: LinesBackgroundProps) {
+export default function LinesBackground({
+  preset,
+  id,
+  className,
+  "data-hero": dataHero,
+  "aria-labelledby": labelledBy,
+  children,
+}: LinesBackgroundProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -92,23 +103,26 @@ export default function LinesBackground({ preset, id, className, children }: Lin
     let time = 0;
     let frameId = 0;
     let stripes: Stripe[] = laserStripes;
+    // The loop runs only while the section is on screen and motion is allowed; otherwise one still frame is drawn
+    let isVisible = false;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     // Pointer coordinates & smooth spring-based lerp tracking
     const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, isHovered: false };
 
-    function resetPointerTarget() {
+    const resetPointerTarget = () => {
       pointer.targetX = width * rest[0];
       pointer.targetY = height * rest[1];
-    }
+    };
 
-    function onResize() {
+    const onResize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = section!.clientWidth;
-      height = section!.clientHeight;
+      width = section.clientWidth;
+      height = section.clientHeight;
 
-      canvas!.width = width * dpr;
-      canvas!.height = height * dpr;
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       if (!pointer.isHovered) resetPointerTarget();
 
@@ -129,14 +143,17 @@ export default function LinesBackground({ preset, id, className, children }: Lin
         alpha: bandAlpha,
       }));
       stripes = [...bands, ...laserStripes];
-    }
 
-    function setPointerPos(cx: number, cy: number) {
-      const rect = section!.getBoundingClientRect();
+      // Resizing clears the canvas: repaint at once when the loop isn't running
+      if (!frameId) drawStill();
+    };
+
+    const setPointerPos = (cx: number, cy: number) => {
+      const rect = section.getBoundingClientRect();
       pointer.targetX = cx - rect.left;
       pointer.targetY = cy - rect.top;
       pointer.isHovered = true;
-    }
+    };
 
     const onPointerMove = (e: PointerEvent) => setPointerPos(e.clientX, e.clientY);
     const onTouch = (e: TouchEvent) => {
@@ -149,18 +166,13 @@ export default function LinesBackground({ preset, id, className, children }: Lin
 
     const resizeObserver = new ResizeObserver(onResize);
 
-    function render() {
-      time += 0.016;
-
-      // Smooth pointer lerp
-      pointer.x += (pointer.targetX - pointer.x) * 0.05;
-      pointer.y += (pointer.targetY - pointer.y) * 0.05;
-
+    // Paints one frame for the current `time` and pointer position
+    const draw = () => {
       // Parallax drift for the background ambient glow
-      glow!.style.setProperty("--glow-x", `${(pointer.x / width - 0.5) * 40}px`);
-      glow!.style.setProperty("--glow-y", `${(pointer.y / height - 0.5) * 40}px`);
+      glow.style.setProperty("--glow-x", `${(pointer.x / width - 0.5) * 40}px`);
+      glow.style.setProperty("--glow-y", `${(pointer.y / height - 0.5) * 40}px`);
 
-      ctx!.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
       // Design px -> screen px
       const scale = Math.min(Math.max(width / DESIGN_WIDTH, 0.55), 1.4);
@@ -227,41 +239,43 @@ export default function LinesBackground({ preset, id, className, children }: Lin
         const bw = stripe.width * scale;
         const bAlpha = stripe.alpha * alphaBreath * (1 + influence * 0.6);
 
-        ctx!.beginPath();
-        ctx!.moveTo(curP1x, curP1y);
-        ctx!.lineTo(curP2x, curP2y);
-        ctx!.lineTo(curP2x + normX * bw, curP2y + normY * bw);
-        ctx!.lineTo(curP1x + normX * bw, curP1y + normY * bw);
-        ctx!.closePath();
+        ctx.beginPath();
+        ctx.moveTo(curP1x, curP1y);
+        ctx.lineTo(curP2x, curP2y);
+        ctx.lineTo(curP2x + normX * bw, curP2y + normY * bw);
+        ctx.lineTo(curP1x + normX * bw, curP1y + normY * bw);
+        ctx.closePath();
 
-        const grad = ctx!.createLinearGradient(curP1x, curP1y, curP1x + normX * bw, curP1y + normY * bw);
+        const grad = ctx.createLinearGradient(curP1x, curP1y, curP1x + normX * bw, curP1y + normY * bw);
         const [r, g, b] = BAND_COLOR;
         grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${bAlpha})`);
         grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-        ctx!.fillStyle = grad;
-        ctx!.fill();
+        ctx.fillStyle = grad;
+        ctx.fill();
       }
 
       // Band strength across the section, measured from the design
-      ctx!.save();
-      ctx!.globalCompositeOperation = "destination-in";
-      ctx!.setTransform(dpr * width * mask.rx, 0, 0, dpr * height * mask.ry, dpr * width, 0);
-      const maskGrad = ctx!.createRadialGradient(0, 0, 0, 0, 0, 1);
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-in";
+      const [maskX, maskY] = mask.origin ?? [1, 0];
+      ctx.setTransform(dpr * width * mask.rx, 0, 0, dpr * height * mask.ry, dpr * width * maskX, dpr * height * maskY);
+      const maskGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
       for (const [radius, strength] of mask.stops) {
         maskGrad.addColorStop(radius, `rgba(0, 0, 0, ${strength})`);
       }
-      ctx!.fillStyle = maskGrad;
-      ctx!.fillRect(-2, -1, 4, 3);
-      ctx!.restore();
+      ctx.fillStyle = maskGrad;
+      ctx.fillRect(-2, -2, 4, 4);
+      ctx.restore();
 
       // 2. Crisp lasers, brightest at the frame edge and fading away from it
       for (const { stripe, alphaBreath, influence, baseX, baseY, curP1x, curP1y, curP2x, curP2y } of lines) {
         if (!stripe.isLaser) continue;
 
-        // Point where the laser leaves the section (right edge, or top edge for rising lines)
-        const tRight = (width - baseX) / dirX;
-        const tTop = dirY < 0 ? -baseY / dirY : Infinity;
-        const tExit = Math.min(tRight, tTop);
+        // Point where the laser leaves the section: the right edge, the top edge for rising lines, the bottom edge for vertical ones
+        const tRight = dirX > 1e-6 ? (width - baseX) / dirX : Infinity;
+        const tTop = dirY < -1e-6 ? -baseY / dirY : Infinity;
+        const tBottom = dirY > 1e-6 ? (height - baseY) / dirY : Infinity;
+        const tExit = Math.min(tRight, tTop, tBottom);
         const exitX = baseX + dirX * tExit;
         const exitY = baseY + dirY * tExit;
         const fade = (stripe.fadeLength ?? 400) * scale;
@@ -269,38 +283,73 @@ export default function LinesBackground({ preset, id, className, children }: Lin
         const laserAlpha = Math.min(1, stripe.alpha * alphaBreath * (1 + influence * 0.35));
 
         // Linear gradient along the laser: near-white at the frame edge, through cyan, fading out
-        const laserGrad = ctx!.createLinearGradient(exitX, exitY, exitX - dirX * fade, exitY - dirY * fade);
+        const laserGrad = ctx.createLinearGradient(exitX, exitY, exitX - dirX * fade, exitY - dirY * fade);
         for (const [offset, [r, g, b], a] of LASER_STOPS) {
           laserGrad.addColorStop(offset, `rgba(${r}, ${g}, ${b}, ${a * laserAlpha})`);
         }
 
         // Crisp line at rest; a soft cyan glow only appears while the pointer is near
-        ctx!.save();
-        ctx!.beginPath();
-        ctx!.moveTo(curP1x, curP1y);
-        ctx!.lineTo(curP2x, curP2y);
-        ctx!.strokeStyle = laserGrad;
-        ctx!.lineWidth = stripe.width * scale + influence * 1.2;
-        ctx!.shadowColor = CYAN;
-        ctx!.shadowBlur = influence * 14;
-        ctx!.stroke();
-        ctx!.restore();
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(curP1x, curP1y);
+        ctx.lineTo(curP2x, curP2y);
+        ctx.strokeStyle = laserGrad;
+        ctx.lineWidth = stripe.width * scale + influence * 1.2;
+        ctx.shadowColor = CYAN;
+        ctx.shadowBlur = influence * 14;
+        ctx.stroke();
+        ctx.restore();
       }
+    };
 
-      frameId = requestAnimationFrame(render);
+    const tick = () => {
+      time += 0.016;
+      // Smooth pointer lerp
+      pointer.x += (pointer.targetX - pointer.x) * 0.05;
+      pointer.y += (pointer.targetY - pointer.y) * 0.05;
+      draw();
+      frameId = requestAnimationFrame(tick);
+    };
+
+    // One frame with the pointer settled on its target (the rest point unless hovered): reduced motion, and repaints while paused
+    function drawStill() {
+      pointer.x = pointer.targetX;
+      pointer.y = pointer.targetY;
+      draw();
     }
+
+    const stop = () => {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+    };
+
+    // Starts or stops the loop to match visibility and the motion preference
+    const sync = () => {
+      const shouldRun = isVisible && !reducedMotion.matches;
+      if (shouldRun && !frameId) frameId = requestAnimationFrame(tick);
+      else if (!shouldRun && frameId) stop();
+      if (reducedMotion.matches) drawStill();
+    };
+
+    const intersectionObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      sync();
+    });
 
     onResize();
     resizeObserver.observe(section);
+    intersectionObserver.observe(section);
+    reducedMotion.addEventListener("change", sync);
     section.addEventListener("pointermove", onPointerMove);
     section.addEventListener("touchstart", onTouch, { passive: true });
     section.addEventListener("touchmove", onTouch, { passive: true });
     section.addEventListener("pointerleave", onPointerLeave);
-    frameId = requestAnimationFrame(render);
 
     return () => {
-      cancelAnimationFrame(frameId);
+      stop();
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      reducedMotion.removeEventListener("change", sync);
       section.removeEventListener("pointermove", onPointerMove);
       section.removeEventListener("touchstart", onTouch);
       section.removeEventListener("touchmove", onTouch);
@@ -312,6 +361,8 @@ export default function LinesBackground({ preset, id, className, children }: Lin
     <section
       ref={sectionRef}
       id={id}
+      data-hero={dataHero}
+      aria-labelledby={labelledBy}
       className={`relative overflow-hidden ${className ?? ""}`}
       style={{ background: preset.background } as CSSProperties}
     >

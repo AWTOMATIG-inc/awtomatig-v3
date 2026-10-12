@@ -1,6 +1,9 @@
-import Image from "next/image";
 import { Eyebrow } from "@/app/components/ui";
+import MarqueeTrack from "./MarqueeTrack";
 import { PARTNERS, PROVEN_STATS } from "./proven";
+
+// Only stats with a real figure are shown
+const STATS = PROVEN_STATS.filter((stat) => stat.value);
 
 // Contact page: "Why AWTOMATIG" proof block: four stat cards and a row of client logos
 export default function ProvenSection() {
@@ -16,46 +19,21 @@ export default function ProvenSection() {
           </h2>
         </div>
 
-        <ul className="mt-40 grid gap-12 sm:grid-cols-2 lg:mt-70 lg:grid-cols-4 lg:gap-20">
-          {PROVEN_STATS.map((stat) => (
-            <li key={stat.label} className="flex flex-col rounded-16 bg-surface p-24 lg:min-h-235 lg:pt-28 lg:pb-25">
-              <h3 className="type-label-14 uppercase">{stat.label}</h3>
-              <div className="mt-40 lg:mt-auto">
-                <p className="type-heading-50 font-normal">{stat.value}</p>
-                <p className="type-body-14 mt-12 max-w-240 text-fg-primary">{stat.description}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-50 flex items-center gap-20 lg:mt-58 lg:gap-53">
-          <span aria-hidden="true" className="h-px flex-1 bg-border" />
-          <h3 className="type-heading-24 text-center tracking-tight">Trusted By Leading Companies</h3>
-          <span aria-hidden="true" className="h-px flex-1 bg-border" />
-        </div>
-
-        {/* Infinite slider: two identical groups, the track slides left by one group (-50%) and loops; the copy is hidden from assistive tech */}
-        <div className="fade-x mt-32 overflow-hidden lg:mt-26 motion-reduce:[mask-image:none]">
-          <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none">
-            {[0, 1].map((copy) => (
-              <ul
-                key={copy}
-                aria-hidden={copy === 1 || undefined}
-                className="flex shrink-0 items-center py-10 motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-20 lg:min-h-80 motion-reduce:[&:nth-child(2)]:hidden"
-              >
-                {PARTNERS.map((partner) => (
-                  <li key={partner.name} className="px-24 lg:px-40">
-                    <Image
-                      src={partner.logo}
-                      alt={copy === 0 ? partner.name : ""}
-                      className={`h-40 w-auto cursor-pointer object-contain transition-[filter,opacity] duration-200 motion-reduce:transition-none ${partner.height} ${partner.tone}`}
-                    />
-                  </li>
-                ))}
-              </ul>
+        {STATS.length > 0 && (
+          <ul className="mt-40 grid gap-12 sm:grid-cols-2 lg:mt-70 lg:grid-cols-4 lg:gap-20">
+            {STATS.map((stat) => (
+              <li key={stat.label} className="rounded-16 bg-surface flex flex-col p-24 lg:min-h-235 lg:pt-28 lg:pb-25">
+                <h3 className="type-label-14 uppercase">{stat.label}</h3>
+                <div className="mt-40 lg:mt-auto">
+                  <p className="type-heading-50 font-normal">{stat.value}</p>
+                  <p className="type-body-14 text-fg-primary mt-12 max-w-240">{stat.description}</p>
+                </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        )}
+
+        <MarqueeTrack partners={PARTNERS} />
       </div>
     </section>
   );

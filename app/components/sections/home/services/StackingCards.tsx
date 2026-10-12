@@ -26,8 +26,7 @@ export default function StackingCards({ children }: { children: ReactNode }) {
       const viewport = window.innerHeight;
       cards.forEach((card, i) => {
         const next = cards[i + 1];
-        const progress =
-          next && !reducedMotion.matches ? clamp01((viewport - next.getBoundingClientRect().top) / viewport) : 0;
+        const progress = next && !reducedMotion.matches ? clamp01((viewport - next.getBoundingClientRect().top) / viewport) : 0;
         card.style.setProperty("--stack-progress", progress.toFixed(4));
       });
     };

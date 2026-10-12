@@ -69,7 +69,7 @@ export default function VideoPlayer({ src, label, poster, className }: VideoPlay
       onPointerMove={wake}
       onPointerLeave={() => playing && setAwake(false)}
       onFocus={wake}
-      className={`group relative isolate overflow-hidden bg-surface-deep ${className ?? ""}`}
+      className={`group bg-surface-deep relative isolate overflow-hidden ${className ?? ""}`}
     >
       <video
         ref={video}
@@ -102,14 +102,14 @@ export default function VideoPlayer({ src, label, poster, className }: VideoPlay
         onClick={toggle}
         aria-label={`Play ${label}`}
         tabIndex={playing ? -1 : 0}
-        className={`absolute top-1/2 left-1/2 grid size-50 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-action-primary text-on-action shadow-glow motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out-quint hover:bg-action-primary-bright hover:shadow-glow-strong lg:size-60 [&_svg]:size-24 lg:[&_svg]:size-28 ${playing ? "pointer-events-none scale-90 opacity-0" : "opacity-100"}`}
+        className={`bg-action-primary text-on-action shadow-glow motion-safe:ease-out-quint hover:bg-action-primary-bright hover:shadow-glow-strong absolute top-1/2 left-1/2 grid size-50 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full motion-safe:transition-all motion-safe:duration-300 lg:size-60 [&_svg]:size-24 lg:[&_svg]:size-28 ${playing ? "pointer-events-none scale-90 opacity-0" : "opacity-100"}`}
       >
         <PlayIcon />
       </button>
 
       {/* Control bar */}
       <div
-        className={`glass glass-dense absolute inset-x-12 bottom-12 flex items-center gap-8 rounded-12 px-8 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out-quint lg:inset-x-16 lg:bottom-16 ${showControls ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-8 opacity-0"}`}
+        className={`glass glass-dense rounded-12 motion-safe:ease-out-quint absolute inset-x-12 bottom-12 flex items-center gap-8 px-8 motion-safe:transition-all motion-safe:duration-300 lg:inset-x-16 lg:bottom-16 ${showControls ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-8 opacity-0"}`}
       >
         <button type="button" onClick={toggle} aria-label={playing ? "Pause" : "Play"} className={controlButton}>
           {playing ? <PauseIcon /> : <PlayIcon />}
@@ -122,11 +122,11 @@ export default function VideoPlayer({ src, label, poster, className }: VideoPlay
         {/* Visual track; the invisible range input on top handles pointer, touch and keyboard seeking */}
         <div className="relative h-44 flex-1">
           <span aria-hidden className="absolute inset-x-0 top-1/2 h-4 -translate-y-1/2 rounded-full bg-white/20">
-            <span className="absolute inset-y-0 left-0 rounded-full bg-action-primary" style={{ width: `${progress}%` }} />
+            <span className="bg-action-primary absolute inset-y-0 left-0 rounded-full" style={{ width: `${progress}%` }} />
           </span>
           <span
             aria-hidden
-            className="absolute top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100"
+            className="absolute top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white opacity-0 transition-opacity duration-200 group-focus-within:opacity-100 group-hover:opacity-100"
             style={{ left: `${progress}%` }}
           />
           <input

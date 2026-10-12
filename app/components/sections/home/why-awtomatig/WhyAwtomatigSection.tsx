@@ -26,20 +26,20 @@ export default function WhyAwtomatigSection() {
         <div className="mt-40 grid gap-20 lg:mt-79 lg:grid-cols-[375fr_956fr] lg:items-start lg:gap-0">
           <AwlabsCard />
 
-          <ul className="grid overflow-hidden rounded-16 bg-surface md:grid-cols-2">
+          <ul className="rounded-16 bg-surface grid overflow-hidden md:grid-cols-2">
             {REASONS.map((reason, i) => (
               <li
                 key={reason.title}
-                className={`relative flex flex-col px-20 pt-32 pb-28 max-md:not-first:border-t max-md:not-first:border-surface-subtle md:px-35 lg:min-h-261 ${CELL_DIVIDERS[i]}`}
+                className={`max-md:not-first:border-surface-subtle relative flex flex-col px-20 pt-32 pb-28 max-md:not-first:border-t md:px-35 lg:min-h-261 ${CELL_DIVIDERS[i]}`}
               >
                 <div className="flex items-start justify-between">
-                  <span className="grid size-48 place-items-center rounded-8 bg-surface-subtle">
+                  <span className="rounded-8 bg-surface-subtle grid size-48 place-items-center">
                     <reason.icon className="size-28" />
                   </span>
                   <span className="type-body-16 text-black/40">{String(i + 1).padStart(2, "0")}</span>
                 </div>
                 <h3 className="type-heading-28 mt-40 lg:mt-58">{reason.title}</h3>
-                <p className="type-body-16 mt-10 max-w-400 text-fg-primary">{reason.description}</p>
+                <p className="type-body-16 text-fg-primary mt-10 max-w-400">{reason.description}</p>
               </li>
             ))}
           </ul>

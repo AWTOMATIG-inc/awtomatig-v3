@@ -1,8 +1,10 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import Link from "next/link";
+import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/app/components/ui";
-import { ChevronRightIcon, UploadCloudIcon } from "@/app/components/icons";
+import { ChevronRightIcon } from "@/app/components/icons";
+import { SITE } from "@/lib/site";
 import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
 
 const FIELD =
@@ -21,7 +23,17 @@ function Required() {
   );
 }
 
-function Field({ label, required, children, htmlFor }: { label: string; required?: boolean; children: ReactNode; htmlFor: string }) {
+function Field({
+  label,
+  required,
+  children,
+  htmlFor,
+}: {
+  label: string;
+  required?: boolean;
+  children: ReactNode;
+  htmlFor: string;
+}) {
   return (
     <div>
       <label htmlFor={htmlFor} className={LABEL}>
@@ -53,16 +65,31 @@ function ChipGroup({ legend, name, options, active }: { legend: string; name: st
   );
 }
 
-// Project inquiry form (Contact page). There is no backend yet: a valid submit only shows the confirmation line.
+// Labels for the email body, in form order
+const EMAIL_FIELDS = [
+  ["name", "Name"],
+  ["email", "Work email"],
+  ["company", "Company"],
+  ["budget", "Budget / range"],
+  ["help", "Needs help with"],
+  ["type", "Project type"],
+  ["improve", "What we're trying to improve"],
+] as const;
+
+// Project inquiry form (Contact page). There is no backend yet, so a valid submit opens the visitor's email app with the
+// inquiry filled in; nothing is sent from the site. Replace with a Server Action once the backend exists (AUDIT_FIX_PLAN.md 5.1).
 export default function InquiryForm() {
   const id = useId();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState("");
-  const [sent, setSent] = useState(false);
+  const [opened, setOpened] = useState(false);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    const data = new FormData(e.currentTarget);
+    const value = (key: string) => String(data.get(key) ?? "").trim();
+    const subject = `Project inquiry: ${value("company") || value("name")}`;
+    const body = EMAIL_FIELDS.map(([key, label]) => `${label}: ${value(key) || "-"}`).join("\n\n");
+    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setOpened(true);
   };
 
   return (
@@ -72,20 +99,48 @@ export default function InquiryForm() {
       <div className="mt-20 grid gap-20">
         <div className="grid gap-20 sm:grid-cols-2 sm:gap-16">
           <Field label="Your name" required htmlFor={`${id}-name`}>
-            <input id={`${id}-name`} name="name" type="text" required autoComplete="name" placeholder="Type here..." className={FIELD} />
+            <input
+              id={`${id}-name`}
+              name="name"
+              type="text"
+              required
+              autoComplete="name"
+              placeholder="Type here..."
+              className={FIELD}
+            />
           </Field>
           <Field label="Work email" required htmlFor={`${id}-email`}>
-            <input id={`${id}-email`} name="email" type="email" required autoComplete="email" placeholder="Type here..." className={FIELD} />
+            <input
+              id={`${id}-email`}
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="Type here..."
+              className={FIELD}
+            />
           </Field>
         </div>
 
         <Field label="Company" htmlFor={`${id}-company`}>
-          <input id={`${id}-company`} name="company" type="text" autoComplete="organization" placeholder="Type here..." className={FIELD} />
+          <input
+            id={`${id}-company`}
+            name="company"
+            type="text"
+            autoComplete="organization"
+            placeholder="Type here..."
+            className={FIELD}
+          />
         </Field>
 
         <Field label="Budget / range" htmlFor={`${id}-budget`}>
           <div className="relative">
-            <select id={`${id}-budget`} name="budget" defaultValue={BUDGETS[0]} className={`${FIELD} cursor-pointer appearance-none pr-40`}>
+            <select
+              id={`${id}-budget`}
+              name="budget"
+              defaultValue={BUDGETS[0]}
+              className={`${FIELD} cursor-pointer appearance-none pr-40`}
+            >
               {BUDGETS.map((budget) => (
                 <option key={budget}>{budget}</option>
               ))}
@@ -118,48 +173,40 @@ export default function InquiryForm() {
         </Field>
       </div>
 
-      <div className="mt-20 flex flex-col gap-16 rounded-8 border border-dashed border-warning/20 bg-warning/12 p-16 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-16">
-          <UploadCloudIcon className="size-28 shrink-0 text-status-warning" />
-          <div>
-            <p className="type-label-14">Have something useful to share?</p>
-            <p className="type-body-14 mt-2 text-fg-primary">{fileName || "Upload brief, requirements or supporting files."}</p>
-          </div>
-        </div>
-        <input
-          ref={fileRef}
-          type="file"
-          name="files"
-          multiple
-          className="sr-only"
-          tabIndex={-1}
-          aria-label="Upload files"
-          onChange={(e) => {
-            const files = Array.from(e.target.files ?? []);
-            setFileName(files.length > 1 ? `${files.length} files selected` : (files[0]?.name ?? ""));
-          }}
-        />
-        <Button type="button" variant="light" size="card" className="sm:w-134" onClick={() => fileRef.current?.click()}>
-          Upload file
-        </Button>
-      </div>
+      {/* Uploads return with the backend; until then files travel with the email */}
+      <p className="type-body-14 text-fg-primary mt-20">
+        Have a brief or supporting files? Attach them to the email that opens when you send this form.
+      </p>
 
       <label className="type-body-14 mt-16 flex cursor-pointer items-center gap-12">
         <input
           type="checkbox"
           name="consent"
           required
-          className="size-20 shrink-0 cursor-pointer rounded-12 border border-border bg-surface accent-action-primary"
+          className="rounded-12 border-border bg-surface accent-action-primary size-20 shrink-0 cursor-pointer border"
         />
-        I agree that AWTOMATIG may use the information provided to respond to my inquiry.
+        <span>
+          I agree that AWTOMATIG may use the information provided to respond to my inquiry, as described in the{" "}
+          <Link
+            href="/privacy"
+            className="underline underline-offset-2 transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </span>
       </label>
 
       <Button type="submit" variant="primary" size="lg" fullWidth className="mt-28">
         Start the conversation
       </Button>
-      {sent && (
-        <p role="status" className="type-body-14 mt-12 text-center text-fg-primary">
-          Thanks, we’ve got your message and will reply within 1 business day.
+      {opened && (
+        <p role="status" className="type-body-14 text-fg-primary mt-12 text-center">
+          Your email app should open with your message ready to send. If it doesn’t, email us at{" "}
+          <a href={`mailto:${SITE.email}`} className="underline underline-offset-2">
+            {SITE.email}
+          </a>
+          .
         </p>
       )}
     </form>

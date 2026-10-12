@@ -7,21 +7,14 @@ import { usePathname } from "next/navigation";
 import Logo from "@/public/images/awtomatig-full-logo.png";
 import LogoDark from "@/public/images/awtomatig-full-logo-dark.png";
 import { Button } from "@/app/components/ui";
-import { WhatsAppIcon } from "@/app/components/icons";
+import { MailIcon, WhatsAppIcon } from "@/app/components/icons";
+import { SITE } from "@/lib/site";
 
-// Pages are routes; sections that only exist on Home are "/#…" anchors until they get their own page
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-   { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/process", label: "Process" },
-  { href: "/case-studies", label: "Case Studies" },
-  { href: "/contact", label: "Contact" },
- 
-];
-
-// Replace with your WhatsApp link, e.g. https://wa.me/<number>
-const WHATSAPP_URL = "#contact";
+// The navbar CTA is "Message us" on WhatsApp once SITE.whatsappUrl is set; until then it leads to the Contact page.
+// It always has an icon: below 360px the `nav` size shows the icon only.
+const CTA = SITE.whatsappUrl
+  ? { href: SITE.whatsappUrl, label: "Message Us", icon: <WhatsAppIcon /> }
+  : { href: "/contact", label: "Let’s talk", icon: <MailIcon /> };
 
 // Scroll distance (px) after which the header turns into the floating pill
 const SCROLL_THRESHOLD = 8;
@@ -37,8 +30,7 @@ const THEMES = {
     menu: "glass glass-dense",
     logo: Logo,
     link: "text-fg-inverse hover:text-action-primary",
-    menuLink:
-      "border-white/12 text-white/60 hover:bg-white/12 hover:text-action-primary aria-[current=page]:text-fg-inverse",
+    menuLink: "border-white/12 text-white/60 hover:bg-white/12 hover:text-action-primary aria-[current=page]:text-fg-inverse",
     toggle: "bg-black/20 hover:bg-black/40",
     bar: "bg-white",
     button: "tint",
@@ -48,8 +40,7 @@ const THEMES = {
     menu: "glass glass-light glass-dense",
     logo: LogoDark,
     link: "text-fg-strong hover:text-fg-strong/60",
-    menuLink:
-      "border-black/12 text-fg-strong/60 hover:bg-black/12 hover:text-fg-strong aria-[current=page]:text-fg-strong",
+    menuLink: "border-black/12 text-fg-strong/60 hover:bg-black/12 hover:text-fg-strong aria-[current=page]:text-fg-strong",
     toggle: "bg-black/12 hover:bg-black/20",
     bar: "bg-black",
     button: "light",
@@ -72,10 +63,11 @@ function useIsScrolled() {
 // Pages without a hero: the header always shows above this scroll offset (px)
 const HIDE_AFTER = 120;
 
-// Scroll offset (px) at the bottom of the page's hero section (`section.hero`, every page has one). The header
-// stays visible while the hero is on screen and may only hide once it has been scrolled past.
+// Scroll offset (px) at the bottom of the page's hero section (`[data-hero]`, every page has one). The header
+// stays visible while the hero is on screen and may only hide once it has been scrolled past. `data-hero` is
+// independent of the `.hero` class, which is reserved for the frame-scale CSS.
 function getHideAfter() {
-  const hero = document.querySelector("section.hero");
+  const hero = document.querySelector("[data-hero]");
   return hero ? hero.getBoundingClientRect().bottom + window.scrollY : HIDE_AFTER;
 }
 // Scroll distance (px) in one direction needed to hide or reveal the header
@@ -118,7 +110,11 @@ function useHideOnScroll() {
   return [isHidden, () => setIsHidden(false)] as const;
 }
 
-export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES }) {
+// Theme is decided by the route, not passed in: the header lives in the shared (site) layout and persists
+// across navigation, so it must read the current page itself rather than trust a prop from the last page that rendered it.
+export default function Header() {
+  const pathname = usePathname();
+  const theme: keyof typeof THEMES = SITE.lightRoutes.includes(pathname) ? "light" : "dark";
   const t = THEMES[theme];
   const isScrolled = useIsScrolled();
   const [isScrolledAway, showHeader] = useHideOnScroll();
@@ -126,6 +122,17 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
   // Never hide while the mobile menu is open
   const isHidden = isScrolledAway && !isMenuOpen;
   const headerRef = useRef<HTMLElement>(null);
+
+  // A route change is a fresh page: close any menu left open from the last one and make sure the header is
+  // visible, both adjusted during render (React's "state from a changed prop" pattern) rather than in an effect,
+  // so there's no render where the previous page's state would still show through. The header persists across
+  // pages (shared layout) instead of remounting, which is why this reset is needed at all.
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setIsMenuOpen(false);
+    showHeader();
+  }
 
   // Close the mobile menu on Escape or on a tap outside the header
   useEffect(() => {
@@ -147,12 +154,11 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
-  const pathname = usePathname();
 
   return (
     <header
       ref={headerRef}
-      className="group fixed inset-x-0 top-0 z-50 pt-safe-12 transition-[padding,translate,opacity] duration-450 ease-out-quint data-hidden:-translate-y-full data-hidden:opacity-0 data-scrolled:pt-safe-8 motion-reduce:transition-none lg:frame-scale lg:pt-safe-20 lg:data-scrolled:pt-safe-12"
+      className="group pt-safe-12 ease-out-quint data-scrolled:pt-safe-8 lg:frame-scale lg:pt-safe-20 lg:data-scrolled:pt-safe-12 fixed inset-x-0 top-0 z-50 transition-[padding,translate,opacity] duration-450 data-hidden:-translate-y-full data-hidden:opacity-0 motion-reduce:transition-none"
       data-scrolled={isScrolled || undefined}
       data-hidden={isHidden || undefined}
       data-open={isMenuOpen || undefined}
@@ -164,17 +170,17 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
           {/* Glass surface: fades in once the page is scrolled or the menu is open */}
           <span
             aria-hidden="true"
-            className={`${t.glass} pointer-events-none absolute inset-0 -z-1 scale-98 rounded-10 opacity-0 transition-[opacity,scale] duration-450 ease-out-quint group-data-open:scale-100 group-data-open:opacity-100 group-data-scrolled:scale-100 group-data-scrolled:opacity-100 motion-reduce:transition-none`}
+            className={`${t.glass} rounded-10 ease-out-quint pointer-events-none absolute inset-0 -z-1 scale-98 opacity-0 transition-[opacity,scale] duration-450 group-data-open:scale-100 group-data-open:opacity-100 group-data-scrolled:scale-100 group-data-scrolled:opacity-100 motion-reduce:transition-none`}
           />
 
           <Link href="/" className="block" aria-label="AWTOMATIG home" onClick={closeMenu}>
             {/* 2x the ~106x36 display size; the source PNG is 3239x1099 */}
-            <Image src={t.logo} alt="AWTOMATIG" width={260} height={100} priority className="h-30 w-auto lg:h-36" />
+            <Image src={t.logo} alt="AWTOMATIG" width={260} height={100} preload className="h-30 w-auto lg:h-36" />
           </Link>
 
           {/* Centred on the pill itself, independent of the logo and button widths */}
           <nav className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 gap-36 lg:flex" aria-label="Main">
-            {NAV_LINKS.map((link) => (
+            {SITE.nav.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -187,14 +193,14 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
           </nav>
 
           <div className="flex items-center gap-8">
-            <Button href={WHATSAPP_URL} variant={t.button} size="nav" icon={<WhatsAppIcon />} className="lg:w-142">
-              Message Us
+            <Button href={CTA.href} variant={t.button} size="nav" icon={CTA.icon} className="lg:w-142" onClick={closeMenu}>
+              {CTA.label}
             </Button>
 
             {/* 36px visual, 44px touch target (before:-inset-4) */}
             <button
               type="button"
-              className={`relative inline-flex size-36 flex-col items-center justify-center gap-4 rounded-6 ${t.toggle} transition-colors duration-200 before:absolute before:-inset-4 motion-reduce:transition-none lg:hidden`}
+              className={`rounded-6 relative inline-flex size-36 flex-col items-center justify-center gap-4 ${t.toggle} transition-colors duration-200 before:absolute before:-inset-4 motion-reduce:transition-none lg:hidden`}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
@@ -210,10 +216,10 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
           <div
             id="mobile-menu"
             inert={!isMenuOpen}
-            className={`${t.menu} pointer-events-none absolute inset-x-0 top-full mt-8 origin-top -translate-y-8 scale-98 rounded-12 p-8 opacity-0 transition-[opacity,translate,scale] duration-350 ease-out-quint group-data-open:pointer-events-auto group-data-open:translate-y-0 group-data-open:scale-100 group-data-open:opacity-100 motion-reduce:transition-none lg:hidden`}
+            className={`${t.menu} rounded-12 ease-out-quint pointer-events-none absolute inset-x-0 top-full mt-8 origin-top -translate-y-8 scale-98 p-8 opacity-0 transition-[opacity,translate,scale] duration-350 group-data-open:pointer-events-auto group-data-open:translate-y-0 group-data-open:scale-100 group-data-open:opacity-100 motion-reduce:transition-none lg:hidden`}
           >
             <nav className="flex flex-col" aria-label="Mobile">
-              {NAV_LINKS.map((link) => (
+              {SITE.nav.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -225,16 +231,8 @@ export default function Header({ theme = "dark" }: { theme?: keyof typeof THEMES
                 </Link>
               ))}
             </nav>
-            <Button
-              href={WHATSAPP_URL}
-              variant={t.button}
-              size="lg"
-              fullWidth
-              icon={<WhatsAppIcon />}
-              className="mt-8"
-              onClick={closeMenu}
-            >
-              Message Us
+            <Button href={CTA.href} variant={t.button} size="lg" fullWidth icon={CTA.icon} className="mt-8" onClick={closeMenu}>
+              {CTA.label}
             </Button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import type { ButtonVariant } from "@/app/components/ui";
+import { SERVICES as SERVICE_REGISTRY, type ServiceId } from "@/lib/services";
 import webImage from "@/public/images/services/web.png";
 import backOfficeImage from "@/public/images/services/back_office.png";
 import erpImage from "@/public/images/services/erp.png";
@@ -7,8 +8,7 @@ import adTechImage from "@/public/images/services/ad_tech.png";
 
 export type ServiceTheme = "light" | "cyan" | "subtle" | "dark";
 
-export type Service = {
-  id: string;
+export type ServiceContent = {
   /** Title lines; they break onto separate lines from lg up */
   title: string[];
   description: string;
@@ -16,9 +16,10 @@ export type Service = {
   points: string[];
   image: StaticImageData;
   imageAlt: string;
-  href: string;
   theme: ServiceTheme;
 };
+
+export type Service = ServiceContent & { id: ServiceId };
 
 /** Surface colors per card. Full class strings so Tailwind can see them. */
 export const SERVICE_THEMES: Record<
@@ -55,10 +56,10 @@ export const SERVICE_THEMES: Record<
   },
 };
 
-// TODO: point `href` at the service pages once they exist (MEMORY.md §4)
-export const SERVICES: Service[] = [
-  {
-    id: "website-infrastructure",
+// Presentation only, keyed by the registry's ids: `satisfies` fails to build if a service is missing or
+// an unknown id is added here, so this and lib/services.ts can never drift apart.
+const SERVICE_CONTENT = {
+  "website-infrastructure": {
     title: ["Website", "Infrastructure"],
     description: "Build, operate and maintain the digital infrastructure your business depends on.",
     points: [
@@ -73,11 +74,9 @@ export const SERVICES: Service[] = [
     ],
     image: webImage,
     imageAlt: "Website builds: a skincare storefront, a brand landing page and an AI meeting tool homepage",
-    href: "#contact",
     theme: "light",
   },
-  {
-    id: "back-office-operations",
+  "back-office-operations": {
     title: ["Back-Office", "Operations"],
     description: "Structured operational support for the workflows that keep your business moving.",
     points: [
@@ -92,11 +91,9 @@ export const SERVICES: Service[] = [
     ],
     image: backOfficeImage,
     imageAlt: "Back-office tools: an online store, a task queue, a support inbox and a warranty request dashboard",
-    href: "#contact",
     theme: "cyan",
   },
-  {
-    id: "erp-business-systems",
+  "erp-business-systems": {
     title: ["ERP & Business", "Systems"],
     description: "Connect processes, data and systems into a more efficient operating environment.",
     points: [
@@ -111,11 +108,9 @@ export const SERVICES: Service[] = [
     ],
     image: erpImage,
     imageAlt: "Business systems: a finance app, integrations such as HubSpot, n8n and Salesforce, and an operations dashboard",
-    href: "#contact",
     theme: "subtle",
   },
-  {
-    id: "ad-tech",
+  "ad-tech": {
     title: ["Ad", "Tech"],
     description: "Operational infrastructure and execution support behind modern advertising teams.",
     points: [
@@ -130,7 +125,9 @@ export const SERVICES: Service[] = [
     ],
     image: adTechImage,
     imageAlt: "Ad campaigns: display creatives for a juice brand and a campaign manager across Google, Meta and TikTok",
-    href: "#contact",
     theme: "dark",
   },
-];
+} satisfies Record<ServiceId, ServiceContent>;
+
+// In registry order (Website Infrastructure, Back-Office Operations, ERP & Business Systems, AdTech)
+export const SERVICES: Service[] = SERVICE_REGISTRY.map(({ id }) => ({ id, ...SERVICE_CONTENT[id] }));

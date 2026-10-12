@@ -14,9 +14,9 @@ export default function CaseStudiesSection() {
             <h2 id="case-studies-title" className="type-heading-60 mt-20">
               Systems are only useful when they improve outcomes.
             </h2>
-            <p className="type-body-16 mt-32 text-fg-primary lg:mt-auto lg:pt-40">
-              AWTOMATIG works across infrastructure, operations, business systems and AdTech to turn fragmented
-              processes into clearer, more scalable ways of working.
+            <p className="type-body-16 text-fg-primary mt-32 lg:mt-auto lg:pt-40">
+              AWTOMATIG works across infrastructure, operations, business systems and AdTech to turn fragmented processes into
+              clearer, more scalable ways of working.
             </p>
           </div>
 

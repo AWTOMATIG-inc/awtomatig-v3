@@ -1,13 +1,13 @@
 import type { StaticImageData } from "next/image";
 import discover from "@/public/images/process/discover.png";
-import audit from "@/public/images/process/audit.png";
-import mapping from "@/public/images/process/mapping.png";
+import audit from "@/public/images/process/audit.jpg";
+import mapping from "@/public/images/process/mapping.jpg";
 import solution from "@/public/images/process/solution.png";
-import implementation from "@/public/images/process/implementation.png";
+import implementation from "@/public/images/process/implementation.jpg";
 import qa from "@/public/images/process/qa.png";
 import optimization from "@/public/images/process/optimization.png";
 import support from "@/public/images/process/support.png";
-import delivery from "@/public/images/process/delivery.png";
+import delivery from "@/public/images/process/delivery.jpg";
 
 export type ProcessStep = {
   name: string;
@@ -58,8 +58,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   {
     name: "Implementation",
     title: "Turn the plan into a working solution.",
-    description:
-      "We build, configure, connect and operationalize the agreed solution across the required systems and workflows.",
+    description: "We build, configure, connect and operationalize the agreed solution across the required systems and workflows.",
     tags: ["Build", "Configure", "Integrate", "Automate", "Migrate"],
     output: "A working production-ready solution.",
     image: implementation,

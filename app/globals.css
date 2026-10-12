@@ -90,7 +90,14 @@
 
   /* ---------- Effects: glass material (navbar pill, mobile menu) — applied with the `glass` utility ---------- */
   --glass-fill:
-    linear-gradient(180deg, rgb(255 255 255 / 0.03) 0%, rgb(255 255 255 / 0.025) 15%, transparent 45%, transparent 60%, rgb(255 255 255 / 0.035) 100%),
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.03) 0%,
+      rgb(255 255 255 / 0.025) 15%,
+      transparent 45%,
+      transparent 60%,
+      rgb(255 255 255 / 0.035) 100%
+    ),
     linear-gradient(90deg, rgb(0 0 0 / 0.14) 0%, transparent 18%, transparent 82%, rgb(255 255 255 / 0.025) 100%),
     rgb(16 24 26 / 0.45);
   --glass-fill-dense: rgb(18 26 28 / 0.82); /* for panels that sit over content, e.g. the mobile menu */
@@ -135,8 +142,7 @@
     ),
     radial-gradient(ellipse 97% 27.5% at 50% 100%, rgb(2 213 232 / 0.25), transparent),
     linear-gradient(to bottom, var(--color-charcoal) 20%, rgb(30 30 30 / 0) 100%),
-    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px),
-    var(--color-charcoal);
+    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px), var(--color-charcoal);
 
   /* ---------- Effects: About "How we think" logo card, measured from the screenshot; the bg-logo-card utility.
      A cyan glow on the right edge (ellipse 60% × 45% at 100% 74%, alpha 0.72 → 0), over the same 35px ribs as the ecosystem card. ---------- */
@@ -150,8 +156,19 @@
       rgb(2 213 232 / 0.07) 90%,
       transparent 100%
     ),
-    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px),
-    var(--color-charcoal);
+    repeating-linear-gradient(90deg, transparent -17.25px, rgb(255 255 255 / 0.028) 17.5px), var(--color-charcoal);
+
+  /* ---------- Effects: Home "Trusted operations" section, sampled from the screenshot. The section backdrop is a LinesBackground preset (trustedLines.ts). `bg-trusted-card`: the
+     stats card's cyan glow from its top-right corner (ellipse 58% × 36%, alpha 0.82 → 0). ---------- */
+  --gradient-trusted-card: radial-gradient(
+    ellipse 52% 34% at 100% 0,
+    rgb(2 213 232 / 0.82) 0,
+    rgb(2 213 232 / 0.8) 20%,
+    rgb(2 213 232 / 0.74) 37%,
+    rgb(2 213 232 / 0.33) 57%,
+    rgb(2 213 232 / 0.12) 80%,
+    transparent 100%
+  );
 
   /* ---------- Effects: Display text gradient (white → pale cyan) — the `text-gradient-display` utility ---------- */
   --gradient-display: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
@@ -365,13 +382,11 @@
   line-height: 1.2;
   font-weight: 400;
 }
-@utility type-label-16-upper {
+@utility type-caption-10 {
   font-family: var(--font-sans);
-  font-size: calc(var(--u, 0.0625rem) * 16);
+  font-size: calc(var(--u, 0.0625rem) * 10);
   line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
+  font-weight: 500;
 }
 @utility type-label-16 {
   font-family: var(--font-sans);
@@ -400,6 +415,15 @@
   white-space: nowrap;
   margin-inline-start: -0.013em;
   margin-bottom: -0.136em;
+}
+
+/* Hides the native scrollbar on a scroll container that draws its own progress UI (testimonials track) */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Horizontal soft edges: the content fades out over the first and last 10% (logo slider) */
@@ -483,6 +507,19 @@
 /* The About logo card's glow and ribs (see --gradient-logo-card) */
 @utility bg-logo-card {
   background: var(--gradient-logo-card);
+}
+
+/* Home "Trusted operations": the stats card's top-right glow (see the --gradient-trusted-* tokens) */
+@utility bg-trusted-card {
+  background: var(--gradient-trusted-card), var(--color-charcoal);
+}
+
+/* Soft diagonal streaks in the current color, strongest in the top-right corner (the glow of the Trusted operations card):
+   `diag-ribs text-white/12`. A few thin lines, 44px apart, rising to the right (35°), reaching well beyond the glow. */
+@utility diag-ribs {
+  background-image: repeating-linear-gradient(125deg, transparent 0 43px, currentColor 43px 44px);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 100% 0, black, transparent);
+  mask-image: radial-gradient(ellipse 85% 75% at 100% 0, black, transparent);
 }
 
 /* Nine dashed vertical lines in the current color, spread edge to edge and brightening to the right (About logo card):

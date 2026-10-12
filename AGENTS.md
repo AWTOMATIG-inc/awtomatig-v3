@@ -16,12 +16,16 @@ Marketing site for AWTOMATIG, built with Next.js 16 (App Router, Turbopack), Rea
 
 - `npm run dev`: start the dev server
 - `npm run build`: production build. Run it to verify changes.
-- `npm run lint`: ESLint, then `scripts/check-tokens.mjs`. It fails on any `.css` file under `app/components` that isn't an allowlisted effect file, and on raw color literals in effect CSS.
+- `npm run lint`: ESLint, then `scripts/check-tokens.mjs`, then `prettier --check .` (`format:check`). It fails on any `.css` file under `app/components` that isn't an allowlisted effect file, on raw color literals in effect CSS, and on unformatted files.
+- `npm run format`: applies Prettier (`prettier-plugin-tailwindcss` sorts class lists) to everything except `public/`, `.next/` and `*.md`. Run it after writing code, before `npm run lint`.
 
 ## Structure
 
-- `app/layout.tsx`: root layout. Loads the Inter and Inter Tight fonts through `next/font/google`.
-- `app/page.tsx`: home page; `app/services/page.tsx`: Services page. Pages only compose `<Header />`, section components and `<Footer />`. Nav and footer links are routes (`/`, `/services`) or `/#…` anchors for sections that only exist on Home.
+- `app/layout.tsx`: root layout. Loads the Inter and Inter Tight fonts through `next/font/google`, and sets the site-wide metadata (`metadataBase`, the `%s | AWTOMATIG` title template, Open Graph) and the Organization JSON-LD.
+- `app/(site)/`: a route group holding every public page (`page.tsx` for Home, `about/`, `services/`, `process/`, `case-studies/`, `contact/`, `privacy/`, `terms/`) plus `layout.tsx`, which renders `<Header />`, `<main>` and `<Footer />` once for all of them. **A page under `app/(site)/` returns only its sections** (no `<Header>`/`<Footer>`/`<main>` — the layout already provides those) and exports `metadata = pageMetadata({ title, description, path })` from `@/lib/metadata` (title is the short page name; the template adds the brand). The parentheses don't appear in the URL. Nav and footer links are routes or `/#…` anchors for sections that only exist on Home. Every "Start a conversation" goes to `/contact`.
+- `app/not-found.tsx`: the branded 404, outside the route group (Next.js falls back to it for any unmatched URL, which never goes through `(site)/layout.tsx`), so it composes `<Header />` / `<Footer />` itself.
+- `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`: SEO file conventions. Add every new public route to `SITE.nav` / `SITE.legal` in `lib/site.ts` so it reaches the sitemap.
+- `lib/`: non-UI code. `lib/site.ts` is the site configuration (name, URL, email, WhatsApp / social / legal links, nav, which routes get the light navbar, public routes, the capability tags); `lib/services.ts` is the one list of services (id, name, short label) — derive a service name or filter list from it rather than writing it again; `lib/metadata.ts` builds per-page metadata. Never hard-code the email, a WhatsApp link, a service name or a `#` placeholder in a component: optional links are `undefined` in `SITE` until real, and components render them only when set.
 - `app/globals.css`: design tokens (`@theme`), `site-container`, text-style utilities (`@utility type-*`), shared utilities (`glass`, `frame-scale`, …), base styles, and the `@import` list of the effect CSS files
 - `app/components/ui/`: reusable primitives (`Button`, `Eyebrow`, …), imported from `@/app/components/ui`
 - `app/components/icons/`: SVG icon components, imported from `@/app/components/icons`

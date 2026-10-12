@@ -28,7 +28,7 @@ export default function IntroSection({ id, eyebrow, title, lead, markPosition = 
   const paragraphs = Array.isArray(lead) ? lead : [lead];
 
   return (
-    <section id={id} aria-labelledby={titleId} className="relative overflow-hidden bg-surface-subtle text-fg-strong">
+    <section id={id} aria-labelledby={titleId} className="bg-surface-subtle text-fg-strong relative overflow-hidden">
       {/* Brand mark, cropped by the top edge; smaller below xl so it clears the paragraph */}
       <Image
         src={Decor}
@@ -43,7 +43,7 @@ export default function IntroSection({ id, eyebrow, title, lead, markPosition = 
           <h2 id={titleId} className="type-heading-60">
             {title}
           </h2>
-          <div className="type-body-16 mt-20 max-w-640 space-y-12 text-fg-muted lg:type-body-22 lg:mt-32 lg:max-w-none lg:space-y-10">
+          <div className="type-body-16 text-fg-muted lg:type-body-22 mt-20 max-w-640 space-y-12 lg:mt-32 lg:max-w-none lg:space-y-10">
             {paragraphs.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}

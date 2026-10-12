@@ -18,28 +18,30 @@ export default function CaseStudyRow({ study }: { study: CaseStudy }) {
       />
 
       <div className="xl:col-start-1 xl:row-start-1">
-        <p className="type-heading-20 tracking-tight text-fg-strong">{study.challenge}</p>
+        <p className="type-heading-20 text-fg-strong tracking-tight">{study.challenge}</p>
 
         <ul aria-label="Scope" className="mt-20 flex flex-wrap gap-8">
           {study.tags.map((tag) => (
-            <li key={tag} className="type-caption-12 flex h-31 items-center rounded-6 bg-surface px-12 text-fg-strong">
+            <li key={tag} className="type-caption-12 rounded-6 bg-surface text-fg-strong flex h-31 items-center px-12">
               {tag}
             </li>
           ))}
         </ul>
 
         {/* No column gap, so the hairline between the rows runs across the panel */}
-        <dl className="mt-38 grid grid-cols-2 border-t border-border">
-          {study.stats.map((stat, i) => (
-            <div
-              key={`${stat.label}-${i}`}
-              className="flex flex-col-reverse justify-end pt-26 pb-32 even:pl-24 nth-[n+3]:border-t nth-[n+3]:border-border nth-[n+3]:pb-0"
-            >
-              <dt className="type-body-16-compact mt-6 max-w-135 text-fg-muted">{stat.label}</dt>
-              <dd className="type-heading-50 font-normal text-fg-strong">{stat.value}</dd>
-            </div>
-          ))}
-        </dl>
+        {study.stats && study.stats.length > 0 && (
+          <dl className="border-border mt-38 grid grid-cols-2 border-t">
+            {study.stats.map((stat, i) => (
+              <div
+                key={`${stat.label}-${i}`}
+                className="nth-[n+3]:border-border flex flex-col-reverse justify-end pt-26 pb-32 even:pl-24 nth-[n+3]:border-t nth-[n+3]:pb-0"
+              >
+                <dt className="type-body-16-compact text-fg-muted mt-6 max-w-135">{stat.label}</dt>
+                <dd className="type-heading-50 text-fg-strong font-normal">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
 
       <div className="xl:col-start-3 xl:row-start-1">

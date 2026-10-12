@@ -1,0 +1,43 @@
+export const SITE = {
+  name: "AWTOMATIG",
+  url: "https://awtomatig.com",
+  title: "AWTOMATIG: The operational layer behind modern businesses",
+  description:
+    "AWTOMATIG connects people, process, systems and technology into one scalable ecosystem: websites, back-office operations, ERP and business systems, and AdTech.",
+  email: "hello@awtomatig.com",
+  whatsappUrl: "https://wa.me/8801753538760" as string | undefined,
+  social: {
+    linkedin: "https://www.linkedin.com/company/awtomatig/" as string | undefined,
+    instagram: "https://www.instagram.com/awtomatig/" as string | undefined,
+    x: "https://x.com/awtomatig86939" as string | undefined,
+    medium: "https://medium.com/@awtomatig" as string | undefined,
+    awlabs: "https://awlabs.online/" as string | undefined,
+  },
+  // The navbar's link list (Header and the footer's "Pages" column both read this).
+  nav: [
+    { href: "/", label: "Home" },
+    { href: "/services", label: "Services" },
+    { href: "/case-studies", label: "Case Studies" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ],
+  legal: [
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms & Conditions" },
+  ],
+  /** Routes that use the light navbar (white / off-white pages); every other route gets the dark one */
+  lightRoutes: ["/contact", "/privacy", "/terms"] as string[],
+};
+
+/** The footer's "Pages" column: SITE.nav plus Process, which is deliberately left out of the navbar. */
+export const FOOTER_PAGES = [...SITE.nav.slice(0, 3), { href: "/process", label: "Process" }, ...SITE.nav.slice(3)];
+
+export const MAILTO = `mailto:${SITE.email}`;
+
+/** Public routes, used by the sitemap */
+export const ROUTES = [...SITE.nav, { href: "/process", label: "Process" }]
+  .map((link) => link.href)
+  .concat(SITE.legal.map((link) => link.href));
+
+/** Capability tags shown in the hero and the shared CTA strip (not services: see lib/services.ts) */
+export const CAPABILITY_TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdTech"];
