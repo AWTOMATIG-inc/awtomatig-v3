@@ -39,11 +39,11 @@ const VARIANTS: Record<ButtonVariant, string> = {
   // Cyan fill, black label. One per viewport.
   primary:
     "border-transparent bg-action-primary text-on-action hover:-translate-y-1 hover:bg-action-primary-bright hover:shadow-glow-strong",
-  // Translucent deep teal with a hairline border. Dark surfaces only.
+  // Translucent deep teal with a hairline border. Dark surfaces only. bg-clip-padding keeps the gradient out of the border box, where it would tile and draw a 1px line of its top color along the bottom edge.
   glass:
-    "border-white/12 bg-linear-to-b from-deep-teal/45 to-deep-teal/5 text-fg-inverse hover:-translate-y-1 hover:border-white/20 hover:bg-deep-teal/40 hover:shadow-glow-subtle",
+    "border-white/12 bg-clip-padding bg-linear-to-b from-deep-teal/45 to-deep-teal/5 text-fg-inverse hover:-translate-y-1 hover:border-white/20 hover:bg-deep-teal/40 hover:shadow-glow-subtle",
   // Borderless dark tint over the surface behind it. Dark or glass surfaces (navbar).
-  tint: "border-transparent bg-linear-to-b from-black/25 via-black/35 via-45% to-black/30 text-fg-inverse hover:-translate-y-1 hover:bg-black/12",
+  tint: "border-transparent bg-clip-padding bg-linear-to-b from-black/25 via-black/35 via-45% to-black/30 text-fg-inverse hover:-translate-y-1 hover:bg-black/12",
   // Charcoal fill, white label. Light or cyan surfaces.
   dark: "border-transparent bg-surface-inverse text-fg-inverse hover:-translate-y-1 hover:bg-black",
   // White fill, black label. Dark or off-white surfaces.

@@ -193,9 +193,12 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-8">
-            <Button href={CTA.href} variant={t.button} size="nav" icon={CTA.icon} className="lg:w-142" onClick={closeMenu}>
-              {CTA.label}
-            </Button>
+            {/* From lg only: below it the same CTA is the last item of the dropdown */}
+            <div className="max-lg:hidden">
+              <Button href={CTA.href} variant={t.button} size="nav" icon={CTA.icon} className="lg:w-142" onClick={closeMenu}>
+                {CTA.label}
+              </Button>
+            </div>
 
             {/* 36px visual, 44px touch target (before:-inset-4) */}
             <button
