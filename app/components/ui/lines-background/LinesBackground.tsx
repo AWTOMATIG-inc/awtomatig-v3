@@ -29,6 +29,8 @@ export type LinesPreset = {
   mask: { rx: number; ry: number; origin?: [x: number, y: number]; stops: [radius: number, strength: number][] };
   /** Where the "pointer" rests when nobody hovers (fraction of width / height), away from the lasers */
   rest: [x: number, y: number];
+  /** Colour and opacity along a laser (see LASER_STOPS); omit for the default near-white head */
+  laserStops?: [offset: number, color: RGB, alpha: number][];
 };
 
 type Stripe = { dist: number; width: number; isLaser: boolean; alpha: number; fadeLength?: number };
@@ -49,8 +51,13 @@ const LASER_STOPS: [offset: number, color: RGB, alpha: number][] = [
   [1, [2, 180, 200], 0],
 ];
 
+// The compact preset (when given) replaces the main one on phones, below the md breakpoint
+const WIDE_QUERY = "(min-width: 48rem)";
+
 type LinesBackgroundProps = {
   preset: LinesPreset;
+  /** Art for phones (below md), measured from the mobile design; the section's gradient switches in CSS */
+  compact?: LinesPreset;
   id?: string;
   /** Layout of the section (display, min-height…). Positioning and clipping are built in. */
   className?: string;
@@ -68,6 +75,7 @@ type LinesBackgroundProps = {
  */
 export default function LinesBackground({
   preset,
+  compact,
   id,
   className,
   "data-hero": dataHero,
@@ -87,15 +95,27 @@ export default function LinesBackground({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const { angleDeg, bandPeriod, bandAlpha, lasers, mask, rest } = preset;
-    const rad = (angleDeg * Math.PI) / 180;
-    const dirX = Math.cos(rad);
-    const dirY = Math.sin(rad);
+    // The active preset follows the layout; applyPreset() re-derives everything that depends on it
+    const wide = window.matchMedia(WIDE_QUERY);
+    let cfg = preset;
+    let dirX = 0;
+    let dirY = 0;
     // Normal vector (perpendicular to the lines, pointing away from the top-right corner)
-    const normX = -Math.sin(rad);
-    const normY = Math.cos(rad);
-    const bandOrigin = lasers[0]?.dist ?? 0;
-    const laserStripes: Stripe[] = lasers.map((l) => ({ ...l, isLaser: true }));
+    let normX = 0;
+    let normY = 0;
+    let bandOrigin = 0;
+    let laserStripes: Stripe[] = [];
+    const applyPreset = () => {
+      cfg = compact && !wide.matches ? compact : preset;
+      const rad = (cfg.angleDeg * Math.PI) / 180;
+      dirX = Math.cos(rad);
+      dirY = Math.sin(rad);
+      normX = -Math.sin(rad);
+      normY = Math.cos(rad);
+      bandOrigin = cfg.lasers[0]?.dist ?? 0;
+      laserStripes = cfg.lasers.map((l) => ({ ...l, isLaser: true }));
+    };
+    applyPreset();
 
     let width = 0;
     let height = 0;
@@ -111,11 +131,12 @@ export default function LinesBackground({
     const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, isHovered: false };
 
     const resetPointerTarget = () => {
-      pointer.targetX = width * rest[0];
-      pointer.targetY = height * rest[1];
+      pointer.targetX = width * cfg.rest[0];
+      pointer.targetY = height * cfg.rest[1];
     };
 
     const onResize = () => {
+      applyPreset();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = section.clientWidth;
       height = section.clientHeight;
@@ -134,14 +155,19 @@ export default function LinesBackground({
         [-width, height],
         [0, height],
       ].map(([x, y]) => (x * normX + y * normY) / scale);
+      const { bandPeriod, bandAlpha } = cfg;
       const first = Math.floor((Math.min(...corners) - bandOrigin) / bandPeriod) - 1;
       const last = Math.ceil((Math.max(...corners) - bandOrigin) / bandPeriod) + 1;
-      const bands = Array.from({ length: last - first + 1 }, (_, i): Stripe => ({
-        dist: bandOrigin + (first + i) * bandPeriod,
-        width: bandPeriod,
-        isLaser: false,
-        alpha: bandAlpha,
-      }));
+      // No bands at all when the preset has none (the phone hero shows only a laser)
+      const bands =
+        bandAlpha > 0
+          ? Array.from({ length: last - first + 1 }, (_, i): Stripe => ({
+              dist: bandOrigin + (first + i) * bandPeriod,
+              width: bandPeriod,
+              isLaser: false,
+              alpha: bandAlpha,
+            }))
+          : [];
       stripes = [...bands, ...laserStripes];
 
       // Resizing clears the canvas: repaint at once when the loop isn't running
@@ -184,7 +210,7 @@ export default function LinesBackground({
 
       const lines = stripes.map((stripe) => {
         // Phase comes from the position, so a laser sways with its band and the bands stay evenly spaced
-        const phase = stripe.dist / bandPeriod;
+        const phase = stripe.dist / cfg.bandPeriod;
 
         // Continuous organic harmonic wave undulation
         const wave1 = Math.sin(time * 1.25 + phase * 0.12);
@@ -257,6 +283,7 @@ export default function LinesBackground({
       // Band strength across the section, measured from the design
       ctx.save();
       ctx.globalCompositeOperation = "destination-in";
+      const { mask } = cfg;
       const [maskX, maskY] = mask.origin ?? [1, 0];
       ctx.setTransform(dpr * width * mask.rx, 0, 0, dpr * height * mask.ry, dpr * width * maskX, dpr * height * maskY);
       const maskGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
@@ -284,7 +311,7 @@ export default function LinesBackground({
 
         // Linear gradient along the laser: near-white at the frame edge, through cyan, fading out
         const laserGrad = ctx.createLinearGradient(exitX, exitY, exitX - dirX * fade, exitY - dirY * fade);
-        for (const [offset, [r, g, b], a] of LASER_STOPS) {
+        for (const [offset, [r, g, b], a] of cfg.laserStops ?? LASER_STOPS) {
           laserGrad.addColorStop(offset, `rgba(${r}, ${g}, ${b}, ${a * laserAlpha})`);
         }
 
@@ -355,7 +382,7 @@ export default function LinesBackground({
       section.removeEventListener("touchmove", onTouch);
       section.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, [preset]);
+  }, [preset, compact]);
 
   return (
     <section
@@ -363,8 +390,8 @@ export default function LinesBackground({
       id={id}
       data-hero={dataHero}
       aria-labelledby={labelledBy}
-      className={`relative overflow-hidden ${className ?? ""}`}
-      style={{ background: preset.background } as CSSProperties}
+      className={`lines-bg relative overflow-hidden ${className ?? ""}`}
+      style={{ "--lines-bg": preset.background, "--lines-bg-compact": (compact ?? preset).background } as CSSProperties}
     >
       {/* Soft cyan bloom in the top-right corner, drifts with the pointer */}
       <div ref={glowRef} className="lines-bg-glow" aria-hidden="true" />

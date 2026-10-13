@@ -219,10 +219,11 @@
    scale fluidly down from their 1440px-frame size; the fixed sizes
    follow the frame scale (--u) when one is set. */
 
-/* Two-stage curve: 42px → 10vw → 72px on phones/tablets, then tracks the 1440 frame from lg (72 → 100px) */
+/* Two-stage curve: 42px → 13.15vw → 72px on phones/tablets (53.7px at the 408px mobile frame), then tracks the 1440
+   frame from lg (72 → 100px) */
 @utility type-display-100 {
   font-family: var(--font-display);
-  font-size: clamp(2.625rem, 10vw, 4.5rem);
+  font-size: clamp(2.625rem, 13.15vw, 4.5rem);
   line-height: 0.99;
   letter-spacing: -0.04em;
   font-weight: 500;
@@ -277,6 +278,14 @@
   font-family: var(--font-display);
   font-size: calc(var(--u, 0.0625rem) * 24);
   line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+/* Heading / 15 (phone hero strip title), measured from the 408px mobile frame */
+@utility type-heading-15 {
+  font-family: var(--font-display);
+  font-size: calc(var(--u, 0.0625rem) * 15);
+  line-height: 1.3;
   letter-spacing: -0.01em;
   font-weight: 500;
 }
@@ -357,6 +366,14 @@
   line-height: 1.5;
   font-weight: 400;
 }
+/* Body / fluid (phone hero paragraph), measured from the 408px mobile frame (13.3-13.5px there, lines break the
+   same way at 13.5px), 13px minimum, 16px from 483px up. Pair it with a `lg:type-body-20`-style desktop style. */
+@utility type-body-fluid {
+  font-family: var(--font-sans);
+  font-size: clamp(0.8125rem, 3.31vw, 1rem);
+  line-height: 1.5;
+  font-weight: 400;
+}
 @utility type-body-16 {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 16);
@@ -398,6 +415,13 @@
 @utility type-label-16 {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 16);
+  line-height: 1.2;
+  font-weight: 600;
+}
+/* Label / 12 (phone hero eyebrow), measured from the 408px mobile frame: 12.4px */
+@utility type-label-12 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 12.4);
   line-height: 1.2;
   font-weight: 600;
 }

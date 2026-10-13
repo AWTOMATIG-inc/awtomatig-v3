@@ -54,8 +54,8 @@ const VARIANTS: Record<ButtonVariant, string> = {
 
 const SIZES: Record<ButtonSize, { root: string; icon: string; label?: string }> = {
   md: { root: "h-40 rounded-6 gap-10 px-16 text-button-md", icon: "size-16" },
-  // 50px below the desktop breakpoint
-  lg: { root: "h-50 rounded-6 gap-10 px-16 text-button-md lg:h-54 lg:px-24 lg:text-button-lg", icon: "size-18" },
+  // 54px with the 15px label on every screen (the 408px mobile hero measures the same as desktop)
+  lg: { root: "h-54 rounded-6 gap-10 px-16 text-button-lg lg:px-24", icon: "size-18" },
   // Case study cards: 46px with the lg label (measured from the screenshot); 50px below the desktop breakpoint
   card: { root: "h-50 rounded-6 gap-14 px-24 text-button-md lg:h-46 lg:text-button-lg", icon: "size-18" },
   // Footer CTA stack: Figma 56px, radius/12, 20px icon, 14px gap

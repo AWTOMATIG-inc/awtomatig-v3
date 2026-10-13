@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { ArrowDownIcon } from "@/app/components/icons";
 import { Button, Eyebrow, LinesBackground } from "@/app/components/ui";
 import { SERVICES } from "@/lib/services";
-import { HERO_LINES } from "./heroLines";
+import { HERO_LINES, HERO_LINES_COMPACT } from "./heroLines";
 
 // Listed column by column: the desktop grid flows top-to-bottom in two rows
 const SERVICE_AREAS = SERVICES.map((service) => service.name);
@@ -41,7 +41,7 @@ export default function PageHero({
   areas = SERVICE_AREAS,
 }: PageHeroProps) {
   return (
-    <LinesBackground preset={HERO_LINES} id={id} data-hero className="hero flex min-h-svh flex-col">
+    <LinesBackground preset={HERO_LINES} compact={HERO_LINES_COMPACT} id={id} data-hero className="hero flex min-h-svh flex-col">
       <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pt-140 lg:pb-113">
         <Eyebrow className="text-fg-inverse">{eyebrow}</Eyebrow>
 

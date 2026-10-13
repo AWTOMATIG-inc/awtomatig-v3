@@ -5,6 +5,15 @@
   /* Atmospheric art sampled from the design, exempt from the token check. */
   /* token-check: off */
 
+  /* Base gradient: the compact preset's on phones, the main one from md (both are preset strings, see LinesBackground.tsx) */
+  .lines-bg {
+    background: var(--lines-bg-compact);
+
+    @variant md {
+      background: var(--lines-bg);
+    }
+  }
+
   /* Soft cyan bloom in the top-right corner; JS sets --glow-x / --glow-y as it drifts with the pointer */
   .lines-bg-glow {
     position: absolute;
