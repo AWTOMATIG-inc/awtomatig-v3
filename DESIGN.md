@@ -152,6 +152,8 @@ The fixed sizes (24px and below) are written as `calc(var(--u, 0.0625rem) * N)`.
 | Body / 15 | `type-body-15` | Inter | 15px | 1.50 | 0 | 400 (step counter, measured) |
 | Numeral | `type-numeral` | Inter Tight | 408 → 160px | 1.00 | 0 | 200 (oversized step number, 28.33vw) |
 | Caption / 12 | `type-caption-12` | Inter | 12px | 1.20 | 0 | 400 (measured from the case study screenshot; used `uppercase` for meta labels) |
+| Body / 12 | `type-body-12` | Inter | 12px | 1.20 | 0 | 400 (Figma name; `type-caption-12` is an identical alias kept for existing markup) |
+| Label / 16 Upper | `type-label-16-upper` | Inter | 16px | 1.20 | 0 | 600, uppercase |
 | Label / 16 | `type-label-16` | Inter | 16px | 1.20 | 0 | 600 |
 | Label / 14 | `type-label-14` | Inter | 14px | 1.20 | 0 | 600 |
 
@@ -190,16 +192,18 @@ The specimen text from Figma shows how each group is meant to be used: Display (
 
 | Group | Values (px) | Use for |
 | --- | --- | --- |
+| **Hairline** | `2`, `4` | Dividers, dots, fine offsets |
 | **Component (tight)** | `6`, `8`, `10`, `12`, `16` | Icon ↔ label gaps, padding inside controls, gaps between list items |
-| **Group** | `20`, `32`, `40` | Card padding, gaps between related blocks, form rows |
-| **Section** | `50`, `60` | Vertical rhythm between sections, page gutters on desktop |
-| *Observed only* | `7`, `21`, `25`, `29`, `46`, `52` | Present in the Figma homepage. Use only to match an existing frame exactly; do not use in new work. |
+| **Group** | `20`, `24`, `28`, `32`, `40`, `44`, `48` | Card padding, gaps between related blocks, form rows |
+| **Block** | `52`, `56`, `60`, `64`, `68`, `72`, `76`, `80` | Heading → content gaps, vertical rhythm between blocks, page gutters on desktop (60) |
+| **Section** | `100`, `120` | Vertical padding of full sections |
+| *Observed only* | `7`, `21`, `25`, `29`, `46`, `50` | Measured in older frames, not in the Figma scale (2026-10-13 update: Figma lists 2, 4, 6, 8, 12, 16, 24, 28, 32, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 100, 120; `10`, `20` and `50` stay allowed because the code uses them widely). Use only to match an existing frame exactly; do not use in new work. |
 | *Frame-scaled* | any Figma px | Only in the desktop composition of a frame-scaled section (header, hero; §9.2), where values are copied verbatim from Figma (`gap-36`, `w-250`, `h-102`) because they scale with the frame. Mobile layouts of those sections still use the scale. |
 
 ### 5.2 Spacing rules
 
 - Use only values from the scale. `p-13` and `mt-[37px]` are not allowed.
-- Spacing between elements grows with their conceptual distance: related items close (6–16), groups apart (20–40), sections far (50–60+).
+- Spacing between elements grows with their conceptual distance: related items close (6–16), groups apart (20–48), blocks far (52–80), sections farthest (100–120).
 - Prefer `gap-*` on flex or grid parents over margins on children.
 - Section vertical padding: **60px+** on desktop and **40px** on mobile.
 
@@ -215,11 +219,25 @@ The specimen text from Figma shows how each group is meant to be used: Display (
 | `radius/12` | `rounded-12` | Standard cards, popovers, mobile menu |
 | `radius/16` | `rounded-16` | Large cards, media frames |
 | `radius/34` | `rounded-34` | Expressive panels: hero mockups, feature showcases |
-| `radius/90` | `rounded-90` | Pills and capsules (badges, chips, pill buttons) |
+| `radius/60` | `rounded-60` | Figma "Full": tags and fully rounded shapes (replaced `radius/90`, which no markup used) |
 
 `rounded-none` and `rounded-full` (perfect circles: avatars, icon buttons) are also available.
 
 **Rules:** nested radii shrink inward (inner radius = outer radius − padding). Don't mix pill and square controls in the same group.
+
+### 6.1 Background system (Figma "06 / Backgrounds")
+
+Page rhythm comes from full-width section fields, not from decorative gradients inside every block.
+
+| Field | Token | Used for |
+| --- | --- | --- |
+| Dark hero / CTA ("charcoal + teal atmosphere") | `surface-inverse` + `LinesBackground` | Hero and CTA sections |
+| White service | `surface` | Website Infrastructure and ERP sections |
+| Cyan service | `action-primary` | Back-Office Operations |
+| Dark service | `surface-inverse` / `surface-deep` | AdTech and trust sections |
+| Editorial light | `surface-subtle` | Connected operations, complexity, principles |
+
+In-block art (card glows, ribs, dot grids) is allowed only as a measured design detail inside a card, never as the section's own background.
 
 ---
 
@@ -308,7 +326,7 @@ Current usage: the navbar wraps its pill in a `site-container` inside the full-w
 | Rule | Detail |
 | --- | --- |
 | Site edges (side padding) | Built into `site-container`: the **navbar pill's outer edges**, `--site-edge-start` / `--site-edge-end`. That is **16px** below 1024px, and **49 / 60 Figma px** from 1024px up, scaled with the viewport like the header (`clamp(0.85px, 100vw / 1440, 1px)`, so 49 / 60px at 1440). All text (navbar, hero, cards) starts and ends on these two lines. Safe-area insets (`env(safe-area-inset-*)`) are included automatically. |
-| Breaking out | Content must not invent its own side padding. Only an element that deliberately extends past the edges sets `--gutter-start` / `--gutter-end`, derived from the site edges, and pads its content back onto them (the service panel: `--panel-bleed`, 8px on mobile and 40 frame px on desktop). Don't add `px-*` to the container. |
+| Breaking out | Content must not invent its own side padding. Only an element that deliberately extends past the edges sets `--gutter-start` / `--gutter-end`, derived from the site edges, and pads its content back onto them (the service panel: `--panel-margin`, its distance from the card edge, 8px on mobile and 20 frame px on desktop, equal on both sides; its padding is the site edge minus that margin). Don't add `px-*` to the container. |
 | Don't nest | Never put a `site-container` inside another one. |
 | Never cap the section | Don't put `max-w-*` or `site-container` on the element that carries a background. |
 | Fixed elements | A fixed or sticky bar (like the header) is full-width; its inner content uses `site-container`. |
@@ -570,7 +588,7 @@ Rules:
 | **Light navbar** | `Header` reads `usePathname()` against `SITE.lightRoutes` (`lib/site.ts`) and picks the `light` theme on white / off-white pages (Contact, Privacy, Terms) with no prop to set: the `light` theme map in `Header.tsx` swaps in the dark logo, `text-fg-strong` links (hover dims to 60%, since cyan text is not allowed on light), the `light` Button, a `glass glass-light` pill and mobile menu (`--glass-fill-light*`, `--glass-border-light`, `--shadow-glass-light`) and black toggle bars. Everything else is the dark navbar. Add a route to `lightRoutes` to give it the light theme. |
 | **Glass nav pill** | Transparent at the top of the page; once scrolled or opened, the `glass` material (§7.3) fades in on an `aria-hidden` span behind the pill (`rounded-10`, `group-data-scrolled:opacity-100`). |
 | **Hide-on-scroll header** | Once the page's hero (`[data-hero]`) has been scrolled past (the first 120px on a page without one), the header slides up and fades out (`data-hidden`, 450ms `ease-out-quint`) after 8px of scrolling down, and returns after 8px of scrolling up. It never hides while the mobile menu is open, and it reappears when it receives keyboard focus. |
-| **Footer** | Off-white (`surface-subtle`) on the site edges, three bands split by `border-border` hairlines. (1) Dark logo (`awtomatig-full-logo-dark.png`, 72px tall), a `type-heading-60` statement (`max-w-[8em]`, so it breaks in the same places at every size) and a `type-body-16` intro aligned to the statement's bottom. Desktop columns are 346 / 565 / 409 fr. (2) Three link columns in `type-heading-24` (`type-heading-20` below `lg`, 46px touch targets) and a stack of three `xl` buttons (primary, light + WhatsApp, outline + mail), 12px apart. Desktop columns are 281 / 396 / 234 / 409 fr, and the button tops align with the link cap height. (3) Copyright and legal links in `type-body-16`, then the uppercase `AWTOMATIG` wordmark (`type-wordmark`): Inter Tight 500, -0.02em (the W and T collide at -0.04em), 17.9cqw so the ink spans the container edge to edge, with its baseline on the footer's bottom edge. |
+| **Footer** | Off-white (`surface-subtle`) on the site edges, three bands split by `border-border` hairlines. (1) Dark logo (`awtomatig-full-logo-dark.png`, 72px tall), a `type-heading-60` statement (`max-w-[8em]`, so it breaks in the same places at every size) and a `type-body-16` intro aligned to the statement's bottom. Desktop columns are 346 / 565 / 409 fr. (2) Three link columns in `type-heading-24` (`type-heading-20` below `lg`, 46px touch targets) and a stack of three `xl` buttons (primary, light + WhatsApp, outline + mail), 12px apart. Desktop columns are 281 / 396 / 234 / 409 fr, and the button tops align with the link cap height. (3) Copyright and legal links in `type-body-16`, then the uppercase `AWTOMATIG` wordmark (`type-wordmark`): Inter Tight 500, kerning and tracking off, 17.734cqw so the ink spans the container edge to edge (within 0.1px; the letters are spans in `Wordmark.tsx` with a measured space after each, so every pair has the same optical gap), with its baseline on the footer's bottom edge. |
 | **Eyebrow / badge** | `<Eyebrow>` (`ui/eyebrow/`): brand mark (16×22) + `type-label-14 uppercase`, 12px gap, above a Display or Heading. The text color is inherited (`className="text-fg-inverse"` on dark). On a cyan surface the cyan mark vanishes, so pass `markClassName="brightness-0 invert opacity-80"` (a white mark, as in the Vision card). Next to a `type-heading-60` title, give it `self-start lg:mt-10` so the mark's top lines up with the title's cap height. |
 | **Pillar grid** | Home Operations: four columns (`lg:grid-cols-4 lg:gap-70`), each split by a 1px `bg-border` divider centred in the gap (`lg:not-first:before:-left-35`). Each pillar has a 48px white icon tile (`rounded-8`, 28px icon), its number `01`–`04` top-right in `type-body-16 text-black/40`, a `type-heading-28` title 48px below the tile, and a `type-body-16` description. |
 | **Problem card** | Home Operations, four cards (Disconnected systems, Limited visibility, Manual workflows, Unclear ownership): `md:grid-cols-2 xl:grid-cols-4`, 20px gap. White card, `rounded-16`, a 3px white border around an off-white illustration panel, then a `type-heading-22` title and a `type-body-16` description (`mt-8 max-w-268`, which makes the lines wrap like the design), with 20px padding (16 below). The panel is a fixed 309×253 composition drawn 1:1 in design px inside `mockup-scale` (`[--mockup-w:309]`; the panel is an `@container`): spacing and fixed `type-*` sizes shrink with the card below 309px and cap at 1:1. Mockup text is `type-caption-12` (workflow rows use `type-body-14`); `StatusListMockup` (title, subtitle, optional pill, four rows with icon, dot status and chevron) serves both the Visibility and Ownership cards. Mockups are `aria-hidden`; white chips and rows use `rounded-8`, and status dots use `status-*` colors. |

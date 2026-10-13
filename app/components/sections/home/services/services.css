@@ -37,17 +37,18 @@
     pointer-events: none;
   }
 
-  /* The points panel breaks out past the site edges by --panel-bleed (Figma: 40 frame px) on both sides;
-     its padding brings the bullets back onto the site edges, in line with the navbar and the title. */
+  /* The points panel sits --panel-margin (Figma: 20 frame px) from the card's edges on both sides, so it is
+     centred on the page; its padding brings the bullets back onto the site edges (49 / 60), in line with the
+     navbar and the title. */
   .service-panel {
-    --panel-bleed: 8px;
-    --gutter-start: calc(var(--site-edge-start) - var(--panel-bleed));
-    --gutter-end: var(--gutter-start);
-    --panel-pad-start: var(--panel-bleed);
-    --panel-pad-end: calc(var(--site-edge-end) - var(--gutter-end));
+    --panel-margin: 8px;
+    --gutter-start: var(--panel-margin);
+    --gutter-end: var(--panel-margin);
+    --panel-pad-start: calc(var(--site-edge-start) - var(--panel-margin));
+    --panel-pad-end: calc(var(--site-edge-end) - var(--panel-margin));
 
     @variant lg {
-      --panel-bleed: calc(var(--site-edge-u) * 40);
+      --panel-margin: calc(var(--site-edge-u) * 1);
     }
   }
 

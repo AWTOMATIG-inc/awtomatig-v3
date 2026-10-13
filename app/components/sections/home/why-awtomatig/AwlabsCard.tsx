@@ -9,7 +9,7 @@ export default function AwlabsCard() {
   return (
     <aside
       aria-labelledby="awlabs-title"
-      className="rounded-16 bg-surface-inverse text-fg-inverse relative isolate flex w-full flex-col overflow-hidden px-24 pt-20 pb-24 sm:max-w-320 lg:mr-16 lg:h-398 lg:w-auto lg:max-w-280"
+      className="rounded-16 bg-surface-inverse text-fg-inverse relative isolate flex w-full flex-col overflow-hidden px-24 pt-20 pb-24 lg:mr-16 lg:h-398 lg:w-auto lg:max-w-280"
     >
       <span aria-hidden="true" className="bg-awlabs-glow absolute inset-0 -z-10" />
       <span aria-hidden="true" className="dot-grid absolute inset-x-0 bottom-0 -z-10 h-127 text-white/40" />

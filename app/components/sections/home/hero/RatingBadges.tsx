@@ -43,7 +43,7 @@ export default function RatingBadges() {
       {BADGES.map(({ name, logo: Logo, label, labelFirst, color }) => (
         <li
           key={name}
-          className="bg-surface text-fg-strong rounded-8 flex h-54 min-w-150 flex-1 items-center gap-6 px-8 lg:w-164 lg:min-w-0 lg:flex-none"
+          className="bg-surface text-fg-strong rounded-8 flex h-54 min-w-150 flex-1 items-center gap-6 px-8 lg:min-w-0"
         >
           <Logo className="size-28 shrink-0" />
           <div className="flex flex-col gap-2 whitespace-nowrap">

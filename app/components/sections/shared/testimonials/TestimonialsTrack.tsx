@@ -187,7 +187,7 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
           <div
             aria-hidden="true"
             className="bg-action-primary absolute inset-y-0 left-0 rounded-full"
-            style={{ width: `${progress * 100}%` }}
+            style={{ width: `calc(${progress} * (100% - 32px) + 16px)` }}
           />
           <button
             type="button"
@@ -196,7 +196,7 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => setPlaying((p) => !p)}
             className="bg-action-primary text-on-action shadow-glow absolute top-1/2 flex h-22 w-32 -translate-y-1/2 items-center justify-center rounded-full"
-            style={{ left: `calc(${progress * 100}% - 30px)` }}
+            style={{ left: `calc(${progress} * (100% - 32px))` }}
           >
             {playing ? <PauseIcon className="size-14" /> : <PlayIcon className="size-14" />}
           </button>

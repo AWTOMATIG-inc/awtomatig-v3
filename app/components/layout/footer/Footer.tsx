@@ -5,6 +5,7 @@ import { Button } from "@/app/components/ui";
 import { MailIcon, WhatsAppIcon } from "@/app/components/icons";
 import { FOOTER_PAGES, MAILTO, SITE } from "@/lib/site";
 import { SERVICES } from "@/lib/services";
+import Wordmark from "./Wordmark";
 
 // Links whose destination doesn't exist yet are left out (see SITE in lib/site.ts)
 const SERVICE_LINKS = [
@@ -114,9 +115,7 @@ export default function Footer() {
         </div>
 
         {/* Wordmark: spans the container width and sits on the bottom edge (descender clipped) */}
-        <p aria-hidden="true" className="type-wordmark text-fg-strong mt-32 select-none lg:mt-37">
-          AWTOMATIG
-        </p>
+        <Wordmark className="type-wordmark text-fg-strong mt-32 select-none lg:mt-37" />
       </div>
     </footer>
   );

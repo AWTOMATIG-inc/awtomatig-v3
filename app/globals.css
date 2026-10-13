@@ -60,7 +60,7 @@
   --radius-12: 12px;
   --radius-16: 16px;
   --radius-34: 34px;
-  --radius-90: 90px;
+  --radius-60: 60px; /* Figma "Full": tags and fully rounded shapes */
 
   /* ---------- Effects ---------- */
   --shadow-*: initial;
@@ -375,6 +375,13 @@
   line-height: 1.5;
   font-weight: 400;
 }
+/* Body / 12 (Figma name). `type-caption-12` is the same style kept as an alias for existing markup. */
+@utility type-body-12 {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 12);
+  line-height: 1.2;
+  font-weight: 400;
+}
 /* Small meta captions (case study "Client:" / "Service:"), measured from the screenshot: 12px */
 @utility type-caption-12 {
   font-family: var(--font-sans);
@@ -394,6 +401,14 @@
   line-height: 1.2;
   font-weight: 600;
 }
+/* Label / 16 Upper (Figma): Label / 16 in capitals */
+@utility type-label-16-upper {
+  font-family: var(--font-sans);
+  font-size: calc(var(--u, 0.0625rem) * 16);
+  line-height: 1.2;
+  font-weight: 600;
+  text-transform: uppercase;
+}
 @utility type-label-14 {
   font-family: var(--font-sans);
   font-size: calc(var(--u, 0.0625rem) * 14);
@@ -401,19 +416,20 @@
   font-weight: 600;
 }
 
-/* Footer wordmark: sized in cqw so the ink spans its @container edge to edge (measured from Figma
-   at 1440). The negative margins are Inter Tight metrics: the start margin pulls the "A" past its
-   side bearing, and the bottom margin (descent 0.242em - half-leading) puts the baseline on the
-   box bottom, so the uppercase word sits on the footer edge (overflow clips the O/G overshoot).
-   Tracking is -0.02em, not Display's -0.04em, because the W and T collide in caps at -0.04em. */
+/* Footer wordmark: sized in cqw so the ink spans its @container edge to edge, no more and no less
+   (5.639em of ink = 17.734cqw). The negative margins are Inter Tight metrics: the start margin pulls the
+   "A" past its side bearing (0.005em), and the bottom margin (descent 0.242em - half-leading) puts the
+   baseline on the box bottom, so the uppercase word sits on the footer edge (overflow clips the O/G
+   overshoot). Kerning and tracking are off: the space between letters comes from `Wordmark.tsx`. */
 @utility type-wordmark {
   font-family: var(--font-display);
-  font-size: 17.9cqw;
+  font-size: 17.734cqw;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  font-kerning: none;
   font-weight: 500;
   white-space: nowrap;
-  margin-inline-start: -0.013em;
+  margin-inline-start: -0.005em;
   margin-bottom: -0.136em;
 }
 
