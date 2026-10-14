@@ -45,6 +45,7 @@ const ORGANIZATION_JSON_LD = JSON.stringify({
   logo: `${SITE.url}/images/awtomatig-logo.png`,
   email: SITE.email,
   description: SITE.description,
+  sameAs: [SITE.social.linkedin, SITE.social.instagram, SITE.social.x, SITE.social.medium].filter(Boolean),
 }).replace(/</g, "\\u003c");
 
 export const viewport: Viewport = {

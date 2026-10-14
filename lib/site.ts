@@ -6,7 +6,8 @@ export const SITE = {
   // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) so canonical and share-image URLs resolve there
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://awtomatig.com",
   title: "AWTOMATIG: The operational layer behind modern businesses",
-  description: "Websites, back-office operations, ERP systems and AdTech, connected into one scalable operational ecosystem.",
+  description:
+    "AWTOMATIG builds websites, back-office operations, ERP systems and AdTech workflows, connected into one scalable operational ecosystem.",
   email: "hello@awtomatig.com",
   // Calendly 30-minute discovery call, embedded on the Contact page; the booking section is hidden when unset
   // (colours match the site: cyan buttons, charcoal text)
