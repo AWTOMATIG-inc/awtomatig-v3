@@ -1,0 +1,25 @@
+/* Page heroes (Home, Services): .hero is the full-bleed LinesBackground section with HERO_LINES,
+   content in .hero-inner (.site-container). Imported by app/globals.css */
+
+@layer components {
+  /* The background (gradient, glow, grain, canvas) is the shared LinesBackground; see heroLines.ts. */
+  .hero {
+    container-type: inline-size;
+  }
+
+  /* ---------- Hero content ----------
+     Layout, spacing, type and colors are Tailwind classes in HeroContent.tsx.
+     From lg up the content is pixel-locked to the 1440 Figma frame (see "Frame scale" in globals.css). */
+
+  .hero-inner {
+    padding-top: calc(92px + env(safe-area-inset-top)); /* clears the 64px mobile header + 28px */
+
+    @variant lg {
+      /* Capped at 1px: content stops growing once the hero passes the 1440px frame */
+      --u: clamp(0.72px, 100cqw / 1440, 1px);
+      --spacing: var(--u);
+      /* Clears the fixed header (20 + 60 design px at the header scale) plus 24 design px of breathing room */
+      padding-top: calc(clamp(0.85px, 100vw / 1440, 1px) * 80 + var(--u) * 24 + env(safe-area-inset-top));
+    }
+  }
+}

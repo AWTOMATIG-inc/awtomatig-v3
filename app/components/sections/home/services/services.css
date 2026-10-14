@@ -1,0 +1,64 @@
+/* Home services: stacking cards. Layout, type and colors are Tailwind classes in ServiceCard.tsx;
+   --stack-top and --stack-progress are set by StackingCards.tsx. Imported by app/globals.css */
+
+@layer components {
+  /* Extra scroll while a card is pinned full screen, before the next card slides over it. The last card holds
+     too: a spacer after it extends the stack's content box, where sticky positioning ends (padding would not). */
+  .service-stack {
+    --stack-hold: 50svh;
+  }
+  .service-stack-hold {
+    height: var(--stack-hold);
+  }
+
+  /* Each card pins as the next one slides over it; DOM order puts later cards on top.
+     While covered, it shrinks toward the top of the viewport, rounds its corners and dims. */
+  .service-card {
+    position: sticky;
+    top: var(--stack-top, 0px);
+    overflow: clip;
+    will-change: transform;
+    transform-origin: 50% calc(var(--stack-top, 0px) * -1);
+    transform: scale(calc(1 - var(--stack-progress, 0) * 0.06));
+    border-radius: calc(var(--stack-progress, 0) * var(--radius-34));
+  }
+
+  /* Cards followed by another card; the last card's hold is the spacer */
+  .service-card:has(~ .service-card) {
+    margin-bottom: var(--stack-hold);
+  }
+
+  .service-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-black);
+    opacity: calc(var(--stack-progress, 0) * 0.4);
+    pointer-events: none;
+  }
+
+  /* The points panel sits --panel-margin (Figma: 20 frame px) from the card's edges on both sides, so it is
+     centred on the page; its padding brings the bullets back onto the site edges (49 / 60), in line with the
+     navbar and the title. */
+  .service-panel {
+    --panel-margin: 8px;
+    --gutter-start: var(--panel-margin);
+    --gutter-end: var(--panel-margin);
+    --panel-pad-start: calc(var(--site-edge-start) - var(--panel-margin));
+    --panel-pad-end: calc(var(--site-edge-end) - var(--panel-margin));
+
+    @variant lg {
+      --panel-margin: calc(var(--site-edge-u) * 1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-card {
+      transform: none;
+      border-radius: 0;
+    }
+    .service-card::after {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,85 @@
+import type { ReactNode } from "react";
+import { ArrowDownIcon } from "@/app/components/icons";
+import { Button, Eyebrow, LinesBackground } from "@/app/components/ui";
+import { SERVICES } from "@/lib/services";
+import { HERO_LINES, HERO_LINES_COMPACT } from "./heroLines";
+
+// Listed column by column: the desktop grid flows top-to-bottom in two rows
+const SERVICE_AREAS = SERVICES.map((service) => service.name);
+
+type HeroAction = { label: string; href: string };
+
+// Desktop width of the primary button, measured per design; the glass button fills the rest of the 514px column
+const PRIMARY_WIDTHS = { wide: "lg:w-250", narrow: "lg:w-198" };
+
+type PageHeroProps = {
+  id: string;
+  eyebrow: string;
+  /** Use `<br className="max-lg:hidden" />` for the desktop line breaks */
+  title: ReactNode;
+  description: ReactNode;
+  /** Cyan button with a trailing ↓, usually jumping to the first section below */
+  primary: HeroAction;
+  /** Glass button; defaults to "Start a Conversation" → /contact */
+  secondary?: HeroAction;
+  /** `wide` (250px, default) or `narrow` (198px, About's short "Our story") */
+  primaryWidth?: keyof typeof PRIMARY_WIDTHS;
+  /** The 2×2 list beside the buttons, listed column by column; defaults to the four service areas */
+  areas?: string[];
+};
+
+/** Full-screen inner-page hero (Services, Case Studies, About): the home hero's background and frame scale, a gradient
+ *  Display / 100 title at the top, and the intro, service areas and buttons on the bottom edge (DESIGN.md §10.4). */
+export default function PageHero({
+  id,
+  eyebrow,
+  title,
+  description,
+  primary,
+  secondary = { label: "Start a Conversation", href: "/contact" },
+  primaryWidth = "wide",
+  areas = SERVICE_AREAS,
+}: PageHeroProps) {
+  return (
+    <LinesBackground preset={HERO_LINES} compact={HERO_LINES_COMPACT} id={id} data-hero className="hero flex min-h-svh flex-col">
+      <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pt-140 lg:pb-113">
+        <Eyebrow className="text-fg-inverse">{eyebrow}</Eyebrow>
+
+        <h1 className="type-display-100 text-gradient-display mt-24 w-fit">{title}</h1>
+
+        <div className="mt-auto flex flex-col items-start gap-40 pt-40 lg:flex-row lg:items-end lg:justify-between lg:gap-24 lg:pt-43">
+          <p className="type-body-16 text-fg-inverse lg:type-body-20 max-w-640 lg:max-w-none">{description}</p>
+
+          <div className="w-full lg:w-514 lg:shrink-0">
+            <ul className="grid sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-26">
+              {areas.map((area) => (
+                <li
+                  key={area}
+                  className="type-body-15 text-fg-inverse flex items-center gap-12 border-b border-white/12 pt-18 pb-14"
+                >
+                  <span aria-hidden="true" className="bg-action-primary size-5 shrink-0 rounded-full" />
+                  {area}
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-32 flex flex-col gap-12 sm:flex-row">
+              <Button
+                href={primary.href}
+                variant="primary"
+                size="lg"
+                iconEnd={<ArrowDownIcon />}
+                className={`w-full sm:flex-1 lg:flex-none ${PRIMARY_WIDTHS[primaryWidth]}`}
+              >
+                {primary.label}
+              </Button>
+              <Button href={secondary.href} variant="glass" size="lg" className="w-full sm:flex-1">
+                {secondary.label}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </LinesBackground>
+  );
+}
