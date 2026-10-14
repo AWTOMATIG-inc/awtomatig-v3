@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
-import { SITE } from "@/lib/site";
+import { SHARE_IMAGE_PATH, SITE } from "@/lib/site";
 import "./globals.css";
 
 // Body, UI copy and labels. No extra axes: nothing in the type scale sets font-optical-sizing, and Inter is only
@@ -17,6 +17,7 @@ const interTight = Inter_Tight({
 });
 
 const DEFAULT_TITLE = SITE.title;
+const SHARE_IMAGE = { url: SHARE_IMAGE_PATH, width: 1200, height: 630, alt: SITE.title };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -30,8 +31,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: DEFAULT_TITLE,
     description: SITE.description,
+    images: [SHARE_IMAGE],
   },
-  twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: SITE.description },
+  twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: SITE.description, images: [SHARE_IMAGE] },
 };
 
 // Organization structured data. Static, code-owned values only; `<` is escaped as the Next.js JSON-LD guide advises.
