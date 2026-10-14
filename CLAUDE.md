@@ -10,3 +10,16 @@
 @MEMORY.md
 
 @DESIGN.md
+
+# CodeGraph
+
+This project is indexed with CodeGraph (`.codegraph/`, local only and git-ignored). Prefer it over broad Grep/Glob sweeps when exploring the code.
+
+- `codegraph explore "<topic>"`: relevant symbols' source and call paths in one shot (same as the `codegraph_explore` MCP tool). Start here for "how does X work".
+- `codegraph context "<task>"`: relevant symbols, relationships and code blocks for a task.
+- `codegraph query <symbol>`: find a symbol by name.
+- `codegraph node <name>`: one symbol's source with its callers and callees, or a file with line numbers and dependents. Use it to check what a change affects.
+- `codegraph files`: the indexed project structure.
+- `codegraph sync`: refresh the index after changes. If results look stale, run it first (`codegraph index` rebuilds from scratch).
+
+Still read the actual file before editing it.
