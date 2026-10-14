@@ -627,7 +627,7 @@
 }
 
 @layer base {
-  /* Site edges: the navbar pill's outer edges (16px on mobile; 49 / 60 Figma px with the frame on
+  /* Site edges: the navbar pill's outer edges (16px on mobile; 60 / 60 Figma px with the frame on
      desktop). Every site-container lines its content up with them by default. */
   :root {
     --site-edge-start: 16px;
@@ -636,7 +636,7 @@
   @media (min-width: 1024px) {
     :root {
       --site-edge-u: clamp(0.85px, 100vw / 1440, 1px);
-      --site-edge-start: calc(var(--site-edge-u) * 49);
+      --site-edge-start: calc(var(--site-edge-u) * 60);
       --site-edge-end: calc(var(--site-edge-u) * 60);
     }
   }
