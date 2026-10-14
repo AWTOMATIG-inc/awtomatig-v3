@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE } from "./site";
+import { SHARE_IMAGE_PATH, SITE } from "./site";
 
 type PageMetadataInput = {
   /** Page name; the root layout's template turns it into "<title> | AWTOMATIG". Omit for Home (uses the default title). */
@@ -9,8 +9,8 @@ type PageMetadataInput = {
   path: string;
 };
 
-// app/opengraph-image.tsx. A page's own `openGraph` drops the inherited file-based image, so it is referenced explicitly.
-const SHARE_IMAGE = { url: "/opengraph-image", width: 1200, height: 630, alt: SITE.title };
+// public/og-image.png. A page's own `openGraph` replaces the layout's, so the image is referenced explicitly.
+const SHARE_IMAGE = { url: SHARE_IMAGE_PATH, width: 1200, height: 630, alt: SITE.title };
 
 /**
  * Per-page metadata: title, description, canonical URL, and Open Graph / Twitter fields that repeat them.
