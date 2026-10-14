@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { ROUTES, SITE } from "@/lib/site";
 import { CASE_STUDIES } from "@/app/components/sections/shared/case-studies/caseStudies";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [...ROUTES, ...CASE_STUDIES.map((study) => `/case-studies/${study.id}`)];
   return paths.map((path) => ({

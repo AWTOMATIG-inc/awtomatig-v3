@@ -4,6 +4,7 @@ import { ImageResponse } from "next/og";
 import { SITE } from "@/lib/site";
 
 // Share image for every page (Open Graph and Twitter), rendered once at build time.
+export const dynamic = "force-static";
 export const alt = SITE.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
