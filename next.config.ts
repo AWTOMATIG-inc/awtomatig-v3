@@ -7,11 +7,12 @@ const CSP =
   process.env.NODE_ENV === "production"
     ? [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline'",
-        "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: blob:",
+        "script-src 'self' 'unsafe-inline' https://assets.calendly.com",
+        "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
+        "img-src 'self' data: blob: https://assets.calendly.com",
         "font-src 'self'",
-        "connect-src 'self'",
+        "connect-src 'self' https://calendly.com",
+        "frame-src https://calendly.com",
         "frame-ancestors 'none'",
         "base-uri 'self'",
         "form-action 'self' mailto:",

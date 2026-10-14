@@ -9,6 +9,11 @@ export const SITE = {
   description:
     "AWTOMATIG builds websites, back-office operations, ERP systems and AdTech workflows, connected into one scalable operational ecosystem.",
   email: "hello@awtomatig.com",
+  // Calendly 30-minute discovery call, embedded on the Contact page; the booking section is hidden when unset
+  // (colours match the site: cyan buttons, charcoal text)
+  calendlyUrl:
+    "https://calendly.com/nahidr-aw/30min?hide_gdpr_banner=1&hide_event_type_details=1&hide_landing_page_details=1&background_color=ffffff&text_color=1e1e1e&primary_color=02d5e8" as
+      string | undefined,
   whatsappUrl: "https://wa.me/8801753538760" as string | undefined,
   social: {
     linkedin: "https://www.linkedin.com/company/awtomatig/" as string | undefined,
