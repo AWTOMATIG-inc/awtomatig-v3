@@ -328,7 +328,7 @@ Current usage: the navbar wraps its pill in a `site-container` inside the full-w
 
 | Rule | Detail |
 | --- | --- |
-| Site edges (side padding) | Built into `site-container`: the **navbar pill's outer edges**, `--site-edge-start` / `--site-edge-end`. That is **16px** below 1024px, and **49 / 60 Figma px** from 1024px up, scaled with the viewport like the header (`clamp(0.85px, 100vw / 1440, 1px)`, so 49 / 60px at 1440). All text (navbar, hero, cards) starts and ends on these two lines. Safe-area insets (`env(safe-area-inset-*)`) are included automatically. |
+| Site edges (side padding) | Built into `site-container`: the **navbar pill's outer edges**, `--site-edge-start` / `--site-edge-end`. That is **16px** below 1024px, and **60 / 60 Figma px** from 1024px up, scaled with the viewport like the header (`clamp(0.85px, 100vw / 1440, 1px)`, so 60 / 60px at 1440). All text (navbar, hero, cards) starts and ends on these two lines. Safe-area insets (`env(safe-area-inset-*)`) are included automatically. |
 | Breaking out | Content must not invent its own side padding. Only an element that deliberately extends past the edges sets `--gutter-start` / `--gutter-end`, derived from the site edges, and pads its content back onto them (the service panel: `--panel-margin`, its distance from the card edge, 8px on mobile and 20 frame px on desktop, equal on both sides; its padding is the site edge minus that margin). Don't add `px-*` to the container. |
 | Don't nest | Never put a `site-container` inside another one. |
 | Never cap the section | Don't put `max-w-*` or `site-container` on the element that carries a background. |

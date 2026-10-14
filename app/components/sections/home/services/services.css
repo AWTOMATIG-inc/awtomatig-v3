@@ -38,7 +38,7 @@
   }
 
   /* The points panel sits --panel-margin (Figma: 20 frame px) from the card's edges on both sides, so it is
-     centred on the page; its padding brings the bullets back onto the site edges (49 / 60), in line with the
+     centred on the page; its padding brings the bullets back onto the site edges (60 / 60), in line with the
      navbar and the title. */
   .service-panel {
     --panel-margin: 8px;
