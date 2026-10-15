@@ -46,20 +46,26 @@ export default function HeroContent() {
           <p className="type-heading-15 md:type-heading-18 text-fg-inverse lg:type-heading-20">
             Built for the systems behind the business.
           </p>
-          {/* Phones: a swipeable one-row slider that runs on to the screen edge (the list ends flush with the viewport) */}
-          <div
-            tabIndex={0}
-            role="region"
-            aria-label="Capabilities"
-            className="scrollbar-hide -mr-(--site-edge-end) self-stretch overflow-x-auto pr-(--site-edge-end) lg:m-0 lg:self-auto lg:overflow-visible lg:p-0"
-          >
-            <ul className="type-body-12 md:type-body-16 flex gap-x-25 text-white/60 md:gap-x-20 lg:gap-26">
-              {CAPABILITY_TAGS.map((tag) => (
-                <li key={tag} className="shrink-0 whitespace-nowrap">
-                  {tag}
-                </li>
+          {/* Infinite slider: two identical groups, the track slides left by one group and loops (animate-marquee) */}
+          <div className="fade-x w-full min-w-0 overflow-hidden motion-reduce:[mask-image:none] lg:max-w-520 lg:flex-1">
+            <div
+              aria-label="Capabilities"
+              className="animate-marquee flex w-max [animation-duration:20s] hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none"
+            >
+              {[0, 1].map((copy) => (
+                <ul
+                  key={copy}
+                  aria-hidden={copy === 1 || undefined}
+                  className="type-body-12 md:type-body-16 flex shrink-0 text-white/60 motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:gap-y-8 motion-reduce:[&:nth-child(2)]:hidden"
+                >
+                  {CAPABILITY_TAGS.map((tag) => (
+                    <li key={tag} className="shrink-0 pr-25 whitespace-nowrap md:pr-20 lg:pr-26">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

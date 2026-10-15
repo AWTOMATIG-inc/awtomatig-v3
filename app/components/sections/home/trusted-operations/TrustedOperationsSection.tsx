@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { Eyebrow, LinesBackground } from "@/app/components/ui";
-import { PARTNER_LOGOS } from "../../shared/partners/partners";
+import MarqueeTrack from "../../shared/partners/MarqueeTrack";
+import { TRUSTED_PARTNERS } from "./trustedOperations";
 import ClientSystemsCard from "./ClientSystemsCard";
 import ResultsCard from "./ResultsCard";
 import { TRUSTED_LINES } from "./trustedLines";
@@ -32,23 +32,12 @@ export default function TrustedOperationsSection() {
           <ResultsCard />
         </div>
 
-        <div className="mt-50 flex items-center gap-20 lg:mt-51 lg:gap-52">
-          <span aria-hidden="true" className="h-px flex-1 bg-white/12" />
-          <h3 className="type-heading-24 text-center tracking-tight">Trusted By Leading Companies</h3>
-          <span aria-hidden="true" className="h-px flex-1 bg-white/12" />
-        </div>
-
-        <ul className="mt-32 flex flex-wrap items-center justify-center gap-x-32 gap-y-20 lg:mt-30 lg:min-h-80 lg:flex-nowrap lg:justify-between lg:px-16">
-          {PARTNER_LOGOS.map((partner) => (
-            <li key={partner.name}>
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                className={`h-40 w-auto object-contain opacity-70 brightness-0 invert ${partner.height}`}
-              />
-            </li>
-          ))}
-        </ul>
+        <MarqueeTrack
+          partners={TRUSTED_PARTNERS}
+          ruleClassName="bg-white/12"
+          rowClassName="mt-50 lg:mt-51 lg:gap-52"
+          trackClassName="mt-32 lg:mt-30"
+        />
       </div>
     </LinesBackground>
   );

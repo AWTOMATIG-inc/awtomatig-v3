@@ -24,5 +24,3 @@ export const PARTNERS = PARTNER_LOGOS.map((partner) => ({
   ...partner,
   tone: WHITE_LOGOS.has(partner.name) ? GREY_FROM_WHITE : GREY,
 }));
-
-export type Partner = (typeof PARTNERS)[number];

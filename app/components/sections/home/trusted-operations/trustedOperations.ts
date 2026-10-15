@@ -1,3 +1,4 @@
+import { PARTNER_LOGOS } from "../../shared/partners/partners";
 import type { ComponentType, SVGProps } from "react";
 import {
   BadgeCheckIcon,
@@ -37,3 +38,7 @@ export const MAP_CITIES: [number, number][] = [
   [712, 154],
   [777, 57],
 ];
+
+// Partner logos on the dark backdrop: same hover as Contact (greyscale at rest, original colours on hover)
+const GREY = "grayscale brightness-75 opacity-80 hover:grayscale-0 hover:brightness-100 hover:opacity-100";
+export const TRUSTED_PARTNERS = PARTNER_LOGOS.map((partner) => ({ ...partner, tone: GREY }));
