@@ -1,4 +1,4 @@
-import { Button, Eyebrow } from "@/app/components/ui";
+import { Button, Eyebrow, TagMarquee } from "@/app/components/ui";
 import { CAPABILITY_TAGS } from "@/lib/site";
 import RatingBadges from "./RatingBadges";
 
@@ -46,27 +46,13 @@ export default function HeroContent() {
           <p className="type-heading-15 md:type-heading-18 text-fg-inverse lg:type-heading-20">
             Built for the systems behind the business.
           </p>
-          {/* Infinite slider: two identical groups, the track slides left by one group and loops (animate-marquee) */}
-          <div className="fade-x w-full min-w-0 overflow-hidden motion-reduce:[mask-image:none] lg:max-w-520 lg:flex-1">
-            <div
-              aria-label="Capabilities"
-              className="animate-marquee flex w-max [animation-duration:20s] hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none"
-            >
-              {[0, 1].map((copy) => (
-                <ul
-                  key={copy}
-                  aria-hidden={copy === 1 || undefined}
-                  className="type-body-12 md:type-body-16 flex shrink-0 text-white/60 motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:gap-y-8 motion-reduce:[&:nth-child(2)]:hidden"
-                >
-                  {CAPABILITY_TAGS.map((tag) => (
-                    <li key={tag} className="shrink-0 pr-25 whitespace-nowrap md:pr-20 lg:pr-26">
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          </div>
+          <TagMarquee
+            tags={CAPABILITY_TAGS}
+            label="Capabilities"
+            className="w-full lg:max-w-520 lg:flex-1"
+            listClassName="type-body-12 md:type-body-16 text-white/60"
+            itemClassName="pr-25 md:pr-20 lg:pr-26"
+          />
         </div>
       </div>
     </div>
