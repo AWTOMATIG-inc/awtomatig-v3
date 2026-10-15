@@ -13,7 +13,8 @@
 
   /* Each card pins as the next one slides over it; DOM order puts later cards on top.
      While covered, it shrinks toward the top of the viewport, rounds its corners and dims. */
-  .service-card {
+  .service-card,
+  .stack-card {
     position: sticky;
     top: var(--stack-top, 0px);
     overflow: clip;
@@ -28,7 +29,8 @@
     margin-bottom: var(--stack-hold);
   }
 
-  .service-card::after {
+  .service-card::after,
+  .stack-card::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -53,11 +55,13 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .service-card {
+    .service-card,
+    .stack-card {
       transform: none;
       border-radius: 0;
     }
-    .service-card::after {
+    .service-card::after,
+    .stack-card::after {
       display: none;
     }
   }

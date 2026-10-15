@@ -10,24 +10,39 @@ const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
  * --stack-progress  0 → 1 as the next card slides over this one; scales and dims it
  * Every card, the last one included, holds full screen for --stack-hold of scroll (services.css).
  */
-export default function StackingCards({ children }: { children: ReactNode }) {
+type StackingCardsProps = {
+  children: ReactNode;
+  /** Adds the closing hold spacer after the last card (services). Off when a `[data-stack-cover]` follows. */
+  hold?: boolean;
+  /** Hides a card once the next element fully covers it, so it can't show beside a scaled cover (How we work) */
+  hideCovered?: boolean;
+};
+
+/**
+ * Besides cards, a `[data-stack-cover]` child can close the stack: it isn't sticky or scaled itself, it only slides
+ * over the card before it (How we work covering Operations).
+ */
+export default function StackingCards({ children, hold = true, hideCovered = false }: StackingCardsProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
 
-    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-stack-card]"));
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-stack-card], [data-stack-cover]"));
+    const cards = items.filter((item) => item.hasAttribute("data-stack-card"));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
 
     const update = () => {
       frame = 0;
       const viewport = window.innerHeight;
-      cards.forEach((card, i) => {
-        const next = cards[i + 1];
-        const progress = next && !reducedMotion.matches ? clamp01((viewport - next.getBoundingClientRect().top) / viewport) : 0;
+      cards.forEach((card) => {
+        const next = items[items.indexOf(card) + 1];
+        const top = next ? next.getBoundingClientRect().top : viewport;
+        const progress = next && !reducedMotion.matches ? clamp01((viewport - top) / viewport) : 0;
         card.style.setProperty("--stack-progress", progress.toFixed(4));
+        if (hideCovered) card.style.visibility = next && top <= 0 ? "hidden" : "";
       });
     };
 
@@ -57,12 +72,12 @@ export default function StackingCards({ children }: { children: ReactNode }) {
       window.removeEventListener("scroll", schedule);
       reducedMotion.removeEventListener("change", update);
     };
-  }, []);
+  }, [hideCovered]);
 
   return (
     <div ref={ref} className="service-stack">
       {children}
-      <div aria-hidden="true" className="service-stack-hold" />
+      {hold && <div aria-hidden="true" className="service-stack-hold" />}
     </div>
   );
 }
