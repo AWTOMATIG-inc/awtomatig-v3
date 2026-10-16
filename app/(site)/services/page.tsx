@@ -19,7 +19,7 @@ export default function ServicesPage() {
     <>
       <ServicesHeroSection />
       <WhatWeDoSection />
-      <ServicesSection cta={{ label: "Start a conversation", href: "/contact" }} />
+      <ServicesSection cta={{ label: "View details", href: "/contact" }} />
       <EcosystemSection />
       <HowWeSupportSection />
       <CtaSection

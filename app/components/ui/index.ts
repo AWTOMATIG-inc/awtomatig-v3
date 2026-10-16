@@ -6,3 +6,4 @@ export type { LinesLaser, LinesPreset } from "./lines-background/LinesBackground
 // No current consumer (the human-operations video was dropped for a photo; see MEMORY.md §4); kept for reuse.
 export { default as VideoPlayer } from "./video-player/VideoPlayer";
 export { default as TagMarquee } from "./tag-marquee/TagMarquee";
+export { default as Reveal } from "./reveal/Reveal";

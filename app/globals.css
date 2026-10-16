@@ -500,10 +500,16 @@
   mask-image: linear-gradient(to bottom, transparent, black);
 }
 
-/* The bars drift right by exactly one pitch and repeat, so the loop is seamless and the still frame is the design */
+/* The bars drift right by exactly one pitch and repeat, so the loop is seamless and the still frame is the design.
+   --ribs-pointer (-1 → 1, set by HorizontalScroller from the pointer) shifts them sideways on top of the drift. */
+@property --ribs-x {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
 @keyframes ribs-drift {
   to {
-    background-position-x: calc(var(--site-edge-start) + var(--ribs-pitch, 54px));
+    --ribs-x: var(--ribs-pitch, 54px);
   }
 }
 
@@ -513,8 +519,8 @@
 @utility ribs {
   background-image: linear-gradient(90deg, transparent, currentColor);
   background-size: var(--ribs-pitch, 54px) 100%;
-  background-position: var(--site-edge-start) 0;
-  animation: ribs-drift 14s linear infinite;
+  background-position: calc(var(--site-edge-start) + var(--ribs-x) + var(--ribs-pointer, 0) * var(--ribs-pitch, 54px) * -0.4) 0;
+  animation: ribs-drift 7s linear infinite;
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
@@ -538,8 +544,8 @@
 @utility ribs-dark {
   background-image: linear-gradient(90deg, currentColor, transparent);
   background-size: var(--ribs-pitch, 54px) 100%;
-  background-position: var(--site-edge-start) 0;
-  animation: ribs-drift 14s linear infinite;
+  background-position: calc(var(--site-edge-start) + var(--ribs-x) + var(--ribs-pointer, 0) * var(--ribs-pitch, 54px) * -0.4) 0;
+  animation: ribs-drift 7s linear infinite;
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }

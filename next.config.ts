@@ -12,7 +12,7 @@ const CSP =
         "img-src 'self' data: blob: https://assets.calendly.com",
         "font-src 'self'",
         "connect-src 'self' https://calendly.com",
-        "frame-src https://calendly.com",
+        "frame-src https://calendly.com https://www.google.com",
         "frame-ancestors 'none'",
         "base-uri 'self'",
         "form-action 'self' mailto:",

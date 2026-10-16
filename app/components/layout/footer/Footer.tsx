@@ -81,11 +81,11 @@ export default function Footer() {
               Start a conversation
             </Button>
             {SITE.whatsappUrl && (
-              <Button href={SITE.whatsappUrl} variant="light" size="xl" fullWidth icon={<WhatsAppIcon />}>
+              <Button href={SITE.whatsappUrl} variant="dark" size="xl" fullWidth icon={<WhatsAppIcon />}>
                 Message us
               </Button>
             )}
-            <Button href={MAILTO} variant="dark" size="xl" fullWidth icon={<MailIcon />}>
+            <Button href={MAILTO} variant="light" size="xl" fullWidth icon={<MailIcon />}>
               Email us
             </Button>
             <Button href={NEWSLETTER_MAILTO} variant="outline" size="xl" fullWidth icon={<MailIcon />}>

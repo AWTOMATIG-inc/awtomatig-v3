@@ -36,3 +36,4 @@ export { default as DatabaseOutlineIcon } from "./DatabaseOutlineIcon";
 export { default as ClutchIcon } from "./ClutchIcon";
 export { default as FiverrIcon } from "./FiverrIcon";
 export { default as GoogleIcon } from "./GoogleIcon";
+export { default as ChatBubbleIcon } from "./ChatBubbleIcon";

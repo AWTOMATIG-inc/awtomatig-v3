@@ -14,11 +14,12 @@ export type Pillar = {
 // Full class strings so Tailwind can detect them
 // The brand mark is cyan, so on the cyan card it is tinted white
 export const PILLAR_MARKS: Record<PillarTheme, string> = {
-  light: "",
-  cyan: "brightness-0 invert opacity-80",
+  light:
+    "transition-[filter,opacity] duration-700 ease-out-quint group-hover:brightness-0 group-hover:invert group-hover:opacity-80",
+  cyan: "transition-[filter,opacity] duration-700 ease-out-quint brightness-0 invert opacity-80 group-hover:brightness-100 group-hover:invert-0 group-hover:opacity-100",
 };
 
 export const PILLAR_THEMES: Record<PillarTheme, string> = {
-  light: "bg-surface text-fg-strong",
-  cyan: "bg-action-primary text-on-action",
+  light: "bg-surface text-fg-strong hover:bg-action-primary",
+  cyan: "bg-action-primary text-on-action hover:bg-surface",
 };

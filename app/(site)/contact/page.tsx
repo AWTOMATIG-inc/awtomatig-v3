@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ContactHeroSection from "@/app/components/sections/contact/hero/ContactHeroSection";
 import BookingSection from "@/app/components/sections/contact/booking/BookingSection";
+import FaqSection from "@/app/components/sections/contact/faq/FaqSection";
 import InquirySection from "@/app/components/sections/contact/inquiry/InquirySection";
 import ProvenSection from "@/app/components/sections/contact/proven/ProvenSection";
 import { pageMetadata } from "@/lib/metadata";
@@ -18,6 +19,7 @@ export default function ContactPage() {
       <ContactHeroSection />
       <InquirySection />
       <ProvenSection />
+      <FaqSection />
       <BookingSection />
     </>
   );

@@ -1,4 +1,5 @@
 import { Eyebrow } from "@/app/components/ui";
+import { SITE } from "@/lib/site";
 import InquiryForm from "./InquiryForm";
 import { CONTACT_DETAILS } from "./inquiry";
 
@@ -7,7 +8,7 @@ export default function InquirySection() {
   return (
     <section id="inquiry" aria-labelledby="inquiry-title" className="bg-surface-subtle text-fg-strong">
       <div className="site-container grid gap-40 pt-40 pb-60 lg:grid-cols-[minmax(0,1fr)_739px] lg:gap-50 lg:pb-75">
-        <div className="lg:pt-8">
+        <div className="flex flex-col lg:pt-8">
           <Eyebrow>Trust / Proof</Eyebrow>
           <h2 id="inquiry-title" className="type-heading-60 mt-24">
             Trusted to support
@@ -39,6 +40,17 @@ export default function InquirySection() {
               </div>
             ))}
           </dl>
+
+          {SITE.mapEmbedUrl && (
+            <iframe
+              src={SITE.mapEmbedUrl}
+              title="AWTOMATIG office on Google Maps"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="border-border mt-30 h-300 w-full max-w-531 border lg:min-h-300 lg:flex-1"
+            />
+          )}
         </div>
 
         <InquiryForm />

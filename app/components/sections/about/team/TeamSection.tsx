@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Eyebrow } from "@/app/components/ui";
 import { TEAM } from "./team";
 
-// About page: three portrait cards (photo, role, name) under a heading row
+// About page: a centred portrait card (photo, role, name) under a heading row
 export default function TeamSection() {
   return (
     <section id="team" aria-labelledby="team-title" className="bg-surface-subtle text-fg-strong">
@@ -18,9 +18,9 @@ export default function TeamSection() {
           </p>
         </div>
 
-        <ul className="mt-40 grid gap-40 md:grid-cols-3 md:gap-20 lg:mt-52">
+        <ul className="mt-40 flex justify-center lg:mt-52">
           {TEAM.map((member) => (
-            <li key={member.name}>
+            <li key={member.name} className="w-full max-w-430">
               <Image
                 src={member.photo}
                 alt={`Portrait of ${member.name}`}

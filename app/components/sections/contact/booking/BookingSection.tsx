@@ -16,7 +16,7 @@ export default function BookingSection() {
             Book a conversation
             <br className="max-lg:hidden" /> instead.
           </h2>
-          <p className="type-body-14 max-w-270 text-white/60 lg:self-start lg:justify-self-start lg:pt-12">
+          <p className="type-body-14 max-w-380 text-white/60 lg:self-start lg:justify-self-start lg:pt-12">
             If it’s easier to explain the problem live, choose a time that works and walk us through what you’re trying to solve.
           </p>
 
@@ -26,10 +26,10 @@ export default function BookingSection() {
             </Button>
           </div>
 
-          <div id="book-a-call-scheduler" className="rounded-16 bg-surface scroll-mt-100 p-16 lg:col-span-2 lg:p-24">
+          <div id="book-a-call-scheduler" className="rounded-16 scroll-mt-100 p-16 lg:col-span-2 lg:max-w-1320 lg:p-24">
             <div className="flex flex-wrap items-baseline justify-between gap-x-20 gap-y-4 pb-16">
-              <h3 className="type-heading-28 text-fg-strong">Choose a time</h3>
-              <p className="type-caption-12 text-fg-muted uppercase">30 min / Discovery call</p>
+              <h3 className="type-heading-28 text-fg-white">Choose a time</h3>
+              <p className="type-caption-12 text-fg-white uppercase">30 min / Discovery call</p>
             </div>
             <CalendlyEmbed url={SITE.calendlyUrl} />
           </div>

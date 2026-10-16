@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const DURATION = 2200;
+const DURATION = 3600;
 const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - 2 ** (-10 * t));
 
 /**
