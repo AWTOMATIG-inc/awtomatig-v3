@@ -20,7 +20,7 @@ export default function ProcessHeroSection() {
           <br className="max-lg:hidden" /> workflows, systems and technology aligned throughout delivery.
         </>
       }
-      primary={{ label: "Explore the Process", href: "#process" }}
+      primary={{ label: "See the Process", href: "#process" }}
     />
   );
 }

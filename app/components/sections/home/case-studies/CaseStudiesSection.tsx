@@ -15,8 +15,8 @@ export default function CaseStudiesSection() {
               Systems are only useful when they improve outcomes.
             </h2>
             <p className="type-body-16 text-fg-primary mt-32 lg:mt-auto lg:pt-40">
-              AWTOMATIG works across infrastructure, operations, business systems and AdTech to turn fragmented processes into
-              clearer, more scalable ways of working.
+              AWTOMATIG works across web infrastructure, back-office operations, ERP systems and AdTech to turn fragmented
+              processes into clearer, scalable workflows.
             </p>
           </div>
 

@@ -48,8 +48,8 @@ export default function CtaSection({
   ),
   description = (
     <>
-      Whether the challenge sits in infrastructure, operations, ERP or AdTech,
-      <br className="max-lg:hidden" /> we help bring structure to the systems behind the business.
+      Whether the challenge sits in your website, operations, ERP or AdTech,
+      <br className="max-lg:hidden" /> we help bring structure to the systems behind your business.
     </>
   ),
   primary = { label: "Start a conversation", href: "/contact" },

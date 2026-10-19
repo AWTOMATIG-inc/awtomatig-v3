@@ -3,7 +3,7 @@ import { SITE } from "@/lib/site";
 import CalendlyEmbed from "./CalendlyEmbed";
 import { BOOKING_LINES } from "./bookingLines";
 
-// Contact: "Book a conversation instead", a Calendly discovery-call scheduler on the dark lines backdrop (last section)
+// Contact: "Book a discovery call instead", a Calendly discovery-call scheduler on the dark lines backdrop (last section)
 export default function BookingSection() {
   if (!SITE.calendlyUrl) return null;
 
@@ -13,8 +13,8 @@ export default function BookingSection() {
         <div className="grid gap-20 lg:grid-cols-[333fr_654fr_344fr] lg:gap-x-0 lg:gap-y-64">
           <Eyebrow className="self-start lg:mt-6">Prefer to talk?</Eyebrow>
           <h2 id="booking-title" className="type-heading-60 text-gradient-display">
-            Book a conversation
-            <br className="max-lg:hidden" /> instead.
+            Book a discovery
+            <br className="max-lg:hidden" /> call instead.
           </h2>
           <p className="type-body-14 max-w-380 text-white/60 lg:self-start lg:justify-self-start lg:pt-12">
             If it’s easier to explain the problem live, choose a time that works and walk us through what you’re trying to solve.

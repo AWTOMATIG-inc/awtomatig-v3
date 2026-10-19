@@ -61,7 +61,7 @@ export const SERVICE_THEMES: Record<
 const SERVICE_CONTENT = {
   "website-infrastructure": {
     title: ["Website", "Infrastructure"],
-    description: "Build, operate and maintain the digital infrastructure your business depends on.",
+    description: "Website development, hosting and upkeep for the platforms your business relies on.",
     points: [
       "Corporate Websites",
       "Landing Infrastructure",
@@ -73,12 +73,12 @@ const SERVICE_CONTENT = {
       "API Integrations",
     ],
     image: webImage,
-    imageAlt: "Website builds: a skincare storefront, a brand landing page and an AI meeting tool homepage",
+    imageAlt: "Website development examples: a skincare storefront, a brand landing page and an AI meeting tool homepage",
     theme: "light",
   },
   "back-office-operations": {
     title: ["Back-Office", "Operations"],
-    description: "Structured operational support for the workflows that keep your business moving.",
+    description: "Managed back-office support for the daily workflows that keep your business moving.",
     points: [
       "CRM Operations",
       "Customer Support",
@@ -90,12 +90,12 @@ const SERVICE_CONTENT = {
       "Reporting",
     ],
     image: backOfficeImage,
-    imageAlt: "Back-office tools: an online store, a task queue, a support inbox and a warranty request dashboard",
+    imageAlt: "Back-office operations tools: an online store, a task queue, a support inbox and a warranty request dashboard",
     theme: "cyan",
   },
   "erp-business-systems": {
     title: ["ERP & Business", "Systems"],
-    description: "Connect processes, data and systems into a more efficient operating environment.",
+    description: "ERP implementation and automation that connects your data, processes and systems.",
     points: [
       "ERP Implementation",
       "Process Mapping",
@@ -107,12 +107,13 @@ const SERVICE_CONTENT = {
       "Reporting",
     ],
     image: erpImage,
-    imageAlt: "Business systems: a finance app, integrations such as HubSpot, n8n and Salesforce, and an operations dashboard",
+    imageAlt:
+      "ERP and business systems: a finance app, integrations such as HubSpot, n8n and Salesforce, and an operations dashboard",
     theme: "subtle",
   },
   "ad-tech": {
     title: ["Ad", "Tech"],
-    description: "Operational infrastructure and execution support behind modern advertising teams.",
+    description: "AdTech operations, campaign trafficking and QA behind modern advertising teams.",
     points: [
       "Campaign Trafficking",
       "Campaign Setup",
@@ -124,7 +125,8 @@ const SERVICE_CONTENT = {
       "Optimization Support",
     ],
     image: adTechImage,
-    imageAlt: "Ad campaigns: display creatives for a juice brand and a campaign manager across Google, Meta and TikTok",
+    imageAlt:
+      "AdTech campaign operations: display creatives for a juice brand and a campaign manager across Google, Meta and TikTok",
     theme: "dark",
   },
 } satisfies Record<ServiceId, ServiceContent>;

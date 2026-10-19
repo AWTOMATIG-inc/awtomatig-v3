@@ -15,7 +15,7 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: "t1",
     quote:
-      "What stood out was how quickly they understood the shape of the problem. They weren't just adding technology — they looked at how our team worked and built the solution around that.",
+      "What stood out was how quickly they understood the shape of the problem. They weren’t just adding technology. They looked at how our team worked and built the solution around that.",
     service: "website-infrastructure",
     avatar: Member1,
   },

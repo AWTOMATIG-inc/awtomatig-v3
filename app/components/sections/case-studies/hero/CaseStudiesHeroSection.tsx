@@ -15,12 +15,12 @@ export default function CaseStudiesHeroSection() {
       }
       description={
         <>
-          Explore how AWTOMATIG helps businesses improve digital infrastructure,
-          <br className="max-lg:hidden" /> streamline operations, connect systems and strengthen the workflows
-          <br className="max-lg:hidden" /> behind everyday execution.
+          See how AWTOMATIG helps businesses improve website infrastructure,
+          <br className="max-lg:hidden" /> streamline back-office operations, connect ERP systems and strengthen
+          <br className="max-lg:hidden" /> workflows behind everyday execution.
         </>
       }
-      primary={{ label: "Explore Our Work", href: "#work" }}
+      primary={{ label: "See Our Work", href: "#work" }}
     />
   );
 }

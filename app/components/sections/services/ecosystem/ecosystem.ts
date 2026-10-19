@@ -26,7 +26,7 @@ export const LAYERS: Layer[] = [
 export const AREAS: Area[] = [
   {
     title: "Website Infrastructure",
-    description: "Digital entry points and custom platforms.",
+    description: "Websites, CMS builds and custom platforms.",
     icon: GearClusterIcon,
   },
   {
@@ -35,7 +35,7 @@ export const AREAS: Area[] = [
     icon: GearBulbIcon,
   },
   {
-    title: "ERP & Systems",
+    title: "ERP & Business Systems",
     description: "Data, automation, process and core business platforms.",
     icon: SitemapIcon,
   },

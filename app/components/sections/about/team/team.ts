@@ -8,4 +8,4 @@ export type TeamMember = {
 };
 
 // The card uses member_1.jpg until the real portraits are added (see MEMORY.md open items)
-export const TEAM: TeamMember[] = [{ name: "Mark Colley", role: "Strategy / Operations", photo: Member1 }];
+export const TEAM: TeamMember[] = [{ name: "Nahid Bin Rafique", role: "Founder & CEO", photo: Member1 }];
