@@ -6,9 +6,9 @@ import CtaSection from "@/app/components/sections/shared/cta/CtaSection";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Case Studies",
+  title: "Website, ERP & Operations Case Studies",
   description:
-    "How AWTOMATIG helps businesses improve digital infrastructure, streamline operations, connect systems and strengthen the workflows behind everyday execution.",
+    "See how AWTOMATIG rebuilds websites, streamlines back-office operations, connects ERP systems and strengthens the workflows behind everyday execution.",
   path: "/case-studies",
 });
 

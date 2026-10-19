@@ -8,9 +8,9 @@ import CtaSection from "@/app/components/sections/shared/cta/CtaSection";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Services",
+  title: "Business Automation, ERP & Web Services",
   description:
-    "Website infrastructure, back-office operations, ERP and business systems, and AdTech: the systems, operations and technology behind your business.",
+    "Website development, back-office operations, ERP implementation and AdTech services. AWTOMATIG builds and runs the systems behind your business.",
   path: "/services",
 });
 

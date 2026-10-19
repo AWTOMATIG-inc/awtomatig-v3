@@ -5,9 +5,9 @@ export const SITE = {
   name: "AWTOMATIG",
   // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) so canonical and share-image URLs resolve there
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://awtomatig.com",
-  title: "AWTOMATIG: The operational layer behind modern businesses",
+  title: "AWTOMATIG: Business Automation, ERP & Back-Office Systems",
   description:
-    "AWTOMATIG builds websites, back-office operations, ERP systems and AdTech workflows, connected into one scalable operational ecosystem.",
+    "AWTOMATIG builds websites, runs back-office operations, implements ERP systems and manages AdTech workflows as one connected business system.",
   email: "hello@awtomatig.com",
   // Calendly 30-minute discovery call, embedded on the Contact page; the booking section is hidden when unset
   // (colours match the site: cyan buttons, charcoal text)
@@ -53,4 +53,4 @@ export const ROUTES = [...SITE.nav, { href: "/process", label: "Process" }]
   .concat(SITE.legal.map((link) => link.href));
 
 /** Capability tags shown in the hero and the shared CTA strip (not services: see lib/services.ts) */
-export const CAPABILITY_TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdTech"];
+export const CAPABILITY_TAGS = ["Web Platforms", "Back-Office", "Automation", "Integrations", "AdTech"];

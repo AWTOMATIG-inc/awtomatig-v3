@@ -9,6 +9,9 @@ export type CaseStudy = {
   id: string;
   title: string;
   summary: string;
+  /** Detail page meta; the title is the page name (the layout adds the brand). Falls back to `title` / `summary`. */
+  seoTitle?: string;
+  seoDescription?: string;
   client: string;
   /** The service shown in the "Service:" row; resolved to its name through lib/services.ts */
   service: ServiceId;
@@ -32,6 +35,9 @@ export type CaseStudy = {
 const SNAILLIA_COPY = {
   title: "Snaillia",
   summary: "Rebuilding a digital platform for speed, scale and easier management.",
+  seoTitle: "Snaillia: Website Rebuild Case Study",
+  seoDescription:
+    "How AWTOMATIG rebuilt the Snaillia website for speed, scale and simpler content management, with a faster publishing workflow for the internal team.",
   client: "Snaillia",
   service: "website-infrastructure",
   description:

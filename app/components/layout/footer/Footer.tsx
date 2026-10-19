@@ -43,7 +43,7 @@ export default function Footer() {
           </Link>
           <p className="type-heading-60 text-fg-strong max-w-[8em]">Connecting the systems that keep business moving.</p>
           <p className="type-body-16 text-fg-strong max-w-410 self-end">
-            We help businesses build, connect and operate the systems behind growth from digital infrastructure and back-office
+            We help businesses build, connect and run the systems behind growth, from website infrastructure and back-office
             operations to ERP and AdTech.
           </p>
         </div>
