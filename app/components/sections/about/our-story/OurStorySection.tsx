@@ -20,8 +20,8 @@ export default function OurStorySection() {
         </>,
         <>
           AWTOMATIG exists to solve that gap. We work across websites,
-          <br className="max-lg:hidden" /> business systems, operations and technology to turn disconnected
-          <br className="max-lg:hidden" /> pieces into practical, connected environments.
+          <br className="max-lg:hidden" /> ERP and business systems, operations and automation to turn
+          <br className="max-lg:hidden" /> disconnected pieces into practical, connected environments.
         </>,
         <>
           Our approach has grown around the same principle from the start:

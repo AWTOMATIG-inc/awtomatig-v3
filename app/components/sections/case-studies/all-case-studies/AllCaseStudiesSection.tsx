@@ -1,6 +1,6 @@
 import IntroSection from "../../shared/intro/IntroSection";
 
-// Case Studies page intro; the hero's "Explore our work" scrolls here
+// Case Studies page intro; the hero's "See Our Work" scrolls here
 export default function AllCaseStudiesSection() {
   return (
     <IntroSection
@@ -17,7 +17,7 @@ export default function AllCaseStudiesSection() {
         <>
           From websites and operational workflows to ERP environments
           <br className="max-lg:hidden" /> and advertising infrastructure, each engagement starts with a
-          <br className="max-lg:hidden" /> different challenge - but the goal stays the same: make the
+          <br className="max-lg:hidden" /> different challenge, but the goal stays the same: make the
           <br className="max-lg:hidden" /> business work better.
         </>
       }

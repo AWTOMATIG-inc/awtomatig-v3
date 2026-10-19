@@ -12,7 +12,7 @@ export default function HumanOperationsSection() {
             Technology connects the workflow. People keep it moving.
           </h2>
           <p className="type-body-16 text-fg-primary self-end">
-            AWTOMATIG combines technical systems with structured operational support, helping businesses manage the work that
+            AWTOMATIG pairs ERP and automation systems with managed back-office support, helping businesses handle the work
             technology alone cannot solve.
           </p>
         </div>

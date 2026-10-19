@@ -22,7 +22,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       {/* Operations pins while How we work slides over it; Case studies then slides over the last step */}
-      <StackingCards hold={false} hideCovered>
+      <StackingCards hold={false}>
         <div data-stack-card className="stack-card">
           <OperationsSection />
         </div>

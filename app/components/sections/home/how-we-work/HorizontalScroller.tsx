@@ -81,10 +81,41 @@ export default function HorizontalScroller({ id, count, label, heading, children
     progressRef.current = target;
     paint();
 
+    // Pointer / touch: the fluted bars shift sideways towards the pointer (--ribs-pointer, -1 → 1), eased like the hero lines
+    let pointerTarget = 0;
+    let pointerNow = 0;
+    let pointerFrame = 0;
+    const pointerTick = () => {
+      pointerFrame = 0;
+      pointerNow += (pointerTarget - pointerNow) * 0.07;
+      if (Math.abs(pointerTarget - pointerNow) < 0.001) pointerNow = pointerTarget;
+      section.style.setProperty("--ribs-pointer", pointerNow.toFixed(4));
+      if (pointerNow !== pointerTarget) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    const onPointer = (event: PointerEvent) => {
+      if (reducedMotion.matches) return;
+      const rect = sticky.getBoundingClientRect();
+      pointerTarget = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    const onPointerEnd = () => {
+      pointerTarget = 0;
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    sticky.addEventListener("pointermove", onPointer);
+    sticky.addEventListener("pointerdown", onPointer);
+    sticky.addEventListener("pointerleave", onPointerEnd);
+    sticky.addEventListener("pointercancel", onPointerEnd);
+
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(pointerFrame);
+      sticky.removeEventListener("pointermove", onPointer);
+      sticky.removeEventListener("pointerdown", onPointer);
+      sticky.removeEventListener("pointerleave", onPointerEnd);
+      sticky.removeEventListener("pointercancel", onPointerEnd);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };

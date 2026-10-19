@@ -1,3 +1,4 @@
+import CountUp from "./CountUp";
 import { RESULTS } from "./trustedOperations";
 
 // White card: three headline results split by hairlines, each with an icon tile
@@ -13,7 +14,9 @@ export default function ResultsCard() {
             <Icon className="size-20" />
           </span>
           <div>
-            <p className="type-heading-50 font-normal">{value}</p>
+            <p className="type-heading-50 font-normal">
+              <CountUp value={value} />
+            </p>
             <p className="type-body-16 text-fg-primary">{label}</p>
           </div>
         </li>

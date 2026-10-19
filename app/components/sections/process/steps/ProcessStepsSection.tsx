@@ -3,7 +3,7 @@ import ProcessStepRow from "./ProcessStepRow";
 import ProcessTimeline from "./ProcessTimeline";
 import { PROCESS_STEPS } from "./steps";
 
-/** "The process": heading row and the nine steps on a scroll-linked rail, off-white. The hero's "Explore the Process" target. */
+/** "The process": heading row and the nine steps on a scroll-linked rail, off-white. The hero's "See the Process" target. */
 export default function ProcessStepsSection() {
   return (
     <section id="process" aria-labelledby="process-title" className="bg-surface-subtle text-fg-strong">

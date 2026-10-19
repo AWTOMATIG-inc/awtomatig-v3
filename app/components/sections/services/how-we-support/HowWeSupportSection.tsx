@@ -22,7 +22,7 @@ export default function HowWeSupportSection() {
           {SUPPORT_MODES.map((mode) => (
             <li
               key={mode.title}
-              className={`rounded-12 flex flex-col overflow-hidden p-24 lg:h-425 ${SUPPORT_THEMES[mode.theme]}`}
+              className={`rounded-12 ease-out-quint flex flex-col overflow-hidden p-24 transition-transform duration-500 will-change-transform motion-safe:hover:-translate-y-8 motion-reduce:transition-none lg:h-425 ${SUPPORT_THEMES[mode.theme]}`}
             >
               <div className="flex min-h-0 flex-1 items-center justify-center pb-24">
                 <Image
@@ -33,7 +33,7 @@ export default function HowWeSupportSection() {
                 />
               </div>
               <h3 className="type-heading-28">{mode.title}</h3>
-              <p className="type-body-16-compact mt-12 max-w-355">{mode.description}</p>
+              <p className="type-body-16-compact mt-12">{mode.description}</p>
             </li>
           ))}
         </ul>

@@ -8,7 +8,7 @@ export type Reason = { title: string; description: string; icon: Icon };
 export const REASONS: Reason[] = [
   {
     title: "Systems thinking",
-    description: "We look at how technology, workflows and teams interact not just isolated tools.",
+    description: "We look at how technology, workflows and teams interact, not just isolated tools.",
     icon: GearClusterIcon,
   },
   {

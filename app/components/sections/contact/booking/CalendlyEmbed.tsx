@@ -57,11 +57,12 @@ export default function CalendlyEmbed({ url }: { url: string }) {
     };
   }, [url]);
 
+  // Calendly leaves ~56px of blank space above its card; the inner box is pulled up so the outer one crops it
   return (
-    <div className="relative h-700 min-w-320">
-      <div ref={ref} className="size-full" />
+    <div className="relative h-640 min-w-320 overflow-hidden">
+      <div ref={ref} className="absolute inset-x-0 -top-56 -bottom-24" />
       {failed && (
-        <p className="type-body-16 text-fg-primary absolute inset-0 flex items-center justify-center text-center">
+        <p className="type-body-16 text-fg-primary absolute inset-0 flex items-center justify-start text-center">
           <span>
             The scheduler could not load.{" "}
             <a href={url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">

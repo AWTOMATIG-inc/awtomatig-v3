@@ -17,7 +17,11 @@ export async function generateMetadata({ params }: PageProps<"/case-studies/[slu
   const study = CASE_STUDIES.find((s) => s.id === slug);
   if (!study) return {};
 
-  return pageMetadata({ title: study.title, description: study.summary, path: `/case-studies/${study.id}` });
+  return pageMetadata({
+    title: study.seoTitle ?? study.title,
+    description: study.seoDescription ?? study.summary,
+    path: `/case-studies/${study.id}`,
+  });
 }
 
 // Demo detail page (requested 2026-10-09) so "View case study" has somewhere real to go; reuses the same case

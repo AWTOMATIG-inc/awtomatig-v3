@@ -9,6 +9,9 @@ export type CaseStudy = {
   id: string;
   title: string;
   summary: string;
+  /** Detail page meta; the title is the page name (the layout adds the brand). Falls back to `title` / `summary`. */
+  seoTitle?: string;
+  seoDescription?: string;
   client: string;
   /** The service shown in the "Service:" row; resolved to its name through lib/services.ts */
   service: ServiceId;
@@ -31,7 +34,10 @@ export type CaseStudy = {
 // Nextgen case study copy and figures replace the second and third entries.
 const SNAILLIA_COPY = {
   title: "Snaillia",
-  summary: "Rebuilding a digital platform for speed, scale and easier management.",
+  summary: "Rebuilding a website platform for speed, scale and easy management.",
+  seoTitle: "Snaillia: Website Rebuild Case Study",
+  seoDescription:
+    "How AWTOMATIG rebuilt the Snaillia website for speed, scale and simpler content management, with a faster publishing workflow for the internal team.",
   client: "Snaillia",
   service: "website-infrastructure",
   description:
@@ -45,7 +51,7 @@ const SNAILLIA_COPY = {
     { value: "XX%", label: "Performance improvement" },
     { value: "XX%", label: "Faster publishing workflow" },
     { value: "XX", label: "Systems connected" },
-    { value: "XX+", label: "Pages migrated improved" },
+    { value: "XX+", label: "Pages migrated and improved" },
   ],
 } satisfies Omit<CaseStudy, "id" | "image" | "imageAlt">;
 

@@ -1,5 +1,5 @@
 import { Eyebrow } from "@/app/components/ui";
-import MarqueeTrack from "./MarqueeTrack";
+import MarqueeTrack from "../../shared/partners/MarqueeTrack";
 import { PARTNERS, PROVEN_STATS } from "./proven";
 
 // Only stats with a real figure are shown
