@@ -1,4 +1,4 @@
-import CountUp from "./CountUp";
+import { CountUp } from "@/app/components/ui";
 import WorldMap from "./WorldMap";
 import { ECOSYSTEM_ICONS } from "./trustedOperations";
 
