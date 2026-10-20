@@ -1,4 +1,4 @@
-import CountUp from "./CountUp";
+import { CountUp } from "@/app/components/ui";
 import { RESULTS } from "./trustedOperations";
 
 // White card: three headline results split by hairlines, each with an icon tile
