@@ -4,6 +4,7 @@ import AllCaseStudiesSection from "@/app/components/sections/case-studies/all-ca
 import CaseStudyListSection from "@/app/components/sections/case-studies/case-study-list/CaseStudyListSection";
 import CtaSection from "@/app/components/sections/shared/cta/CtaSection";
 import { pageMetadata } from "@/lib/metadata";
+import ComingSoon from "@/app/components/sections/shared/coming-soon/ComingSoonSection";
 
 export const metadata: Metadata = pageMetadata({
   title: "Website, ERP & Operations Case Studies",
@@ -15,6 +16,11 @@ export const metadata: Metadata = pageMetadata({
 export default function CaseStudiesPage() {
   return (
     <>
+      <ComingSoon
+        title="Case Studies Coming Soon"
+        description="We’re currently building out our case studies. Check back soon to see how we’ve helped businesses improve their websites, operations and workflows."
+      />
+      {/*}
       <CaseStudiesHeroSection />
       <AllCaseStudiesSection />
       <CaseStudyListSection />
@@ -37,7 +43,7 @@ export default function CaseStudiesPage() {
           description:
             "Start with the problem. We’ll help identify whether the answer sits in infrastructure, operations, business systems, AdTech or across several of them.",
         }}
-      />
+      />*/}
     </>
   );
 }

@@ -147,9 +147,12 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
         className="scrollbar-hide flex cursor-grab touch-pan-x gap-20 overflow-x-auto pb-4 select-none active:cursor-grabbing"
       >
         {testimonials.map((testimonial) => (
-          <li key={testimonial.id} className="bg-surface rounded-16 w-290 shrink-0 p-24 sm:w-360 sm:p-28 lg:w-404 lg:p-32">
+          <li
+            key={testimonial.id}
+            className="bg-surface rounded-16 flex w-290 shrink-0 flex-col p-24 sm:w-360 sm:p-28 lg:w-404 lg:p-32"
+          >
             <span
-              className={`type-caption-12 rounded-8 inline-block px-12 py-6 font-medium uppercase ${
+              className={`type-caption-12 rounded-8 inline-block self-start px-12 py-6 font-medium uppercase ${
                 TAG_THEMES[testimonial.service] ?? TAG_DEFAULT
               }`}
             >
@@ -158,18 +161,16 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
 
             <p className="type-body-20 text-fg-strong mt-20 lg:mt-28">&ldquo;{testimonial.quote}&rdquo;</p>
 
-            <div className="mt-28 flex items-center gap-12 lg:mt-40">
+            <div className="mt-auto pt-28 lg:pt-40">
               <Image
-                src={testimonial.avatar}
-                alt=""
-                width={44}
-                height={44}
-                className="size-44 shrink-0 rounded-full object-cover"
+                src={testimonial.logo}
+                alt={testimonial.company}
+                className={`h-36 w-auto max-w-160 object-contain object-left ${testimonial.logoOnWhite ? "opacity-80 brightness-0" : ""}`}
               />
-              <div>
-                <p className="type-body-16 text-fg-strong font-medium">Client Name goes here</p>
-                <p className="type-body-14 text-fg-muted">[Role] · [Company]</p>
-              </div>
+              <p className="type-body-16 text-fg-strong mt-16 font-medium">{testimonial.name}</p>
+              <p className="type-body-14 text-fg-muted">
+                {testimonial.role} · {testimonial.company}
+              </p>
             </div>
           </li>
         ))}

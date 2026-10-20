@@ -19,7 +19,7 @@ export default function ServicesPage() {
     <>
       <ServicesHeroSection />
       <WhatWeDoSection />
-      <ServicesSection cta={{ label: "View details", href: "/contact" }} />
+      <ServicesSection cta={{ label: "View details", href: (id) => `/services/${id}` }} />
       <EcosystemSection />
       <HowWeSupportSection />
       <CtaSection

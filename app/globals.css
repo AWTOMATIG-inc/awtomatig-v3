@@ -88,6 +88,31 @@
     }
   }
 
+  /* Connection dots in the Operations "Disconnected systems" mockup: a slow blink (animate-dot-blink) */
+  --animate-dot-blink: dot-blink 1.8s ease-in-out infinite;
+  @keyframes dot-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+  /* Status dot halo ("Coming soon" badge): a ring that grows and fades (animate-status-ping) */
+  --animate-status-ping: status-ping 2s var(--ease-out-quint) infinite;
+  @keyframes status-ping {
+    from {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
   /* ---------- Effects: glass material (navbar pill, mobile menu) — applied with the `glass` utility ---------- */
   --glass-fill:
     linear-gradient(
