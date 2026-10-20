@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 import { ROUTES, SITE } from "@/lib/site";
-import { CASE_STUDIES } from "@/app/components/sections/shared/case-studies/caseStudies";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = [...ROUTES, ...CASE_STUDIES.map((study) => `/case-studies/${study.id}`)];
+  // The case study and service detail pages are "Coming soon" placeholders (noindex), so they stay out
+  const paths = [...ROUTES];
   return paths.map((path) => ({
     url: new URL(path, SITE.url).toString(),
     changeFrequency: "monthly",

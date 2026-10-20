@@ -15,7 +15,8 @@ export default function WorkflowsMockup() {
       {STEPS.map(({ label, icon: Icon, className }, i) => (
         <li
           key={label}
-          className={`type-body-14 rounded-8 bg-surface text-fg-primary flex h-40 w-259 items-center gap-14 pr-3 pl-16 ${className}`}
+          style={{ transitionDelay: `${i * 170}ms` }}
+          className={`type-body-14 rounded-8 bg-surface text-fg-primary flex h-40 w-259 items-center gap-14 pr-3 pl-16 ease-[cubic-bezier(0.34,1.35,0.64,1)] motion-safe:-translate-y-200 motion-safe:opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-1000 motion-safe:group-data-shown:translate-y-0 motion-safe:group-data-shown:opacity-100 ${className}`}
         >
           <span>{String(i + 1).padStart(2, "0")}.</span>
           <span>{label}</span>

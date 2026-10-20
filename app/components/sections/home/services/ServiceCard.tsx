@@ -3,7 +3,8 @@ import { Fragment } from "react";
 import { Button, Reveal } from "@/app/components/ui";
 import { SERVICE_THEMES, type Service } from "./services";
 
-export type ServiceCta = { label: string; href: string };
+/** `href` may be a function of the service id, for a per-service page */
+export type ServiceCta = { label: string; href: string | ((id: Service["id"]) => string) };
 
 type ServiceCardProps = {
   service: Service;
@@ -51,7 +52,7 @@ export default function ServiceCard({ service, index, cta }: ServiceCardProps) {
           <Reveal delay={250} className="lg:w-392 lg:shrink-0 lg:pt-8">
             <p className="type-body-16 max-w-640">{service.description}</p>
             <Button
-              href={cta.href}
+              href={typeof cta.href === "function" ? cta.href(service.id) : cta.href}
               variant={theme.button}
               size="lg"
               aria-label={`${cta.label}: ${service.title.join(" ")}`}

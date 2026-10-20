@@ -21,7 +21,7 @@ type StatusListMockupProps = {
 // Dashboard-style list drawn 1:1 in the 309×253 panel frame: title block, optional pill, four white status rows
 export default function StatusListMockup({ title, subtitle, badge, rows }: StatusListMockupProps) {
   return (
-    <div className="px-20 pt-19">
+    <div className="ease-out-quint px-20 pt-19 motion-safe:translate-y-60 motion-safe:opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-1000 motion-safe:group-data-shown:translate-y-0 motion-safe:group-data-shown:opacity-100">
       <div className="flex items-start justify-between">
         <div>
           <p className="type-heading-18 text-fg-strong">{title}</p>
@@ -35,8 +35,12 @@ export default function StatusListMockup({ title, subtitle, badge, rows }: Statu
         )}
       </div>
       <ul className="mt-15 flex flex-col gap-7">
-        {rows.map(({ label, status, tone, icon: Icon }) => (
-          <li key={label} className="type-caption-12 rounded-8 bg-surface text-fg-primary flex h-35 items-center pr-11 pl-10">
+        {rows.map(({ label, status, tone, icon: Icon }, i) => (
+          <li
+            key={label}
+            style={{ transitionDelay: `${150 + i * 110}ms` }}
+            className="ease-out-quint type-caption-12 rounded-8 bg-surface text-fg-primary flex h-35 items-center pr-11 pl-10 motion-safe:translate-y-40 motion-safe:opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-1000 motion-safe:group-data-shown:translate-y-0 motion-safe:group-data-shown:opacity-100"
+          >
             <span className="flex w-136 items-center gap-6">
               <Icon className="size-18 shrink-0" />
               {label}
