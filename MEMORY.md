@@ -196,7 +196,7 @@ Confirm these against Figma, then update `globals.css`, DESIGN.md and this file:
 - [ ] Service card values measured from screenshots, not Figma: top padding 70px (outside the spacing scale), title `type-heading-60` (measured ≈60–63px), index `type-heading-34` at regular weight, panel bleed 40 frame px past the site edges, 25px column gap (an "observed" value). The bottom of each card was cropped in the screenshots, so the panel is assumed flush with the card bottom.
 - [ ] **Line heights measured from the footer screenshot differ from the tokens:** Heading / 60 measures **1.0** (token 1.05) and Body / 16 measures **1.5** (token 1.6). The tokens were left unchanged so the hero and service cards don't shift. As a result, the footer statement runs about 6px taller and the intro paragraph's lines sit about 1.3px further apart than in the design. Confirm in Figma, then update `globals.css` (this affects every use).
 - [ ] Footer values outside the spacing scale, measured: top padding 98, link-row top padding 72 and bottom padding 74, link gap 19 (Heading / 24 rows every 49px), button offset 6 (aligns the button tops with the link cap height), wordmark gap 37, intro width 410.
-- [ ] Footer: AWLABS and LinkedIn are hidden until their URLs exist (`SITE.social`); Privacy Policy and Terms now go to `/privacy` and `/terms`; email is `hello@awtomatig.com` (assumed, `SITE.email`).
+- [ ] Footer: AWLABS and LinkedIn are hidden until their URLs exist (`SITE.social`); Privacy Policy and Terms now go to `/privacy` and `/terms`; email is `info@awtomatig.com` (`SITE.email`, set 2026-10-25).
 - [ ] **Privacy Policy and Terms text is a first draft** (`sections/shared/legal/legal.ts`), written from what the site does today. Have it reviewed by the owner / legal before launch, and update it when the form gets a backend or analytics are added.
 - [ ] Contact “Proven” stats are hidden until real figures replace the design’s `XX+` (`value` in `proven.ts`). The inquiry form opens the visitor’s email app until the backend exists (AUDIT_FIX_PLAN.md 5.1); the upload box returns then.
 - [ ] Production domain assumed `https://awtomatig.com` (`SITE.url`: canonical URLs, sitemap, OG). Confirm.
@@ -219,6 +219,7 @@ Newest first. Add one line per meaningful change.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-25 | **Site email is now `info@awtomatig.com`** (was `nahidr@awtomatig.com`), in `SITE.email`; it feeds the contact details, footer, inquiry form, legal pages and the Organization JSON-LD. |
 | 2026-10-25 | **About → Team: the Founder & CEO card shows the real portrait** (`public/images/nahid.jpeg`, 860×767, about the card's 430 × 387 ratio, so the cover crop barely trims it) instead of the `member_1.jpg` placeholder. |
 | 2026-10-25 | **Home → Human operations hidden** (requested: no real content yet). The section and its import are commented out in `app/(site)/page.tsx` with a note on how to restore them; the component files are unchanged. |
 | 2026-10-20 | **Contact → Proven stat figures count up** (5+, 50+, 95+, 25+) the first time they scroll into view, using the same `CountUp` as Home → Trusted operations. `CountUp` moved to the shared `ui/count-up/` (exported from `@/app/components/ui`). Reduced motion shows the final figures. Not watched in a browser. |

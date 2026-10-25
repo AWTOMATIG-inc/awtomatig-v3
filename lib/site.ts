@@ -8,7 +8,7 @@ export const SITE = {
   title: "AWTOMATIG: Business Automation, ERP & Back-Office Systems",
   description:
     "AWTOMATIG builds websites, runs back-office operations, implements ERP systems and manages AdTech workflows as one connected business system.",
-  email: "nahidr@awtomatig.com",
+  email: "info@awtomatig.com",
   // Calendly 30-minute discovery call, embedded on the Contact page; the booking section is hidden when unset
   // (colours match the site: cyan buttons, charcoal text)
   calendlyUrl:
