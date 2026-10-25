@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image";
-import Member1 from "@/public/images/about/member_1.jpg";
+import Nahid from "@/public/images/nahid.jpeg";
 
 export type TeamMember = {
   name: string;
@@ -7,5 +7,4 @@ export type TeamMember = {
   photo: StaticImageData;
 };
 
-// The card uses member_1.jpg until the real portraits are added (see MEMORY.md open items)
-export const TEAM: TeamMember[] = [{ name: "Nahid Bin Rafique", role: "Founder & CEO", photo: Member1 }];
+export const TEAM: TeamMember[] = [{ name: "Nahid Bin Rafique", role: "Founder & CEO", photo: Nahid }];

@@ -20,7 +20,7 @@ _Last updated: 2026-10-19_
 | Navbar | ✅ Built | `app/components/layout/header/` |
 | Home → Hero | ✅ Built | `app/components/sections/home/hero/` |
 | Home → Operations (pillars + problem cards) | ✅ Built | `app/components/sections/home/operations/` |
-| Home → Human operations (heading, team photo, 3 stats) | ✅ Built, after Operations | `app/components/sections/home/human-operations/` |
+| Home → Human operations (heading, team photo, 3 stats) | ⏸️ Built, **hidden on Home** (commented out in `app/(site)/page.tsx`) until its content is ready | `app/components/sections/home/human-operations/` |
 | Home → Services (4 stacking cards) | ✅ Built | `app/components/sections/home/services/` |
 | Home → How we work (horizontal scroll carousel, 4 steps) | ✅ Built, after Why AWTOMATIG | `app/components/sections/home/how-we-work/` |
 | Home → Why AWTOMATIG (AWLABS card + 4 reasons) | ✅ Built, after Case studies | `app/components/sections/home/why-awtomatig/` |
@@ -205,7 +205,7 @@ Confirm these against Figma, then update `globals.css`, DESIGN.md and this file:
 - [ ] **Client testimonials (D53):** only two of the four service tag chip colours were visible in the reference screenshot (ERP & Business Systems neutral, Back-Office Operations cyan); Website Infrastructure and AdTech default to the neutral chip, unconfirmed. The quotes beyond the two shown in the screenshot, and all five "Client Name goes here" avatar photos (reusing `about/member_1.jpg`), are placeholders to replace with real client content. The header row's grid proportions (`340fr/606fr/381fr`) and the autoplay speed are not measured from a full-frame screenshot (only a crop was supplied).
 - [ ] **Webcopy follow-ups (D56, [AW_Webcopy.md](AW_Webcopy.md) "Before you apply this")**, none of them code until the owner supplies the facts:
   - Confirm these claims are true, or remove them: the 4.8 Google / Clutch / Fiverr ratings (hero badges), the 35+ / 50+ / 120+ / 75+ figures (Trusted operations) and "Typically within 1 business day" (Contact).
-  - Placeholder content is not SEO content: the testimonials ("Client Name goes here"), the team photo (`about/team/team.ts` now lists one real person, Nahid Bin Rafique, Founder & CEO, but still shows the `member_1` placeholder photo) and the `XX` stats should be replaced with real material, or hidden, before the pages are indexed. Add no Review or Person schema for them.
+  - Placeholder content is not SEO content: the testimonials ("Client Name goes here"), the team photo (resolved 2026-10-25: `about/team/team.ts` lists Nahid Bin Rafique, Founder & CEO, with his real portrait `public/images/nahid.jpeg`) and the `XX` stats should be replaced with real material, or hidden, before the pages are indexed. Add no Review or Person schema for them.
   - The three Snaillia case studies are one study repeated (D50), so the Case Studies list and the three detail pages carry the same copy and the same `seoTitle`; replace entries 2 and 3 with real studies before the page is submitted for indexing.
   - The Case Studies and Services CTAs share the same copy; give Case Studies its own wording if two identical CTAs are a concern.
   - Visually check the changed headings and heroes at 390 wide (the `<br>` line breaks only apply from `lg`), and the new capability tag labels at 1440 / 1024 / 390.
@@ -219,6 +219,8 @@ Newest first. Add one line per meaningful change.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-25 | **About → Team: the Founder & CEO card shows the real portrait** (`public/images/nahid.jpeg`, 860×767, about the card's 430 × 387 ratio, so the cover crop barely trims it) instead of the `member_1.jpg` placeholder. |
+| 2026-10-25 | **Home → Human operations hidden** (requested: no real content yet). The section and its import are commented out in `app/(site)/page.tsx` with a note on how to restore them; the component files are unchanged. |
 | 2026-10-20 | **Contact → Proven stat figures count up** (5+, 50+, 95+, 25+) the first time they scroll into view, using the same `CountUp` as Home → Trusted operations. `CountUp` moved to the shared `ui/count-up/` (exported from `@/app/components/ui`). Reduced motion shows the final figures. Not watched in a browser. |
 | 2026-10-20 | **Testimonials replaced with six real quotes** (Smith Lake, Objective Focus, Zenithics Global, No Spain No Gain, Sell My Rig, We Watch) with name, role and company; the placeholder portrait is gone, each card shows the company logo from `public/images/partners/` (white logos shown in black on the white card). Service tags were assigned from each quote’s content (no AdTech quote was supplied) – confirm. Supersedes the placeholder note in D53. |
 | 2026-10-20 | **Detail pages now show `ComingSoonSection`**: every `/case-studies/<slug>` (replaces the demo detail layout of D51, which is gone) and a new `/services/<service-id>` per service (`app/(site)/services/[slug]/page.tsx`). The Services page card buttons "View details" go to `/services/<id>` instead of `/contact` (`ServiceCta.href` may be a function of the service id). Both page types are `noindex` and left out of the sitemap until the real content exists. Build passes (20 static routes); not checked visually. |
