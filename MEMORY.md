@@ -219,6 +219,7 @@ Newest first. Add one line per meaningful change.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-26 | **Home hero: rating badges now show on phones** (reverses the 2026-10-13 "no badges below `md`" choice, requested from a new mobile reference): a two-column grid of equal cards (one column below 360px) with 8px gaps and sit 28px above the buttons; from `md` up unchanged. The logos are now transparent PNGs in `public/images/ratings/` (`google`, `fiverr`, `clutch`, 256 x 256, trimmed to the mark) rendered with `next/image` at 24px; the hand-drawn `GoogleIcon` / `ClutchIcon` / `FiverrIcon` were deleted (`react-icons` is now unused). Not checked in a browser. |
 | 2026-10-25 | **Site email is now `info@awtomatig.com`** (was `nahidr@awtomatig.com`), in `SITE.email`; it feeds the contact details, footer, inquiry form, legal pages and the Organization JSON-LD. |
 | 2026-10-25 | **About → Team: the Founder & CEO card shows the real portrait** (`public/images/nahid.jpeg`, 860×767, about the card's 430 × 387 ratio, so the cover crop barely trims it) instead of the `member_1.jpg` placeholder. |
 | 2026-10-25 | **Home → Human operations hidden** (requested: no real content yet). The section and its import are commented out in `app/(site)/page.tsx` with a note on how to restore them; the component files are unchanged. |

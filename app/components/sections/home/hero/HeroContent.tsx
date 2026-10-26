@@ -26,12 +26,9 @@ export default function HeroContent() {
           </p>
 
           <div className="w-full lg:w-auto">
-            {/* The phone design has no rating badges */}
-            <div className="max-md:hidden">
-              <RatingBadges />
-            </div>
+            <RatingBadges />
 
-            <div className="flex flex-col gap-10 sm:flex-row sm:gap-12 md:mt-24 lg:mt-31">
+            <div className="mt-28 flex flex-col gap-10 sm:flex-row sm:gap-12 md:mt-24 lg:mt-31">
               <Button href="/services" variant="primary" size="lg" className="w-full sm:flex-1 lg:w-250 lg:flex-none">
                 View Our Services
               </Button>

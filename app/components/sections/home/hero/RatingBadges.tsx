@@ -43,11 +43,11 @@ const RATING = 4.8;
 
 export default function RatingBadges() {
   return (
-    <ul className="flex flex-wrap gap-8 lg:flex-nowrap lg:gap-10">
+    <ul className="max-xs:grid-cols-1 grid grid-cols-2 gap-8 md:flex md:flex-wrap lg:flex-nowrap lg:gap-10">
       {BADGES.map(({ name, logo, label, labelFirst, color }) => (
         <li
           key={name}
-          className="bg-surface text-fg-strong rounded-8 flex h-54 min-w-150 flex-1 items-center gap-6 px-8 lg:min-w-0"
+          className="bg-surface text-fg-strong rounded-8 flex h-54 min-w-0 items-center gap-6 px-8 md:min-w-150 md:flex-1 lg:min-w-0"
         >
           <Image src={logo} alt="" width={24} height={24} className="size-24 shrink-0" />
           <div className="flex flex-col gap-2 whitespace-nowrap">
