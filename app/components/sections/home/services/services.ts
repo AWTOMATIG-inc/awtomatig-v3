@@ -4,7 +4,7 @@ import { SERVICES as SERVICE_REGISTRY, type ServiceId } from "@/lib/services";
 import webImage from "@/public/images/services/web.png";
 import backOfficeImage from "@/public/images/services/back_office.png";
 import erpImage from "@/public/images/services/erp.png";
-// import adTechImage from "@/public/images/services/ad_tech.png";
+import adTechImage from "@/public/images/services/ad_tech.png";
 
 export type ServiceTheme = "light" | "cyan" | "subtle" | "dark";
 
@@ -56,8 +56,8 @@ export const SERVICE_THEMES: Record<
   },
 };
 
-// Presentation only, keyed by the registry's ids: an unknown id fails to build. A service left out (Ad Tech is
-// commented out for now) gets no card.
+// Presentation only, keyed by the registry's ids: `satisfies` fails to build if a service is missing or
+// an unknown id is added here, so this and lib/services.ts can never drift apart.
 const SERVICE_CONTENT = {
   "website-infrastructure": {
     title: ["Website", "Infrastructure"],
@@ -111,28 +111,25 @@ const SERVICE_CONTENT = {
       "ERP and business systems: a finance app, integrations such as HubSpot, n8n and Salesforce, and an operations dashboard",
     theme: "subtle",
   },
-  // "ad-tech": {
-  //   title: ["Ad", "Tech"],
-  //   description: "AdTech operations, campaign trafficking and QA behind modern advertising teams.",
-  //   points: [
-  //     "Campaign Trafficking",
-  //     "Campaign Setup",
-  //     "Tracking QA",
-  //     "Reporting",
-  //     "DSP Operations",
-  //     "Creative QA",
-  //     "Monitoring",
-  //     "Optimization Support",
-  //   ],
-  //   image: adTechImage,
-  //   imageAlt:
-  //     "AdTech campaign operations: display creatives for a juice brand and a campaign manager across Google, Meta and TikTok",
-  //   theme: "dark",
-  // },
-} satisfies Partial<Record<ServiceId, ServiceContent>>;
+  "ad-tech": {
+    title: ["Ad", "Tech"],
+    description: "AdTech operations, campaign trafficking and QA behind modern advertising teams.",
+    points: [
+      "Campaign Trafficking",
+      "Campaign Setup",
+      "Tracking QA",
+      "Reporting",
+      "DSP Operations",
+      "Creative QA",
+      "Monitoring",
+      "Optimization Support",
+    ],
+    image: adTechImage,
+    imageAlt:
+      "AdTech campaign operations: display creatives for a juice brand and a campaign manager across Google, Meta and TikTok",
+    theme: "dark",
+  },
+} satisfies Record<ServiceId, ServiceContent>;
 
-// In registry order (Website Infrastructure, Back-Office Operations, ERP & Business Systems; AdTech is commented out)
-export const SERVICES: Service[] = SERVICE_REGISTRY.filter(({ id }) => id in SERVICE_CONTENT).map(({ id }) => ({
-  id,
-  ...SERVICE_CONTENT[id as keyof typeof SERVICE_CONTENT],
-}));
+// In registry order (Website Infrastructure, Back-Office Operations, ERP & Business Systems, AdTech)
+export const SERVICES: Service[] = SERVICE_REGISTRY.map(({ id }) => ({ id, ...SERVICE_CONTENT[id] }));
