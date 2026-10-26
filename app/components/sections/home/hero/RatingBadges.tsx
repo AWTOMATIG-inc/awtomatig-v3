@@ -1,5 +1,8 @@
+import Image from "next/image";
 import { useId } from "react";
-import { ClutchIcon, FiverrIcon, GoogleIcon } from "@/app/components/icons";
+import clutchLogo from "@/public/images/ratings/clutch.png";
+import fiverrLogo from "@/public/images/ratings/fiverr.png";
+import googleLogo from "@/public/images/ratings/google.png";
 
 const GOLD = "#fbbc04";
 const RED = "#ff3d2e";
@@ -29,23 +32,24 @@ function Stars({ rating, color }: { rating: number; color: string }) {
   );
 }
 
+// Logos are transparent 256 x 256 PNGs (public/images/ratings), trimmed to the mark so all three fill the same box.
 // Ratings shown in the design: labels sit above the score on Google / Fiverr and below it on Clutch
 const BADGES = [
-  { name: "Google", logo: GoogleIcon, label: "Google Rating", labelFirst: true, color: GOLD },
-  { name: "Clutch", logo: ClutchIcon, label: "Based on Clutch reviews", labelFirst: false, color: RED },
-  { name: "Fiverr", logo: FiverrIcon, label: "Fiverr Rating", labelFirst: true, color: GOLD },
+  { name: "Google", logo: googleLogo, label: "Google Rating", labelFirst: true, color: GOLD },
+  { name: "Clutch", logo: clutchLogo, label: "Based on Clutch reviews", labelFirst: false, color: RED },
+  { name: "Fiverr", logo: fiverrLogo, label: "Fiverr Rating", labelFirst: true, color: GOLD },
 ];
 const RATING = 4.8;
 
 export default function RatingBadges() {
   return (
     <ul className="flex flex-wrap gap-8 lg:flex-nowrap lg:gap-10">
-      {BADGES.map(({ name, logo: Logo, label, labelFirst, color }) => (
+      {BADGES.map(({ name, logo, label, labelFirst, color }) => (
         <li
           key={name}
           className="bg-surface text-fg-strong rounded-8 flex h-54 min-w-150 flex-1 items-center gap-6 px-8 lg:min-w-0"
         >
-          <Logo className="size-28 shrink-0" />
+          <Image src={logo} alt="" width={24} height={24} className="size-24 shrink-0" />
           <div className="flex flex-col gap-2 whitespace-nowrap">
             {labelFirst && <span className="type-caption-10">{label}</span>}
             <span className="flex items-center gap-4">

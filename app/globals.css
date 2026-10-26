@@ -17,6 +17,7 @@
   /* ---------- Color: primitives ---------- */
   --color-*: initial;
   --color-black: #000000;
+  --color-green: #1dbf73; /* Fiverr brand green */
   --color-charcoal: #1e1e1e;
   --color-off-white: #f0f0f0;
   --color-white: #ffffff;

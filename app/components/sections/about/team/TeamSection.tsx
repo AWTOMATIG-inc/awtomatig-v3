@@ -19,18 +19,35 @@ export default function TeamSection() {
         </div>
 
         <ul className="mt-40 flex justify-center lg:mt-52">
-          {TEAM.map((member) => (
-            <li key={member.name} className="w-full max-w-430">
+          {TEAM.map((member) => {
+            const photo = (
               <Image
                 src={member.photo}
                 alt={`Portrait of ${member.name}`}
                 sizes="(min-width: 1024px) 430px, (min-width: 768px) 33vw, 100vw"
                 className="rounded-16 aspect-4/3 w-full object-cover lg:aspect-auto lg:h-387"
               />
-              <p className="type-body-14 mt-16 uppercase">{member.role}</p>
-              <h3 className="type-heading-34 mt-3">{member.name}</h3>
-            </li>
-          ))}
+            );
+            return (
+              <li key={member.name} className="w-full max-w-430">
+                {member.linkedin ? (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} on LinkedIn (opens in a new tab)`}
+                    className="rounded-16 block"
+                  >
+                    {photo}
+                  </a>
+                ) : (
+                  photo
+                )}
+                <p className="type-body-14 mt-16 uppercase">{member.role}</p>
+                <h3 className="type-heading-34 mt-3">{member.name}</h3>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>

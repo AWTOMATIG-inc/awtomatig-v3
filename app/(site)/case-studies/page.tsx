@@ -16,11 +16,8 @@ export const metadata: Metadata = pageMetadata({
 export default function CaseStudiesPage() {
   return (
     <>
-      <ComingSoon
-        title="Case Studies Coming Soon"
-        description="We’re currently building out our case studies. Check back soon to see how we’ve helped businesses improve their websites, operations and workflows."
-      />
-      {/*}
+      
+      
       <CaseStudiesHeroSection />
       <AllCaseStudiesSection />
       <CaseStudyListSection />
@@ -43,7 +40,7 @@ export default function CaseStudiesPage() {
           description:
             "Start with the problem. We’ll help identify whether the answer sits in infrastructure, operations, business systems, AdTech or across several of them.",
         }}
-      />*/}
+      />
     </>
   );
 }

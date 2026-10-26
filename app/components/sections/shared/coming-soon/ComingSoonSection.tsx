@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ArrowRightIcon } from "@/app/components/icons";
 import { Button, Eyebrow, LinesBackground, Reveal } from "@/app/components/ui";
-import { HERO_LINES, HERO_LINES_COMPACT } from "../hero/heroLines";
+import { HERO_LINES } from "../hero/heroLines";
 
 type ComingSoonAction = { label: string; href: string };
 
@@ -39,11 +39,9 @@ export default function ComingSoonSection({
   secondary = { label: "Back to home", href: "/" },
 }: ComingSoonSectionProps) {
   return (
-    <LinesBackground preset={HERO_LINES} compact={HERO_LINES_COMPACT} id={id} data-hero className="hero flex min-h-svh flex-col">
+    <LinesBackground preset={HERO_LINES} id={id} data-hero className="hero flex min-h-svh flex-col">
       <div className="hero-inner site-container relative z-20 flex flex-1 flex-col pb-40 lg:pb-113">
-
         <div className="my-auto py-40 lg:py-60">
-
           <Reveal delay={100}>
             <h1 className="type-display-100 text-gradient-display mt-24 w-fit">{title}</h1>
           </Reveal>
