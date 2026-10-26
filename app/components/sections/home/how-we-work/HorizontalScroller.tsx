@@ -159,7 +159,7 @@ export default function HorizontalScroller({ id, count, label, heading, children
       <h2 className="sr-only">{heading}</h2>
       <div
         ref={stickyRef}
-        className="sticky top-0 h-svh origin-top overflow-clip will-change-transform"
+        className="sticky top-0 h-svh origin-top overflow-hidden will-change-transform"
         style={{
           transform: "scale(calc(1 - var(--hww-exit, 0) * 0.06))",
           borderRadius: "calc(var(--hww-exit, 0) * var(--radius-34))",

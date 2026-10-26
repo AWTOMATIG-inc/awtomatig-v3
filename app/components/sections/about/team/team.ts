@@ -5,6 +5,14 @@ export type TeamMember = {
   name: string;
   role: string;
   photo: StaticImageData;
+  linkedin?: string;
 };
 
-export const TEAM: TeamMember[] = [{ name: "Nahid Bin Rafique", role: "Founder & CEO", photo: Nahid }];
+export const TEAM: TeamMember[] = [
+  {
+    name: "Nahid Bin Rafique",
+    role: "Founder & CEO",
+    photo: Nahid,
+    linkedin: "https://www.linkedin.com/in/nahidbinrafique",
+  },
+];
