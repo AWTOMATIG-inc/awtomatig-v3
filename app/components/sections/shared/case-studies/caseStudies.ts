@@ -1,6 +1,5 @@
 import type { StaticImageData } from "next/image";
 import type { ServiceId } from "@/lib/services";
-import Snaillia from "@/public/images/Case Study/Case_1.png";
 import RST from "@/public/images/Case Study/RST.png";
 import PBB from "@/public/images/Case Study/PBB.png";
 import NYC from "@/public/images/Case Study/NYC.png";

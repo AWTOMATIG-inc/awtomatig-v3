@@ -16,8 +16,6 @@ export const metadata: Metadata = pageMetadata({
 export default function CaseStudiesPage() {
   return (
     <>
-      
-      
       <CaseStudiesHeroSection />
       <AllCaseStudiesSection />
       <CaseStudyListSection />

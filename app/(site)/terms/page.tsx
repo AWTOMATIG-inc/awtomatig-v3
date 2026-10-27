@@ -5,7 +5,8 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   title: "Terms & Conditions",
-  description: "The terms that apply to your use of the AWTOMATIG website.",
+  description:
+    "The terms that apply to your use of the AWTOMATIG website and to our work together, including ownership, links and liability.",
   path: "/terms",
 });
 

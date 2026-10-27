@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import BreadcrumbJsonLd from "@/app/components/seo/BreadcrumbJsonLd";
 import Footer from "@/app/components/layout/footer/Footer";
 import Header from "@/app/components/layout/header/Header";
 
@@ -8,6 +9,7 @@ import Header from "@/app/components/layout/header/Header";
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <BreadcrumbJsonLd />
       <Header />
       <main className="flex flex-1 flex-col">{children}</main>
       <Footer />
