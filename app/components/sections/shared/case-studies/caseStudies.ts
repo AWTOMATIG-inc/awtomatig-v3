@@ -3,7 +3,7 @@ import type { ServiceId } from "@/lib/services";
 import Snaillia from "@/public/images/Case Study/Case_1.png";
 import RST from "@/public/images/Case Study/RST.png";
 import PBB from "@/public/images/Case Study/PBB.png";
-import NextgenShowcase from "@/public/images/Case Study/Case_2.png";
+import NYC from "@/public/images/Case Study/NYC.png";
 
 export type CaseStudyStat = { value: string; label: string };
 
@@ -20,7 +20,7 @@ export type CaseStudy = {
   description: string;
   /** Detail page; the "View case study" button is shown only once it exists */
   href?: string;
-  /** 551×525 showcase, rounded frame baked into the PNG */
+  /** Showcase image, roughly 551×525; its corners are rounded in code (CASE_STUDY_IMAGE_RADIUS), not in the file */
   image: StaticImageData;
   imageAlt: string;
   /** Case Studies page only: the filter tab it appears under, and the left panel */
@@ -61,7 +61,7 @@ const POWER_BANK_COPY = {
   seoTitle: "Power Bank Bangladesh: Generator Site Case Study",
   seoDescription:
     "How AWTOMATIG built the Power Bank Bangladesh generator catalog with a custom dashboard for quotations, invoices, money receipts and PDF documents.",
-  client: "Power Bank Bangladesh",
+  client: "PBB",
   service: "back-office-operations",
   description:
     "A generator catalog site with a custom dashboard behind it. Visitors filter 98 models by brand and power, then request a quotation on WhatsApp, while the team manages products, prices, clients, quotations, invoices and money receipts, all as ready-to-send PDFs, without developer help.",
@@ -75,6 +75,33 @@ const POWER_BANK_COPY = {
     { value: "2", label: "Locations served" },
   ],
 } satisfies Omit<CaseStudy, "id" | "image" | "imageAlt">;
+
+// Written from the live site (nyccleantinc.com) and the project repo (package.json, commit history). The counts are
+// from the site (5 boroughs and industries) and the repo (74 CMS pages in the 2026-10-09 commit, 4 tracked events in
+// the GTM commit), not measured results.
+const NYC_COPY = {
+  title: "New York Clean Team",
+  summary: "A commercial cleaning website with a CMS and quote and booking forms.",
+  seoTitle: "New York Clean Team: Cleaning Website Case Study",
+  seoDescription:
+    "How AWTOMATIG built the New York Clean Team website with a custom CMS, quote and booking forms, local SEO and conversion tracking.",
+  client: "NYC Team",
+  service: "website-infrastructure",
+  description:
+    "A full build of the New York Clean Team website with a custom CMS behind it. Visitors browse services and industries and request a quote or booking, while the team manages pages, blog posts and client reviews without developer help, with form and call tracking built in.",
+  category: "website-infrastructure",
+  challenge: "Win commercial clients across five boroughs and let the team keep services, pages and reviews up to date.",
+  tags: ["Next.js", "MongoDB", "CMS", "Local SEO"],
+  stats: [
+    { value: "74", label: "Pages managed in the CMS" },
+    { value: "5", label: "Boroughs served" },
+    { value: "5", label: "Industry pages" },
+    { value: "4", label: "Conversion events tracked" },
+  ],
+} satisfies Omit<CaseStudy, "id" | "image" | "imageAlt">;
+
+/** Showcase images are plain rectangles; the rounding is applied here, not baked into the PNG (12px on phones, 20px from lg) */
+export const CASE_STUDY_IMAGE_RADIUS = "rounded-12 lg:rounded-20";
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
@@ -92,5 +119,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     image: PBB,
     imageAlt: "Power Bank Bangladesh website homepage",
     href: "/case-studies/power-bank-bangladesh",
+  },
+  {
+    id: "new-york-clean-team",
+    ...NYC_COPY,
+    image: NYC,
+    imageAlt: "New York Clean Team website homepage",
+    href: "/case-studies/new-york-clean-team",
   },
 ];
