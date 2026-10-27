@@ -1,19 +1,18 @@
-import { Eyebrow } from "@/app/components/ui";
+import { Eyebrow, LinesBackground } from "@/app/components/ui";
+import { CONTACT_LINES } from "./contactLines";
 
-/** Contact page hero: a light page hero (off-white, faint ribs) under the light navbar, with the title at the top-left
+/** Contact page hero: a light page hero (off-white, faint animated ribs) under the light navbar, with the title at the top-left
  *  and the intro on the right at the bottom. Frame-scaled from lg up like the dark heroes (`.hero` / `.hero-inner`). */
 export default function ContactHeroSection() {
   return (
-    <section
+    <LinesBackground
+      preset={CONTACT_LINES}
       id="contact"
       aria-labelledby="contact-title"
       data-hero
-      className="hero bg-surface-subtle text-fg-strong relative overflow-hidden"
+      className="hero text-fg-strong"
     >
-      {/* Faint white bars, strongest at the top and fading out towards the bottom */}
-      <div aria-hidden="true" className="ribs-fade-down pointer-events-none absolute inset-0 text-white/40" />
-
-      <div className="hero-inner site-container relative flex flex-col pb-40 lg:pt-160 lg:pb-85">
+      <div className="hero-inner site-container relative z-20 flex flex-col pb-40 lg:pt-160 lg:pb-85">
         <Eyebrow className="text-fg-strong">Start a conversation</Eyebrow>
 
         <div className="mt-24 flex flex-col gap-32 lg:flex-row lg:items-end lg:justify-between lg:gap-24">
@@ -31,6 +30,6 @@ export default function ContactHeroSection() {
           </p>
         </div>
       </div>
-    </section>
+    </LinesBackground>
   );
 }

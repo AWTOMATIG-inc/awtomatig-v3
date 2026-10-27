@@ -48,7 +48,7 @@ export default function InquirySection() {
               loading="lazy"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
-              className="border-border mt-30 h-300 w-full max-w-531 border lg:min-h-300 lg:flex-1"
+              className="border-border rounded-b-16 mt-30 h-300 w-full max-w-531 border lg:min-h-300 lg:flex-1"
             />
           )}
         </div>
