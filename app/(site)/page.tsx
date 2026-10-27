@@ -29,7 +29,9 @@ export default function Home() {
         </div>
         <HowWeWorkSection />
       </StackingCards>
-      <div className="relative">{/**  <CaseStudiesSection /> */}</div>
+      <div className="relative">
+        <CaseStudiesSection />
+      </div>
       <TrustedOperationsSection />
       <WhyAwtomatigSection />
       <TestimonialsSection />

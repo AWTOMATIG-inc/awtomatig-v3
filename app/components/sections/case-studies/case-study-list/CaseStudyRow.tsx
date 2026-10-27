@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CaseStudyDetails from "../../shared/case-studies/CaseStudyDetails";
-import type { CaseStudy } from "../../shared/case-studies/caseStudies";
+import { CASE_STUDY_IMAGE_RADIUS, type CaseStudy } from "../../shared/case-studies/caseStudies";
 
 // Case Studies page card: challenge, tags and results on the left, the showcase in the middle, details on the right.
 // Below xl the image comes first, then the two text columns side by side (stacked on phones).
@@ -14,7 +14,7 @@ export default function CaseStudyRow({ study }: { study: CaseStudy }) {
         src={study.image}
         alt={study.imageAlt}
         sizes="(min-width: 1024px) 551px, 100vw"
-        className="-order-1 h-auto w-full max-w-551 md:col-span-2 xl:order-none xl:col-span-1 xl:col-start-2 xl:row-start-1"
+        className={`-order-1 h-auto w-full max-w-551 ${CASE_STUDY_IMAGE_RADIUS} md:col-span-2 xl:order-none xl:col-span-1 xl:col-start-2 xl:row-start-1`}
       />
 
       <div className="xl:col-start-1 xl:row-start-1">

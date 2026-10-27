@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CaseStudyDetails from "../../shared/case-studies/CaseStudyDetails";
-import type { CaseStudy } from "../../shared/case-studies/caseStudies";
+import { CASE_STUDY_IMAGE_RADIUS, type CaseStudy } from "../../shared/case-studies/caseStudies";
 
 // Showcase image on the left, details centred beside it (stacked below xl)
 export default function CaseStudyCard({ study }: { study: CaseStudy }) {
@@ -10,7 +10,7 @@ export default function CaseStudyCard({ study }: { study: CaseStudy }) {
         src={study.image}
         alt={study.imageAlt}
         sizes="(min-width: 1024px) 551px, 100vw"
-        className="h-auto w-full max-w-551"
+        className={`h-auto w-full max-w-551 ${CASE_STUDY_IMAGE_RADIUS}`}
       />
       <CaseStudyDetails study={study} arrow />
     </article>
