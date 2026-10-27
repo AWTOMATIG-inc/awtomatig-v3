@@ -13,15 +13,12 @@ export async function generateMetadata({ params }: PageProps<"/case-studies/[slu
   const { slug } = await params;
   const study = CASE_STUDIES.find((s) => s.id === slug);
   if (!study) return {};
-
-  // Placeholder page until the full write-up exists: keep it out of search results
   return {
     ...pageMetadata({
       title: `${study.title}: Case Study Coming Soon`,
       description: `The full ${study.title} case study is coming soon. Read the summary on our case studies page or get in touch to talk about your project.`,
       path: `/case-studies/${study.id}`,
     }),
-    robots: { index: false, follow: true },
   };
 }
 

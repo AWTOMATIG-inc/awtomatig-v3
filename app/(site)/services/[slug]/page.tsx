@@ -12,15 +12,12 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   const { slug } = await params;
   const service = SERVICES.find((s) => s.id === slug);
   if (!service) return {};
-
-  // Placeholder page until the service detail exists: keep it out of search results
   return {
     ...pageMetadata({
       title: `${service.name}: Details Coming Soon`,
       description: `The full ${service.name} page is coming soon. See what we do on the services page or get in touch to talk about your project.`,
       path: `/services/${service.id}`,
     }),
-    robots: { index: false, follow: true },
   };
 }
 
