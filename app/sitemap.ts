@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PRIVACY_POLICY, TERMS } from "@/app/components/sections/shared/legal/legal";
+import { CASE_STUDIES } from "@/app/components/sections/shared/case-studies/caseStudies";
+import { SERVICES } from "@/lib/services";
 import { ROUTES, SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -10,8 +12,12 @@ const CONTENT_UPDATED = "2026-10-27";
 const LAST_MODIFIED: Record<string, string> = { "/privacy": PRIVACY_POLICY.updated, "/terms": TERMS.updated };
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // The case study and service detail pages are "Coming soon" placeholders (noindex), so they stay out
-  return ROUTES.map((path) => ({
+  const paths = [
+    ...ROUTES,
+    ...SERVICES.map((service) => `/services/${service.id}`),
+    ...CASE_STUDIES.map((study) => `/case-studies/${study.id}`),
+  ];
+  return paths.map((path) => ({
     url: new URL(path, SITE.url).toString(),
     lastModified: LAST_MODIFIED[path] ?? CONTENT_UPDATED,
     changeFrequency: "monthly",
