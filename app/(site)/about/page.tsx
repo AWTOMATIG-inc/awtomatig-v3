@@ -11,7 +11,7 @@ import AboutCtaSection from "@/app/components/sections/about/cta/AboutCtaSection
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About AWTOMATIG: Automation & Systems Team",
+  title: "About Us: The Automation & Systems Team",
   description:
     "Meet the team behind AWTOMATIG. We turn complex operations into clear, connected business systems across websites, ERP, operations and AdTech.",
   path: "/about",

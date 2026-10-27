@@ -33,19 +33,52 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: [SHARE_IMAGE],
   },
-  twitter: { card: "summary_large_image", title: DEFAULT_TITLE, description: SITE.description, images: [SHARE_IMAGE] },
+  twitter: {
+    card: "summary_large_image",
+    site: SITE.twitterHandle,
+    title: DEFAULT_TITLE,
+    description: SITE.description,
+    images: [SHARE_IMAGE],
+  },
 };
 
 // Organization structured data. Static, code-owned values only; `<` is escaped as the Next.js JSON-LD guide advises.
 const ORGANIZATION_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE.name,
-  url: SITE.url,
-  logo: `${SITE.url}/images/awtomatig-logo.png`,
-  email: SITE.email,
-  description: SITE.description,
-  sameAs: [SITE.social.linkedin, SITE.social.instagram, SITE.social.x, SITE.social.medium].filter(Boolean),
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": `${SITE.url}/#organization`,
+      name: SITE.name,
+      url: SITE.url,
+      logo: `${SITE.url}/images/awtomatig-logo.png`,
+      image: `${SITE.url}${SHARE_IMAGE_PATH}`,
+      email: SITE.email,
+      telephone: SITE.phone,
+      description: SITE.description,
+      address: { "@type": "PostalAddress", addressLocality: SITE.address.locality, addressCountry: SITE.address.country },
+      areaServed: "Worldwide",
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          contactType: "sales",
+          email: SITE.email,
+          telephone: SITE.phone,
+          availableLanguage: "English",
+        },
+      ],
+      sameAs: [SITE.social.linkedin, SITE.social.instagram, SITE.social.x, SITE.social.medium].filter(Boolean),
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      url: SITE.url,
+      name: SITE.name,
+      description: SITE.description,
+      inLanguage: "en",
+      publisher: { "@id": `${SITE.url}/#organization` },
+    },
+  ],
 }).replace(/</g, "\\u003c");
 
 export const viewport: Viewport = {

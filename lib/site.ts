@@ -3,8 +3,14 @@ export const SHARE_IMAGE_PATH = "/og-image.png";
 
 export const SITE = {
   name: "AWTOMATIG",
-  // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) so canonical and share-image URLs resolve there
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://awtomatig.com",
+  // The live site serves www (the apex 308-redirects to it), so canonical, sitemap and share-image URLs use www.
+  // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) to resolve them somewhere else.
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.awtomatig.com",
+  /** X handle for twitter:site */
+  twitterHandle: "@awtomatig86939",
+  /** Office location (from the Google Maps place), used in the Organization schema */
+  address: { locality: "Dhaka", country: "BD" },
+  phone: "+8801753538760",
   title: "AWTOMATIG: Business Automation, ERP & Back-Office Systems",
   description:
     "AWTOMATIG builds websites, runs back-office operations, implements ERP systems and manages AdTech workflows as one connected business system.",

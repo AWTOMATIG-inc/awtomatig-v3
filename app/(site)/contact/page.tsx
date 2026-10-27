@@ -7,7 +7,7 @@ import ProvenSection from "@/app/components/sections/contact/proven/ProvenSectio
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Contact AWTOMATIG: Start Your Project",
+  title: "Contact Us: Start Your Project",
   description:
     "Contact AWTOMATIG about websites, ERP, automation or operations. Share what’s getting stuck and we’ll help identify the right direction.",
   path: "/contact",

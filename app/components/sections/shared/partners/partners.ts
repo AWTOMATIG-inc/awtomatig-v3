@@ -15,5 +15,5 @@ export const PARTNER_LOGOS = [
   { name: "We Watch", height: "lg:h-67", logo: WeWatch },
   { name: "Objective Focus", height: "lg:h-31", logo: ObjectiveFocus },
   { name: "Expand B2B", height: "lg:h-54", logo: ExpandB2B },
-  { name: "Zenithics Globan", height: "lg:h-57", logo: ZenithicsGloban },
+  { name: "Zenithics Global", height: "lg:h-57", logo: ZenithicsGloban },
 ];
