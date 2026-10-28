@@ -1,0 +1,16 @@
+# dependencies
+/node_modules
+
+# build and test output
+/dist
+/coverage
+*.tsbuildinfo
+
+# environment: never commit real values
+.env
+.env.*
+!.env.example
+
+# misc
+.DS_Store
+npm-debug.log*

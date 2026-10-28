@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "lib": ["ES2023"],
+    "types": ["node", "jest"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    },
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "removeComments": true
+  },
+  "include": ["src/**/*"]
+}

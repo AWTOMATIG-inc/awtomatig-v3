@@ -21,7 +21,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Read these before making a change, in this order:
 
-- **[AGENTS.md](AGENTS.md)** — project and code rules: structure, component conventions, the Tailwind-only rule
+- **[../RULES.md](../RULES.md)** and **[../ARCHITECTURE.md](../ARCHITECTURE.md)** — the repo-wide rules and system architecture (this folder is one of `frontend/`, `backend/` and `admin/`)
+- **[../AGENTS.md](../AGENTS.md)** — repo-wide agent instructions
+- **[RULES.md](RULES.md)** — the frontend's rules: structure, component conventions, the Tailwind-only rule
 - **[DESIGN.md](DESIGN.md)** — the design system: tokens, type scale, spacing, components, patterns
 - **[MEMORY.md](MEMORY.md)** — project memory: current status, key decisions and why, gotchas, open items, change log
 - **[AUDIT_FIX_PLAN.md](AUDIT_FIX_PLAN.md)** — the staged plan for fixing the 2026-10-09 engineering audit's findings

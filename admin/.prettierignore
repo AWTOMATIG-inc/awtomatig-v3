@@ -1,0 +1,7 @@
+.next
+node_modules
+public
+*.md
+.env*
+lib/api/schema.d.ts
+package-lock.json

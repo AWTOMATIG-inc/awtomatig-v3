@@ -1,0 +1,47 @@
+{
+  "name": "awtomatig-admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWTOMATIG admin: internal CMS and ERP UI (employees only)",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint && node scripts/check-tokens-sync.mjs && npm run format:check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "api:generate": "openapi-typescript ../backend/openapi.json -o lib/api/schema.d.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^6.0.2",
+    "@tanstack/react-query": "^5.105.0",
+    "@tanstack/react-table": "^8.21.3",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.63.0",
+    "next": "^16.4.3",
+    "openapi-fetch": "^0.17.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-hook-form": "^7.91.0",
+    "recharts": "^3.10.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.3",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  }
+}
