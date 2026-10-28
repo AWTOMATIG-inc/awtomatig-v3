@@ -34,7 +34,13 @@ export default function ProcessStepRow({ step, index }: { step: ProcessStep; ind
       </div>
 
       <div className="rounded-16 relative aspect-4/3 overflow-hidden lg:aspect-auto lg:h-395">
-        <Image src={step.image} alt="" fill sizes="(min-width: 1024px) 505px, 100vw" className="object-cover" />
+        <Image
+          src={step.image}
+          alt={`${step.name}: ${step.title}`}
+          fill
+          sizes="(min-width: 1024px) 505px, 100vw"
+          className="object-cover"
+        />
       </div>
 
       <div className="flex flex-col gap-32 lg:justify-between lg:gap-24">

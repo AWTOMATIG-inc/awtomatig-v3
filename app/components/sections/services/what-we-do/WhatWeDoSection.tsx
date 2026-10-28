@@ -1,6 +1,6 @@
 import IntroSection from "../../shared/intro/IntroSection";
 
-// Services page intro to the four disciplines; the hero's "Explore our services" scrolls here
+// Services page intro to the four disciplines; the hero's "View Our Services" scrolls here
 export default function WhatWeDoSection() {
   return (
     <IntroSection

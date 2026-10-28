@@ -1,3 +1,4 @@
+import { CountUp } from "@/app/components/ui";
 import WorldMap from "./WorldMap";
 import { ECOSYSTEM_ICONS } from "./trustedOperations";
 
@@ -8,7 +9,9 @@ export default function ClientSystemsCard() {
       <span aria-hidden="true" className="diag-ribs absolute inset-0 -z-10 text-white/6" />
       <WorldMap className="absolute -bottom-69 left-1/2 -z-10 -ml-20 max-w-none -translate-x-1/2 text-white/20" />
 
-      <p className="type-display-80 font-normal">35+</p>
+      <p className="type-display-80 font-normal">
+        <CountUp value="35+" />
+      </p>
       <p className="type-heading-20 mt-12">Client systems supported</p>
       <p className="type-body-14 mt-12 max-w-240 text-white/60">Across regions and operational environments</p>
 

@@ -1,4 +1,5 @@
 import { Eyebrow } from "@/app/components/ui";
+import { SITE } from "@/lib/site";
 import InquiryForm from "./InquiryForm";
 import { CONTACT_DETAILS } from "./inquiry";
 
@@ -7,17 +8,17 @@ export default function InquirySection() {
   return (
     <section id="inquiry" aria-labelledby="inquiry-title" className="bg-surface-subtle text-fg-strong">
       <div className="site-container grid gap-40 pt-40 pb-60 lg:grid-cols-[minmax(0,1fr)_739px] lg:gap-50 lg:pb-75">
-        <div className="lg:pt-8">
-          <Eyebrow>Trust / Proof</Eyebrow>
+        <div className="flex flex-col lg:pt-8">
+          <Eyebrow>Why choose us</Eyebrow>
           <h2 id="inquiry-title" className="type-heading-60 mt-24">
             Trusted to support
             <br className="max-lg:hidden" /> the systems behind
             <br className="max-lg:hidden" /> growing businesses.
           </h2>
           <p className="type-body-16-compact text-fg-primary mt-20 max-w-540 lg:mt-26">
-            Every engagement is different, but the way we approach complexity
-            <br className="max-lg:hidden" /> stays structured. Each stage builds on the last, creating clarity before
-            <br className="max-lg:hidden" /> execution and control throughout delivery.
+            Share your goals, current tools and constraints. We review them
+            <br className="max-lg:hidden" /> first, then suggest a clear next step for your website, ERP,
+            <br className="max-lg:hidden" /> automation or ongoing operational support, whichever fits.
           </p>
 
           <dl className="divide-border border-border mt-30 max-w-531 divide-y border">
@@ -39,6 +40,17 @@ export default function InquirySection() {
               </div>
             ))}
           </dl>
+
+          {SITE.mapEmbedUrl && (
+            <iframe
+              src={SITE.mapEmbedUrl}
+              title="AWTOMATIG office on Google Maps"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="border-border rounded-b-16 mt-30 h-300 w-full max-w-531 border lg:min-h-300 lg:flex-1"
+            />
+          )}
         </div>
 
         <InquiryForm />

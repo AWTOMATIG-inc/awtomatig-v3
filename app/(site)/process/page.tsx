@@ -5,9 +5,9 @@ import ProcessStepsSection from "@/app/components/sections/process/steps/Process
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Process",
+  title: "Our Project Process: Audit, Build and Support",
   description:
-    "From understanding the problem to implementation and ongoing support, AWTOMATIG follows a structured process that keeps people, workflows, systems and technology aligned.",
+    "From discovery and audit to implementation and ongoing support, AWTOMATIG follows a structured process for website, ERP and automation projects.",
   path: "/process",
 });
 

@@ -17,6 +17,7 @@
   /* ---------- Color: primitives ---------- */
   --color-*: initial;
   --color-black: #000000;
+  --color-green: #1dbf73; /* Fiverr brand green */
   --color-charcoal: #1e1e1e;
   --color-off-white: #f0f0f0;
   --color-white: #ffffff;
@@ -59,6 +60,7 @@
   --radius-10: 10px; /* glass nav pill */
   --radius-12: 12px;
   --radius-16: 16px;
+  --radius-20: 20px; /* case study showcase images from lg */
   --radius-34: 34px;
   --radius-60: 60px; /* Figma "Full": tags and fully rounded shapes */
 
@@ -85,6 +87,31 @@
   @keyframes marquee {
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  /* Connection dots in the Operations "Disconnected systems" mockup: a slow blink (animate-dot-blink) */
+  --animate-dot-blink: dot-blink 1.8s ease-in-out infinite;
+  @keyframes dot-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+  /* Status dot halo ("Coming soon" badge): a ring that grows and fades (animate-status-ping) */
+  --animate-status-ping: status-ping 2s var(--ease-out-quint) infinite;
+  @keyframes status-ping {
+    from {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
     }
   }
 
@@ -329,8 +356,9 @@
   font-size: clamp(10rem, 28.33vw, 25.5rem);
   line-height: 1;
   letter-spacing: 0;
-  font-weight: 200;
+  font-weight: 400;
 }
+
 /* Body / 22 (Services "What we do" lead), measured: 22px, 1.4 line height (30.8px pitch), -0.01em */
 @utility type-body-22 {
   font-family: var(--font-sans);
@@ -499,13 +527,30 @@
   mask-image: linear-gradient(to bottom, transparent, black);
 }
 
+/* The bars drift right by exactly one pitch and repeat, so the loop is seamless and the still frame is the design.
+   --ribs-pointer (-1 → 1, set by HorizontalScroller from the pointer) shifts them sideways on top of the drift. */
+@property --ribs-x {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes ribs-drift {
+  to {
+    --ribs-x: var(--ribs-pitch, 54px);
+  }
+}
+
 /* Ribbed ("fluted glass") bars across a full-width slide (How we work): a 108px sawtooth ramp from transparent to
    currentColor, starting at the left site edge, strongest at the bottom centre and fading out upwards and
    sideways. `ribs text-white/30` lightens each bar towards its right end; `ribs-dark text-black/3` darkens it at its left. */
 @utility ribs {
   background-image: linear-gradient(90deg, transparent, currentColor);
   background-size: var(--ribs-pitch, 54px) 100%;
-  background-position: var(--site-edge-start) 0;
+  background-position: calc(var(--site-edge-start) + var(--ribs-x) + var(--ribs-pointer, 0) * var(--ribs-pitch, 54px) * -0.4) 0;
+  animation: ribs-drift 7s linear infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
   -webkit-mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
   mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
   @variant lg {
@@ -526,7 +571,11 @@
 @utility ribs-dark {
   background-image: linear-gradient(90deg, currentColor, transparent);
   background-size: var(--ribs-pitch, 54px) 100%;
-  background-position: var(--site-edge-start) 0;
+  background-position: calc(var(--site-edge-start) + var(--ribs-x) + var(--ribs-pointer, 0) * var(--ribs-pitch, 54px) * -0.4) 0;
+  animation: ribs-drift 7s linear infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
   -webkit-mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
   mask-image: radial-gradient(ellipse 76% 85% at 50% 100%, black, transparent);
   @variant lg {

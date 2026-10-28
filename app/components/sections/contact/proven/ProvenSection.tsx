@@ -1,5 +1,5 @@
-import { Eyebrow } from "@/app/components/ui";
-import MarqueeTrack from "./MarqueeTrack";
+import { CountUp, Eyebrow } from "@/app/components/ui";
+import MarqueeTrack from "../../shared/partners/MarqueeTrack";
 import { PARTNERS, PROVEN_STATS } from "./proven";
 
 // Only stats with a real figure are shown
@@ -25,7 +25,9 @@ export default function ProvenSection() {
               <li key={stat.label} className="rounded-16 bg-surface flex flex-col p-24 lg:min-h-235 lg:pt-28 lg:pb-25">
                 <h3 className="type-label-14 uppercase">{stat.label}</h3>
                 <div className="mt-40 lg:mt-auto">
-                  <p className="type-heading-50 font-normal">{stat.value}</p>
+                  <p className="type-heading-50 font-normal">
+                    <CountUp value={stat.value!} />
+                  </p>
                   <p className="type-body-14 text-fg-primary mt-12 max-w-240">{stat.description}</p>
                 </div>
               </li>

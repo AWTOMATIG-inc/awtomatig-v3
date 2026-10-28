@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Fragment } from "react";
-import { Button } from "@/app/components/ui";
+import { Button, Reveal } from "@/app/components/ui";
 import { SERVICE_THEMES, type Service } from "./services";
 
-export type ServiceCta = { label: string; href: string };
+/** `href` may be a function of the service id, for a per-service page */
+export type ServiceCta = { label: string; href: string | ((id: Service["id"]) => string) };
 
 type ServiceCardProps = {
   service: Service;
@@ -26,7 +27,7 @@ export default function ServiceCard({ service, index, cta }: ServiceCardProps) {
     >
       <div className="site-container pt-40 lg:pt-70">
         <div className="flex flex-col gap-20 lg:flex-row lg:items-start lg:justify-between lg:gap-40">
-          <div className="flex items-baseline-last justify-between gap-12 lg:justify-start lg:gap-0">
+          <Reveal className="flex items-baseline-last justify-between gap-12 lg:justify-start lg:gap-0">
             <span
               aria-hidden="true"
               className={`type-heading-34 order-last shrink-0 font-normal lg:order-first lg:w-100 ${theme.index}`}
@@ -46,12 +47,12 @@ export default function ServiceCard({ service, index, cta }: ServiceCardProps) {
                 </Fragment>
               ))}
             </h3>
-          </div>
+          </Reveal>
 
-          <div className="lg:w-392 lg:shrink-0 lg:pt-8">
+          <Reveal delay={250} className="lg:w-392 lg:shrink-0 lg:pt-8">
             <p className="type-body-16 max-w-640">{service.description}</p>
             <Button
-              href={cta.href}
+              href={typeof cta.href === "function" ? cta.href(service.id) : cta.href}
               variant={theme.button}
               size="lg"
               aria-label={`${cta.label}: ${service.title.join(" ")}`}
@@ -59,7 +60,7 @@ export default function ServiceCard({ service, index, cta }: ServiceCardProps) {
             >
               {cta.label}
             </Button>
-          </div>
+          </Reveal>
         </div>
       </div>
 

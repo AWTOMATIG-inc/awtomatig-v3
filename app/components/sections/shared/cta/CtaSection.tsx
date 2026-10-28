@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import Mark from "@/public/images/awtomatig-logo.png";
 import { WhatsAppIcon } from "@/app/components/icons";
-import { Button, Eyebrow, LinesBackground } from "@/app/components/ui";
+import { Button, Eyebrow, LinesBackground, TagMarquee } from "@/app/components/ui";
 import { CAPABILITY_TAGS, SITE } from "@/lib/site";
 import { CTA_LINES } from "./ctaLines";
 
@@ -48,8 +48,8 @@ export default function CtaSection({
   ),
   description = (
     <>
-      Whether the challenge sits in infrastructure, operations, ERP or AdTech,
-      <br className="max-lg:hidden" /> we help bring structure to the systems behind the business.
+      Whether the challenge sits in your website, operations, ERP or AdTech,
+      <br className="max-lg:hidden" /> we help bring structure to the systems behind your business.
     </>
   ),
   primary = { label: "Start a conversation", href: "/contact" },
@@ -100,13 +100,14 @@ export default function CtaSection({
           </div>
         ) : (
           tags.length > 0 && (
-            <ul className="type-body-16 mt-40 flex flex-wrap gap-x-20 gap-y-8 border-y border-white/12 py-20 text-white/60 lg:mt-80 lg:h-72 lg:flex-nowrap lg:items-center lg:justify-between lg:px-60 lg:py-0">
-              {tags.map((tag) => (
-                <li key={tag} className="hover:text-fg-inverse transition-colors duration-200 motion-reduce:transition-none">
-                  {tag}
-                </li>
-              ))}
-            </ul>
+            <TagMarquee
+              tags={tags}
+              label="Capabilities"
+              className="mt-40 border-y border-white/12 lg:mt-80"
+              listClassName="type-body-16 items-center py-20 text-white/60 lg:h-72 lg:py-0"
+              itemClassName="hover:text-fg-inverse pr-40 transition-colors duration-200 motion-reduce:transition-none lg:pr-60"
+              durationClassName="[animation-duration:50s]"
+            />
           )
         )}
       </div>

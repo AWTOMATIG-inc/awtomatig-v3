@@ -10,6 +10,8 @@ const HOLD = 0.5;
 const MOVE = 1;
 const CYCLE = MOVE + HOLD;
 const screensFor = (count: number) => (count - 1) * MOVE + count * HOLD;
+// After the last slide the pinned viewport stays for one more screen while the next section slides over it
+const EXIT = 1;
 
 /** Slide position (0 → count - 1) for a scroll offset measured in screens */
 function slideAt(screens: number, count: number) {
@@ -51,9 +53,13 @@ export default function HorizontalScroller({ id, count, label, heading, children
     let frame = 0;
 
     const readTarget = () => {
-      const distance = section.offsetHeight - sticky.offsetHeight;
-      if (distance <= 0 || count < 2) return void (target = 0);
-      const screens = clamp01(-section.getBoundingClientRect().top / distance) * screensFor(count);
+      const rect = section.getBoundingClientRect();
+      const screen = sticky.offsetHeight;
+      // 0 → 1 while the next section covers the last slide: the slide shrinks, rounds and dims like a stacking card
+      const exit = reducedMotion.matches ? 0 : clamp01((screen * 2 - rect.bottom) / screen);
+      section.style.setProperty("--hww-exit", exit.toFixed(4));
+      if (screen <= 0 || count < 2) return void (target = 0);
+      const screens = Math.min(screensFor(count), Math.max(0, -rect.top / screen));
       target = slideAt(screens, count) / (count - 1);
     };
     const paint = () => section.style.setProperty("--hww-progress", progressRef.current.toFixed(5));
@@ -75,10 +81,41 @@ export default function HorizontalScroller({ id, count, label, heading, children
     progressRef.current = target;
     paint();
 
+    // Pointer / touch: the fluted bars shift sideways towards the pointer (--ribs-pointer, -1 → 1), eased like the hero lines
+    let pointerTarget = 0;
+    let pointerNow = 0;
+    let pointerFrame = 0;
+    const pointerTick = () => {
+      pointerFrame = 0;
+      pointerNow += (pointerTarget - pointerNow) * 0.07;
+      if (Math.abs(pointerTarget - pointerNow) < 0.001) pointerNow = pointerTarget;
+      section.style.setProperty("--ribs-pointer", pointerNow.toFixed(4));
+      if (pointerNow !== pointerTarget) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    const onPointer = (event: PointerEvent) => {
+      if (reducedMotion.matches) return;
+      const rect = sticky.getBoundingClientRect();
+      pointerTarget = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    const onPointerEnd = () => {
+      pointerTarget = 0;
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(pointerTick);
+    };
+    sticky.addEventListener("pointermove", onPointer);
+    sticky.addEventListener("pointerdown", onPointer);
+    sticky.addEventListener("pointerleave", onPointerEnd);
+    sticky.addEventListener("pointercancel", onPointerEnd);
+
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(pointerFrame);
+      sticky.removeEventListener("pointermove", onPointer);
+      sticky.removeEventListener("pointerdown", onPointer);
+      sticky.removeEventListener("pointerleave", onPointerEnd);
+      sticky.removeEventListener("pointercancel", onPointerEnd);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
@@ -88,10 +125,9 @@ export default function HorizontalScroller({ id, count, label, heading, children
     const section = sectionRef.current;
     const sticky = stickyRef.current;
     if (!section || !sticky) return;
-    const distance = section.offsetHeight - sticky.offsetHeight;
     // Lands in the middle of the slide's pause
     const screens = index * CYCLE + HOLD / 2;
-    const top = window.scrollY + section.getBoundingClientRect().top + (distance * screens) / screensFor(count);
+    const top = window.scrollY + section.getBoundingClientRect().top + sticky.offsetHeight * screens;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top, behavior: reduced ? "auto" : behavior });
   };
@@ -114,13 +150,21 @@ export default function HorizontalScroller({ id, count, label, heading, children
       ref={sectionRef}
       id={id}
       aria-label={label}
-      style={{ height: `${(1 + screensFor(count)) * 100}svh` }}
+      data-stack-cover
+      style={{ height: `${(1 + screensFor(count) + EXIT) * 100}svh`, marginBottom: `${-EXIT * 100}svh` }}
       className="relative"
       onClick={onClick}
       onFocus={onFocus}
     >
       <h2 className="sr-only">{heading}</h2>
-      <div ref={stickyRef} className="sticky top-0 h-svh overflow-clip">
+      <div
+        ref={stickyRef}
+        className="sticky top-0 h-svh origin-top overflow-hidden will-change-transform"
+        style={{
+          transform: "scale(calc(1 - var(--hww-exit, 0) * 0.06))",
+          borderRadius: "calc(var(--hww-exit, 0) * var(--radius-34))",
+        }}
+      >
         <div
           className="flex h-full will-change-transform"
           style={{
@@ -130,6 +174,11 @@ export default function HorizontalScroller({ id, count, label, heading, children
         >
           {children}
         </div>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-black"
+          style={{ opacity: "calc(var(--hww-exit, 0) * 0.4)" }}
+        />
       </div>
     </section>
   );

@@ -3,16 +3,26 @@ export const SHARE_IMAGE_PATH = "/og-image.png";
 
 export const SITE = {
   name: "AWTOMATIG",
-  // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) so canonical and share-image URLs resolve there
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://awtomatig.com",
-  title: "AWTOMATIG: The operational layer behind modern businesses",
+  // The live site serves www (the apex 308-redirects to it), so canonical, sitemap and share-image URLs use www.
+  // Set NEXT_PUBLIC_SITE_URL in the deploy (e.g. https://awtomatig-inc.github.io) to resolve them somewhere else.
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.awtomatig.com",
+  /** X handle for twitter:site */
+  twitterHandle: "@awtomatig86939",
+  /** Office location (from the Google Maps place), used in the Organization schema */
+  address: { locality: "Dhaka", country: "BD" },
+  phone: "+8801753538760",
+  title: "AWTOMATIG: Business Automation, ERP & Back-Office Systems",
   description:
-    "AWTOMATIG builds websites, back-office operations, ERP systems and AdTech workflows, connected into one scalable operational ecosystem.",
-  email: "hello@awtomatig.com",
+    "AWTOMATIG builds websites, runs back-office operations, implements ERP systems and manages AdTech workflows as one connected business system.",
+  email: "info@awtomatig.com",
   // Calendly 30-minute discovery call, embedded on the Contact page; the booking section is hidden when unset
   // (colours match the site: cyan buttons, charcoal text)
   calendlyUrl:
     "https://calendly.com/nahidr-aw/30min?hide_gdpr_banner=1&hide_event_type_details=1&hide_landing_page_details=1&background_color=ffffff&text_color=1e1e1e&primary_color=02d5e8" as
+      string | undefined,
+  // Google Maps embed of the AWTOMATIG office, shown under the contact details; hidden when unset
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d542.863664652696!2d90.4200657536042!3d23.749630296995118!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b9e38ce56fbd%3A0x1df25537514931fe!2sAWTOMATIG!5e0!3m2!1sen!2sbd!4v1792149484954!5m2!1sen!2sbd" as
       string | undefined,
   whatsappUrl: "https://wa.me/8801753538760" as string | undefined,
   social: {
@@ -49,4 +59,4 @@ export const ROUTES = [...SITE.nav, { href: "/process", label: "Process" }]
   .concat(SITE.legal.map((link) => link.href));
 
 /** Capability tags shown in the hero and the shared CTA strip (not services: see lib/services.ts) */
-export const CAPABILITY_TAGS = ["Infrastructure", "Operations", "Automation", "Integrations", "AdTech"];
+export const CAPABILITY_TAGS = ["Web Platforms", "Back-Office", "Automation", "Integrations", "AdTech"];

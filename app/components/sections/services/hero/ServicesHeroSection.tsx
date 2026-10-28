@@ -8,19 +8,19 @@ export default function ServicesHeroSection() {
       eyebrow="Services"
       title={
         <>
-          The systems, operations
-          <br className="max-lg:hidden" /> and technology behind
-          <br className="max-lg:hidden" /> your business.
+          Automation, ERP and web
+          <br className="max-lg:hidden" /> systems behind your
+          <br className="max-lg:hidden" /> daily operations.
         </>
       }
       description={
         <>
-          AWTOMATIG works across digital infrastructure, operational support,
-          <br className="max-lg:hidden" /> business systems and AdTech to help businesses build stronger foundations,
-          <br className="max-lg:hidden" /> reduce operational friction and keep critical workflows moving.
+          AWTOMATIG works across website development, back-office operations,
+          <br className="max-lg:hidden" /> ERP and business systems and AdTech to help businesses build stronger
+          <br className="max-lg:hidden" /> foundations, reduce friction and keep critical workflows moving.
         </>
       }
-      primary={{ label: "Explore Our Services", href: "#what-we-do" }}
+      primary={{ label: "View Our Services", href: "#what-we-do" }}
     />
   );
 }

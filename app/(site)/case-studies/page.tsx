@@ -4,11 +4,12 @@ import AllCaseStudiesSection from "@/app/components/sections/case-studies/all-ca
 import CaseStudyListSection from "@/app/components/sections/case-studies/case-study-list/CaseStudyListSection";
 import CtaSection from "@/app/components/sections/shared/cta/CtaSection";
 import { pageMetadata } from "@/lib/metadata";
+import ComingSoon from "@/app/components/sections/shared/coming-soon/ComingSoonSection";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Case Studies",
+  title: "Website, ERP & Operations Case Studies",
   description:
-    "How AWTOMATIG helps businesses improve digital infrastructure, streamline operations, connect systems and strengthen the workflows behind everyday execution.",
+    "See how AWTOMATIG rebuilds websites, streamlines back-office operations, connects ERP systems and strengthens the workflows behind everyday execution.",
   path: "/case-studies",
 });
 

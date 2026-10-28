@@ -5,7 +5,8 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
-  description: "What personal information AWTOMATIG receives through this website and how it is used.",
+  description:
+    "What personal information AWTOMATIG receives through this website, how it is used and kept, and the rights you have over your data.",
   path: "/privacy",
 });
 

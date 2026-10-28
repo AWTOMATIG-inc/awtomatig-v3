@@ -1,15 +1,18 @@
 import type { StaticImageData } from "next/image";
-import Member1 from "@/public/images/about/member_1.jpg";
+import Nahid from "@/public/images/nahid.jpeg";
 
 export type TeamMember = {
   name: string;
   role: string;
   photo: StaticImageData;
+  linkedin?: string;
 };
 
-// Every card uses member_1.jpg until the real portraits are added (see MEMORY.md open items)
 export const TEAM: TeamMember[] = [
-  { name: "Mark Colley", role: "Strategy / Operations", photo: Member1 },
-  { name: "Anna William", role: "Design / Digital", photo: Member1 },
-  { name: "Michael Abby", role: "Systems / Technology", photo: Member1 },
+  {
+    name: "Nahid Bin Rafique",
+    role: "Founder & CEO",
+    photo: Nahid,
+    linkedin: "https://www.linkedin.com/in/nahidbinrafique",
+  },
 ];

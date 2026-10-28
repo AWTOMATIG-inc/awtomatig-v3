@@ -1,20 +1,35 @@
 "use client";
-import Image from "next/image";
-import type { Partner } from "./proven";
+import Image, { type StaticImageData } from "next/image";
+
+export type MarqueePartner = { name: string; logo: StaticImageData; height: string; tone: string };
+
+type MarqueeTrackProps = {
+  partners: MarqueePartner[];
+  /** Hairline colour beside the heading */
+  ruleClassName?: string;
+  /** Top margins of the heading row and of the slider (Contact is the default) */
+  rowClassName?: string;
+  trackClassName?: string;
+};
 
 // "Trusted by" heading row (with a pause/play toggle) and the infinite logo slider: a client child so the
 // toggle can stop the CSS animation (WCAG 2.2.2), while ProvenSection itself stays a Server Component.
-export default function MarqueeTrack({ partners }: { partners: Partner[] }) {
+export default function MarqueeTrack({
+  partners,
+  ruleClassName = "bg-border",
+  rowClassName = "mt-50 lg:mt-58",
+  trackClassName = "mt-32 lg:mt-26",
+}: MarqueeTrackProps) {
   return (
     <>
-      <div className="mt-50 flex items-center gap-20 lg:mt-58 lg:gap-32">
-        <span aria-hidden="true" className="bg-border h-px flex-1" />
+      <div className={`flex items-center gap-20 lg:gap-32 ${rowClassName}`}>
+        <span aria-hidden="true" className={`h-px flex-1 ${ruleClassName}`} />
         <h3 className="type-heading-24 text-center tracking-tight">Trusted By Leading Companies</h3>
-        <span aria-hidden="true" className="bg-border h-px flex-1" />
+        <span aria-hidden="true" className={`h-px flex-1 ${ruleClassName}`} />
       </div>
 
       {/* Two identical groups, the track slides left by one group (-50%) and loops; the copy is hidden from assistive tech */}
-      <div className="fade-x mt-32 overflow-hidden motion-reduce:[mask-image:none] lg:mt-26">
+      <div className={`fade-x overflow-hidden motion-reduce:[mask-image:none] ${trackClassName}`}>
         <div
           aria-label="Logo slider"
           className="animate-marquee flex w-max focus-within:[animation-play-state:paused] hover:[animation-play-state:paused] data-paused:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:[animation-play-state:paused]"
@@ -30,7 +45,7 @@ export default function MarqueeTrack({ partners }: { partners: Partner[] }) {
                   <Image
                     src={partner.logo}
                     alt={copy === 0 ? partner.name : ""}
-                    className={`h-40 w-auto object-contain transition-[filter,opacity] duration-200 motion-reduce:transition-none ${partner.height} ${partner.tone}`}
+                    className={`ease-out-quint h-40 w-auto object-contain transition-[filter,opacity] duration-450 motion-reduce:transition-none ${partner.height} ${partner.tone}`}
                   />
                 </li>
               ))}

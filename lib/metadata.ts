@@ -31,6 +31,6 @@ export function pageMetadata({ title, description, path }: PageMetadataInput): M
       description,
       images: [SHARE_IMAGE],
     },
-    twitter: { card: "summary_large_image", title: fullTitle, description, images: [SHARE_IMAGE] },
+    twitter: { card: "summary_large_image", site: SITE.twitterHandle, title: fullTitle, description, images: [SHARE_IMAGE] },
   };
 }
