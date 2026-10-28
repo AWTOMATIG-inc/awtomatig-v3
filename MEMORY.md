@@ -36,6 +36,7 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | **Deployed to the VPS** (`159.198.37.158`, `/home/khalidh/awtomatig-v3`): `frontend` → awtomatig.com + www (PM2 `awtomatig-web`, port 3010), `admin` → admin.awtomatig.com (PM2 `awtomatig-admin`, port 3011), both behind Nginx + Certbot. Port 4000 reserved for `backend` (not deployed yet). VPS Node upgraded 20 → 22 (admin needs >= 22). One VPS-only `deploy.sh` at the repo root rebuilds only the changed folders on push to `main`. |
 | 2026-10-28 | The website contact form now sends email itself (Next.js Server Action + Gmail SMTP, `frontend/MEMORY.md` D59) as a stopgap until the backend `crm` module is live; move it there then. |
 | 2026-10-28 | Added a root `.gitignore` so leftover root build output (`node_modules/`, `.next/`, `.env`, `.codegraph/`) from before the move stops showing as untracked. |
 | 2026-10-28 | **Admin scaffolded** in `admin/` (see `admin/MEMORY.md`): Next.js 16, the website's tokens copied with a lint-enforced sync check, shell, dashboard, shared UI primitives, typed client from `backend/openapi.json`, a disabled sign-in and a fail-closed session seam. Nothing committed. |
