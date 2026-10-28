@@ -36,6 +36,7 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The website contact form now sends email itself (Next.js Server Action + Gmail SMTP, `frontend/MEMORY.md` D59) as a stopgap until the backend `crm` module is live; move it there then. |
 | 2026-10-28 | Added a root `.gitignore` so leftover root build output (`node_modules/`, `.next/`, `.env`, `.codegraph/`) from before the move stops showing as untracked. |
 | 2026-10-28 | **Admin scaffolded** in `admin/` (see `admin/MEMORY.md`): Next.js 16, the website's tokens copied with a lint-enforced sync check, shell, dashboard, shared UI primitives, typed client from `backend/openapi.json`, a disabled sign-in and a fail-closed session seam. Nothing committed. |
 | 2026-10-28 | **Backend scaffolded** in `backend/` (see `backend/MEMORY.md`): NestJS 11 on Fastify, Drizzle + pg, zod-validated config, single error shape, request ids, health endpoints, OpenAPI export, dependency-cruiser boundary rules, tests. Nothing committed. |
