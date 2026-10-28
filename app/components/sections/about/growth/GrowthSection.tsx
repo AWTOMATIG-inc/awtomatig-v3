@@ -21,7 +21,7 @@ function Photo({ step, className = "" }: { step: GrowthStep; className?: string 
 function StepCard({ step, number, className = "" }: { step: GrowthStep; number: number; className?: string }) {
   return (
     <div className={`rounded-16 bg-surface-subtle flex flex-col p-20 max-md:min-h-211 md:p-24 lg:h-296 lg:pb-20 ${className}`}>
-      <span className="type-body-14 md:type-body-16 rounded-8 bg-surface grid size-40 place-items-center text-black/40 md:size-48">
+      <span className="type-body-14 md:type-body-16 rounded-8 bg-surface grid size-40 place-items-center text-black/60 md:size-48">
         {String(number).padStart(2, "0")}.
       </span>
       <h3 className="type-heading-20 md:type-heading-28 mt-auto pt-24 tracking-tight md:pt-32">{step.title}</h3>

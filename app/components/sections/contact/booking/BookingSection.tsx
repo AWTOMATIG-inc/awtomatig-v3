@@ -26,7 +26,7 @@ export default function BookingSection() {
             </Button>
           </div>
 
-          <div id="book-a-call-scheduler" className="rounded-16 bg-white scroll-mt-100 p-16 lg:col-span-2 lg:max-w-1320 lg:p-24">
+          <div id="book-a-call-scheduler" className="rounded-16 scroll-mt-100 bg-white p-16 lg:col-span-2 lg:max-w-1320 lg:p-24">
             <div className="flex flex-wrap items-baseline justify-between gap-x-20 gap-y-4 pb-16">
               <h3 className="type-heading-28 text-fg-strong">Choose a time</h3>
               <p className="type-caption-12 text-fg-strong uppercase">30 min / Discovery call</p>

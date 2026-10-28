@@ -24,7 +24,7 @@ export default function CultureSection() {
           <ol className="rounded-16 bg-surface px-24 py-8 lg:h-453 lg:px-40 lg:py-20">
             {CULTURE_VALUES.map((value, i) => (
               <li key={value.title} className="not-last:border-border flex gap-16 py-20 not-last:border-b lg:gap-0">
-                <span className="type-heading-24 w-36 shrink-0 font-normal tracking-tight text-black/40 lg:w-52">
+                <span className="type-heading-24 w-36 shrink-0 font-normal tracking-tight text-black/60 lg:w-52">
                   {String(i + 1).padStart(2, "0")}.
                 </span>
                 <div>

@@ -11,7 +11,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
     <>
       <BreadcrumbJsonLd />
       <Header />
-      <main className="flex flex-1 flex-col">{children}</main>
+      <main id="main" className="flex flex-1 flex-col">
+        {children}
+      </main>
       <Footer />
     </>
   );

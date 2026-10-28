@@ -28,28 +28,28 @@ export const SERVICE_THEMES: Record<
 > = {
   light: {
     card: "bg-surface text-fg-strong",
-    index: "text-black/40",
+    index: "text-black/60",
     panel: "bg-surface-subtle",
     divider: "border-border",
     button: "primary",
   },
   cyan: {
     card: "bg-action-primary text-on-action",
-    index: "text-black/40",
+    index: "text-black/60",
     panel: "bg-action-primary-bright",
     divider: "border-action-primary",
     button: "dark",
   },
   subtle: {
     card: "bg-surface-subtle text-fg-strong",
-    index: "text-black/40",
+    index: "text-black/60",
     panel: "bg-surface",
     divider: "border-border",
     button: "primary",
   },
   dark: {
     card: "bg-surface-deep text-fg-inverse",
-    index: "text-white/40",
+    index: "text-white/60",
     panel: "bg-surface-inverse",
     divider: "border-white/12",
     button: "light",

@@ -23,7 +23,7 @@ export default function LegalSection({ doc }: { doc: LegalDocument }) {
             {doc.sections.map((section, i) => (
               <li key={section.heading} className="border-border border-b py-32">
                 <h2 className="type-heading-24 tracking-tight">
-                  <span className="text-black/40">{String(i + 1).padStart(2, "0")}. </span>
+                  <span className="text-black/60">{String(i + 1).padStart(2, "0")}. </span>
                   {section.heading}
                 </h2>
                 <div className="type-body-16 text-fg-primary mt-12 space-y-12">

@@ -28,6 +28,10 @@ Read these before making a change, in this order:
 
 This repo is also read by Claude Code; `CLAUDE.md` points it at the same three files.
 
+## Environment
+
+Copy `.env.example` to `.env`. `NEXT_PUBLIC_GTM_ID` loads Google Tag Manager (GA4 and Microsoft Clarity) in production builds only. `NEXT_PUBLIC_*` values are baked in at build time, so rebuild after changing them.
+
 ## Deployment
 
-Deployed on [Vercel](https://vercel.com). Pushing to the production branch triggers a build; see the [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying) for the general flow.
+Self-hosted on a VPS: `npm ci && npm run build && npm run start` behind a reverse proxy.

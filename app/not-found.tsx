@@ -14,7 +14,7 @@ export default function NotFound() {
   return (
     <>
       <Header />
-      <main className="flex flex-1 flex-col items-center justify-center px-16 py-120 text-center lg:py-180">
+      <main id="main" className="flex flex-1 flex-col items-center justify-center px-16 py-120 text-center lg:py-180">
         <Eyebrow className="text-fg-inverse">AWTOMATIG</Eyebrow>
         <h1 className="type-display-80 text-fg-inverse mt-24">Page not found.</h1>
         <p className="type-body-16 mt-16 max-w-480 text-white/60">The page you’re looking for doesn’t exist, or has moved.</p>

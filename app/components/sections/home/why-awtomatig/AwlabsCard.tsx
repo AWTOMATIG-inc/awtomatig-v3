@@ -7,7 +7,8 @@ const LIST = ["tools", "experiments", "what’s next"];
 // Dark AWLABS teaser: charcoal card with a cyan glow and a dot grid rising from the bottom edge
 export default function AwlabsCard() {
   return (
-    <aside
+    <div
+      role="group"
       aria-labelledby="awlabs-title"
       className="rounded-16 bg-surface-inverse text-fg-inverse relative isolate flex w-full flex-col overflow-hidden px-24 pt-20 pb-24 lg:mr-16 lg:h-398 lg:w-auto lg:max-w-280"
     >
@@ -34,7 +35,7 @@ export default function AwlabsCard() {
         </span>
       </p>
 
-      <ul className="type-body-16-compact mt-26 pl-6 text-white/40">
+      <ul className="type-body-16-compact mt-26 pl-6 text-white/60">
         {LIST.map((item) => (
           <li key={item} className="flex gap-8">
             <span aria-hidden="true">/</span>
@@ -60,6 +61,6 @@ export default function AwlabsCard() {
           AWLABS coming soon
         </Button>
       )}
-    </aside>
+    </div>
   );
 }

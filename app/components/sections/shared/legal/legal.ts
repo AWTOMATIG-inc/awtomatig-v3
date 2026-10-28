@@ -9,13 +9,13 @@ export type LegalDocument = {
   sections: { heading: string; paragraphs: string[] }[];
 };
 
-// First drafts written from what the site does today (no accounts, analytics or cookies; the inquiry form opens the
+// First drafts written from what the site does today (no accounts; GA4 + Clarity via GTM; the inquiry form opens the
 // visitor's email app). They must be reviewed by the owner / legal before launch and updated when the form gets a backend.
 
 export const PRIVACY_POLICY: LegalDocument = {
   eyebrow: "Legal",
   title: "Privacy Policy",
-  updated: "2026-10-09",
+  updated: "2026-10-28",
   intro: `This policy explains what personal information ${SITE.name} receives through this website and how we use it.`,
   sections: [
     {
@@ -27,7 +27,8 @@ export const PRIVACY_POLICY: LegalDocument = {
     {
       heading: "What we collect",
       paragraphs: [
-        "This website has no user accounts, no analytics, no advertising and sets no cookies.",
+        "This website has no user accounts and no advertising.",
+        'We use Google Analytics and Microsoft Clarity, loaded through Google Tag Manager, to understand how visitors use the site: which pages are viewed, how people move between them, and anonymised recordings of clicks and scrolling. They only set cookies if you accept them in the cookie banner; if you reject them, or until you choose, they collect no cookies and only cookieless measurement is sent. These services receive technical data such as your IP address, browser and device. We use this only to improve the website. You can change your choice at any time with "Cookie settings" at the bottom of every page.',
         "The project inquiry form on the Contact page does not send anything from the website. When you submit it, it prepares an email in your own email app, which you then choose to send. If you send it, we receive the details you entered (such as your name, work email, company, budget range and project details) and anything you attach.",
         "Like any website, our hosting provider processes technical data such as IP addresses in server logs to deliver and protect the site.",
       ],

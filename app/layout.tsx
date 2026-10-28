@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
-import { SHARE_IMAGE_PATH, SITE } from "@/lib/site";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { SHARE_IMAGE, SITE } from "@/lib/site";
+import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
+import CookieConsent from "@/app/components/layout/cookie-consent/CookieConsent";
 import "./globals.css";
 
 // Body, UI copy and labels. No extra axes: nothing in the type scale sets font-optical-sizing, and Inter is only
@@ -17,7 +20,6 @@ const interTight = Inter_Tight({
 });
 
 const DEFAULT_TITLE = SITE.title;
-const SHARE_IMAGE = { url: SHARE_IMAGE_PATH, width: 1200, height: 630, alt: SITE.title };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -51,8 +53,13 @@ const ORGANIZATION_JSON_LD = JSON.stringify({
       "@id": `${SITE.url}/#organization`,
       name: SITE.name,
       url: SITE.url,
-      logo: `${SITE.url}/images/awtomatig-logo.png`,
-      image: `${SITE.url}${SHARE_IMAGE_PATH}`,
+      logo: { "@type": "ImageObject", url: `${SITE.url}/aw-512.jpg`, width: 768, height: 768 },
+      image: {
+        "@type": "ImageObject",
+        url: `${SITE.url}${SHARE_IMAGE.url}`,
+        width: SHARE_IMAGE.width,
+        height: SHARE_IMAGE.height,
+      },
       email: SITE.email,
       telephone: SITE.phone,
       description: SITE.description,
@@ -90,8 +97,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} ${interTight.variable}`}>
+      {SITE.gtmId && <GoogleTagManager gtmId={SITE.gtmId} />}
       <body className="bg-surface-inverse text-fg-inverse selection:bg-action-primary selection:text-on-action flex min-h-screen flex-col justify-between font-sans">
+        {/* Consent defaults must reach the dataLayer before GTM loads (it loads after hydration) */}
+        {SITE.gtmId && <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }} />
+        {/* Before the page in the DOM so a first-time keyboard visitor reaches the banner first, not after the footer */}
+        {SITE.gtmId && <CookieConsent />}
         {children}
       </body>
     </html>

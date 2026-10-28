@@ -12,7 +12,7 @@ const FIELD =
 const LABEL = "type-caption-12 block font-medium uppercase";
 
 const CHIP_BASE =
-  "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-action-primary motion-reduce:transition-none";
+  "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black motion-reduce:transition-none";
 
 function Required() {
   return (
