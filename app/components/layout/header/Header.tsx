@@ -165,6 +165,13 @@ export default function Header() {
       // Keyboard users tabbing into a hidden header bring it back
       onFocus={showHeader}
     >
+      {/* Skip link (WCAG 2.4.1): first tab stop on every page, visible only while focused */}
+      <a
+        href="#main"
+        className="type-label-14 rounded-6 bg-surface text-fg-strong shadow-card sr-only focus:not-sr-only focus:absolute focus:top-16 focus:left-16 focus:z-10 focus:px-16 focus:py-12"
+      >
+        Skip to content
+      </a>
       <div className="site-container">
         <div className="relative isolate flex h-52 items-center justify-between pr-8 pl-12 lg:h-60 lg:pr-10 lg:pl-18">
           {/* Glass surface: fades in once the page is scrolled or the menu is open */}

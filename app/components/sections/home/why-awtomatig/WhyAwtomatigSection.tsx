@@ -36,7 +36,7 @@ export default function WhyAwtomatigSection() {
                   <span className="rounded-8 bg-surface-subtle grid size-48 place-items-center">
                     <reason.icon className="size-28" />
                   </span>
-                  <span className="type-body-16 text-black/40">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="type-body-16 text-black/60">{String(i + 1).padStart(2, "0")}</span>
                 </div>
                 <h3 className="type-heading-28 mt-40 lg:mt-58">{reason.title}</h3>
                 <p className="type-body-16 text-fg-primary mt-10 max-w-400">{reason.description}</p>

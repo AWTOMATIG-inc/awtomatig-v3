@@ -708,9 +708,12 @@
     font-family: var(--font-display);
   }
 
+  /* Two-tone ring: the cyan outline reads on dark surfaces, the black inner ring (filling the offset gap) on light
+     ones, where cyan alone is ~1.8:1 (WCAG 1.4.11 needs 3:1) */
   :focus-visible {
     outline: 2px solid var(--color-action-primary);
     outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-black);
   }
 
   /* Tailwind v4 dropped the pointer cursor on buttons that v3 preflight had */

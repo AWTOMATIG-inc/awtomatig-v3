@@ -19,7 +19,7 @@ const INTERACTION_COOLDOWN = 700; // ms before autoplay resumes after a wheel nu
 // pauses on any interaction and is otherwise toggled by the scrub bar's play/pause handle (DESIGN.md pattern:
 // a draggable progress scrubber, like MarqueeTrack's pause toggle but also seekable).
 export default function TestimonialsTrack({ testimonials }: { testimonials: Testimonial[] }) {
-  const trackRef = useRef<HTMLUListElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const scrubRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -81,7 +81,7 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
     }, INTERACTION_COOLDOWN);
   }
 
-  function onTrackPointerDown(e: PointerEvent<HTMLUListElement>) {
+  function onTrackPointerDown(e: PointerEvent<HTMLDivElement>) {
     if (e.pointerType === "touch") return; // touch keeps native scrolling
     const el = trackRef.current;
     if (!el) return;
@@ -90,7 +90,7 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
     dragStart.current = { x: e.clientX, scrollLeft: el.scrollLeft };
     el.setPointerCapture(e.pointerId);
   }
-  function onTrackPointerMove(e: PointerEvent<HTMLUListElement>) {
+  function onTrackPointerMove(e: PointerEvent<HTMLDivElement>) {
     if (!draggingTrack.current) return;
     const el = trackRef.current;
     if (!el) return;
@@ -98,11 +98,11 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
     if (Math.abs(dx) > 3) moved.current = true;
     el.scrollLeft = dragStart.current.scrollLeft - dx;
   }
-  function endTrackDrag(e: PointerEvent<HTMLUListElement>) {
+  function endTrackDrag(e: PointerEvent<HTMLDivElement>) {
     draggingTrack.current = false;
     trackRef.current?.releasePointerCapture(e.pointerId);
   }
-  function onWheel(e: WheelEvent<HTMLUListElement>) {
+  function onWheel(e: WheelEvent<HTMLDivElement>) {
     const el = trackRef.current;
     if (!el || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
     el.scrollLeft += e.deltaY;
@@ -134,7 +134,8 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
 
   return (
     <div className="mt-40 lg:mt-60">
-      <ul
+      {/* The region (not the list) is the focusable scroller, so the <ul> keeps its list semantics */}
+      <div
         ref={trackRef}
         role="region"
         aria-label="Client testimonials"
@@ -144,37 +145,39 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
         onPointerUp={endTrackDrag}
         onPointerCancel={endTrackDrag}
         onWheel={onWheel}
-        className="scrollbar-hide flex cursor-grab touch-pan-x gap-20 overflow-x-auto pb-4 select-none active:cursor-grabbing"
+        className="scrollbar-hide cursor-grab touch-pan-x overflow-x-auto pb-4 select-none active:cursor-grabbing"
       >
-        {testimonials.map((testimonial) => (
-          <li
-            key={testimonial.id}
-            className="bg-surface rounded-16 flex w-290 shrink-0 flex-col p-24 sm:w-360 sm:p-28 lg:w-404 lg:p-32"
-          >
-            <span
-              className={`type-caption-12 rounded-8 inline-block self-start px-12 py-6 font-medium uppercase ${
-                TAG_THEMES[testimonial.service] ?? TAG_DEFAULT
-              }`}
+        <ul className="flex w-max gap-20">
+          {testimonials.map((testimonial) => (
+            <li
+              key={testimonial.id}
+              className="bg-surface rounded-16 flex w-290 shrink-0 flex-col p-24 sm:w-360 sm:p-28 lg:w-404 lg:p-32"
             >
-              {getService(testimonial.service).name}
-            </span>
+              <span
+                className={`type-caption-12 rounded-8 inline-block self-start px-12 py-6 font-medium uppercase ${
+                  TAG_THEMES[testimonial.service] ?? TAG_DEFAULT
+                }`}
+              >
+                {getService(testimonial.service).name}
+              </span>
 
-            <p className="type-body-20 text-fg-strong mt-20 lg:mt-28">&ldquo;{testimonial.quote}&rdquo;</p>
+              <p className="type-body-20 text-fg-strong mt-20 lg:mt-28">&ldquo;{testimonial.quote}&rdquo;</p>
 
-            <div className="mt-auto pt-28 lg:pt-40">
-              <Image
-                src={testimonial.logo}
-                alt={testimonial.company}
-                className={`h-36 w-auto max-w-160 object-contain object-left ${testimonial.logoOnWhite ? "opacity-80 brightness-0" : ""}`}
-              />
-              <p className="type-body-16 text-fg-strong mt-16 font-medium">{testimonial.name}</p>
-              <p className="type-body-14 text-fg-muted">
-                {testimonial.role} · {testimonial.company}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div className="mt-auto pt-28 lg:pt-40">
+                <Image
+                  src={testimonial.logo}
+                  alt={testimonial.company}
+                  className={`h-36 w-auto max-w-160 object-contain object-left ${testimonial.logoOnWhite ? "opacity-80 brightness-0" : ""}`}
+                />
+                <p className="type-body-16 text-fg-strong mt-16 font-medium">{testimonial.name}</p>
+                <p className="type-body-14 text-fg-muted">
+                  {testimonial.role} · {testimonial.company}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="mt-32 lg:mt-50">
         <div

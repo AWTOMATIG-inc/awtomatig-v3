@@ -37,7 +37,7 @@ export default function OperationsSection() {
                 <span className="rounded-8 bg-surface grid size-48 place-items-center">
                   <pillar.icon className="size-28" />
                 </span>
-                <span className="type-body-16 text-black/40">{String(i + 1).padStart(2, "0")}</span>
+                <span className="type-body-16 text-black/60">{String(i + 1).padStart(2, "0")}</span>
               </div>
               <h3 className="type-heading-28 mt-24 lg:mt-48">{pillar.title}</h3>
               <p className="type-body-16 mt-8">{pillar.description}</p>

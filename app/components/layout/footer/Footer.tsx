@@ -6,6 +6,9 @@ import { MailIcon, WhatsAppIcon } from "@/app/components/icons";
 import { FOOTER_PAGES, MAILTO, SITE } from "@/lib/site";
 import { SERVICES } from "@/lib/services";
 import Wordmark from "./Wordmark";
+import CookieSettingsButton from "../cookie-consent/CookieSettingsButton";
+
+const LEGAL_LINK = "inline-block py-10 transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none";
 
 // Links whose destination doesn't exist yet are left out (see SITE in lib/site.ts)
 const SERVICE_LINKS = [
@@ -99,18 +102,21 @@ export default function Footer() {
           className={`${HAIRLINE} text-fg-strong flex flex-col-reverse items-center gap-6 pt-10 text-center sm:flex-row sm:justify-between sm:pt-32 sm:text-left`}
         >
           <p className="type-body-16">© {new Date().getFullYear()} AWTOMATIG. All rights reserved.</p>
-          <ul className="type-body-16 flex items-center gap-12 sm:-my-10">
+          <ul className="type-body-16 flex flex-wrap items-center justify-center gap-x-12 sm:-my-10">
             {SITE.legal.map((link, i) => (
               <li key={link.label} className="flex items-center gap-12">
                 {i > 0 && <span aria-hidden="true">•</span>}
-                <Link
-                  href={link.href}
-                  className="inline-block py-10 transition-colors duration-200 hover:text-black/60 motion-reduce:transition-none"
-                >
+                <Link href={link.href} className={LEGAL_LINK}>
                   {link.label}
                 </Link>
               </li>
             ))}
+            {SITE.gtmId && (
+              <li className="flex items-center gap-12">
+                <span aria-hidden="true">•</span>
+                <CookieSettingsButton className={`${LEGAL_LINK} cursor-pointer`} />
+              </li>
+            )}
           </ul>
         </div>
 

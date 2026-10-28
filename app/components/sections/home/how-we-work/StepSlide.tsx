@@ -39,11 +39,14 @@ export default function StepSlide({ step, index }: StepSlideProps) {
               <span className="type-body-15">
                 {number} / {total}
               </span>
-              <div className="flex gap-5">
+              {/* Pointer shortcut only: every slide repeats these dots, and the page scroll already moves the
+                  carousel, so they stay out of the tab order and the accessibility tree */}
+              <div aria-hidden="true" className="flex gap-5">
                 {STEPS.map((target, i) => (
                   <button
                     key={target.title}
                     type="button"
+                    tabIndex={-1}
                     data-step={i}
                     aria-label={`Go to step ${i + 1}: ${target.title.replace(".", "")}`}
                     aria-current={i === index ? "step" : undefined}

@@ -33,7 +33,7 @@ export default function FeatureGrid({ features, descriptionClassName = "max-w-35
             <span className="rounded-8 bg-surface-subtle grid size-48 place-items-center">
               <feature.icon className="size-28" />
             </span>
-            <span className="type-heading-20 -mt-5 font-normal text-black/40">{String(i + 1).padStart(2, "0")}</span>
+            <span className="type-heading-20 -mt-5 font-normal text-black/60">{String(i + 1).padStart(2, "0")}</span>
           </div>
           <h3 className="type-heading-28 mt-40 tracking-tight md:mt-auto md:pt-20">{feature.title}</h3>
           <p className={`type-body-16 mt-8 ${descriptionClassName}`}>{feature.description}</p>
