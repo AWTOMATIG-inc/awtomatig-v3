@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { useId, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/app/components/ui";
 import { ChevronRightIcon } from "@/app/components/icons";
 import { SITE } from "@/lib/site";
 import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
+import { sendInquiry } from "./sendInquiry";
 
 const FIELD =
   "type-body-14 h-48 w-full rounded-8 bg-surface-subtle px-16 text-fg-strong placeholder:text-black/40 transition-colors duration-200 hover:bg-off-white focus-visible:bg-off-white motion-reduce:transition-none";
@@ -65,31 +66,35 @@ function ChipGroup({ legend, name, options, active }: { legend: string; name: st
   );
 }
 
-// Labels for the email body, in form order
-const EMAIL_FIELDS = [
-  ["name", "Name"],
-  ["email", "Work email"],
-  ["company", "Company"],
-  ["budget", "Budget / range"],
-  ["help", "Needs help with"],
-  ["type", "Project type"],
-  ["improve", "What we're trying to improve"],
-] as const;
+type Status = { kind: "idle" } | { kind: "sent" } | { kind: "error"; message: string };
 
-// Project inquiry form (Contact page). There is no backend yet, so a valid submit opens the visitor's email app with the
-// inquiry filled in; nothing is sent from the site. Replace with a Server Action once the backend exists (AUDIT_FIX_PLAN.md 5.1).
+// Project inquiry form (Contact page). The `sendInquiry` Server Action emails the team; a GA4 `generate_lead` reaches GTM
+// only once the email has gone out. Submitting by hand (not `<form action>`) keeps the fields filled if sending fails.
 export default function InquiryForm() {
   const id = useId();
-  const [opened, setOpened] = useState(false);
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [pending, startTransition] = useTransition();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const value = (key: string) => String(data.get(key) ?? "").trim();
-    const subject = `Project inquiry: ${value("company") || value("name")}`;
-    const body = EMAIL_FIELDS.map(([key, label]) => `${label}: ${value(key) || "-"}`).join("\n\n");
-    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setOpened(true);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    startTransition(async () => {
+      try {
+        const result = await sendInquiry(data);
+        if (!result.ok) return setStatus({ kind: "error", message: result.error });
+        window.dataLayer?.push({
+          event: "generate_lead",
+          form_id: "contact_inquiry",
+          service: result.help,
+          project_type: result.type,
+        });
+        form.reset();
+        setStatus({ kind: "sent" });
+      } catch {
+        setStatus({ kind: "error", message: "We couldn't send your message right now." });
+      }
+    });
   };
 
   return (
@@ -173,9 +178,16 @@ export default function InquiryForm() {
         </Field>
       </div>
 
-      {/* Uploads return with the backend; until then files travel with the email */}
+      {/* Honeypot: off screen and out of the tab order; people never fill it, bots do */}
+      <div aria-hidden="true" className="sr-only">
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
       <p className="type-body-14 text-fg-primary mt-20">
-        Have a brief or supporting files? Attach them to the email that opens when you send this form.
+        Have a brief or supporting files? Send them over when we reply to your message.
       </p>
 
       <label className="type-body-14 mt-16 flex cursor-pointer items-center gap-12">
@@ -197,18 +209,21 @@ export default function InquiryForm() {
         </span>
       </label>
 
-      <Button type="submit" variant="primary" size="lg" fullWidth className="mt-28">
-        Start the conversation
+      <Button type="submit" variant="primary" size="lg" fullWidth disabled={pending} className="mt-28">
+        {pending ? "Sending…" : "Start the conversation"}
       </Button>
-      {opened && (
-        <p role="status" className="type-body-14 text-fg-primary mt-12 text-center">
-          Your email app should open with your message ready to send. If it doesn’t, email us at{" "}
-          <a href={`mailto:${SITE.email}`} className="underline underline-offset-2">
-            {SITE.email}
-          </a>
-          .
-        </p>
-      )}
+      <p role="status" className="type-body-14 text-fg-primary mt-12 text-center empty:hidden">
+        {status.kind === "sent" && "Thanks, your message is on its way. We typically reply within 1 business day."}
+        {status.kind === "error" && (
+          <>
+            {status.message} Please email us at{" "}
+            <a href={`mailto:${SITE.email}`} className="underline underline-offset-2">
+              {SITE.email}
+            </a>
+            .
+          </>
+        )}
+      </p>
     </form>
   );
 }
