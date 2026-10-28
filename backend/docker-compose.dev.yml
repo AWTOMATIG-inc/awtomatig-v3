@@ -1,0 +1,17 @@
+# Local development database only. Production runs PostgreSQL directly on the VPS (ARCHITECTURE.md B1).
+#   docker compose -f docker-compose.dev.yml up -d
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: awtomatig
+      POSTGRES_PASSWORD: awtomatig
+      POSTGRES_DB: awtomatig
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

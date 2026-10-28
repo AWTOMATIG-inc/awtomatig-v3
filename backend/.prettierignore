@@ -1,0 +1,8 @@
+dist
+coverage
+node_modules
+drizzle
+*.md
+.env*
+openapi.json
+package-lock.json
