@@ -16,3 +16,6 @@ next-env.d.ts
 # local tooling
 .codegraph/
 .DS_Store
+
+# VPS-only deploy script (lives on the server, never committed)
+/deploy.sh

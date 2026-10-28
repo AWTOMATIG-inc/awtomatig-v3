@@ -18,7 +18,7 @@ In development the app signs you in as a fixed development user, because the bac
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` / `build` / `start` | Dev server, production build, production server (port 3001). |
+| `npm run dev` / `build` / `start` | Dev server (port 3001), production build, production server (port set by PM2 on the VPS). |
 | `npm run typecheck` | `next typegen`, then `tsc --noEmit`. |
 | `npm run lint` | ESLint, the token sync check against the website, then Prettier. CI runs this. |
 | `npm run format` | Prettier (sorts Tailwind classes). Run it after writing code. |
