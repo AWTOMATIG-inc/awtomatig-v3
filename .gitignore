@@ -1,0 +1,18 @@
+# Repo-wide safety net. Each folder (frontend/, backend/, admin/) keeps its own .gitignore.
+
+# dependencies and build output
+node_modules/
+.next/
+dist/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# env files (.env.example is the committed template)
+.env*
+!.env.example
+
+# local tooling
+.codegraph/
+.DS_Store
