@@ -14,11 +14,11 @@ _Last updated: 2026-10-29_
 | Area | Status | Location |
 | --- | --- | --- |
 | Marketing website | Built; see its own memory for sections and open items | `frontend/` |
-| Backend (CMS + ERP API) | Scaffolded plus **authentication** (Better Auth, roles, audit; 2FA removed for now; first migrations applied locally and verified against PostgreSQL 16); lint, build and 26 tests pass; no business module; **not deployed** | `backend/` |
+| Backend (CMS + ERP API) | Scaffolded plus **authentication** (Better Auth, roles, audit; 2FA removed for now) and the **`crm` module** (contact inquiries); **deployed on the VPS** (PM2 `awtomatig-api`, loopback only, migrated, admin seeded); lint, build and tests pass; no other business module | `backend/` |
 | Admin / ERP UI | Scaffolded (Next.js 16): tokens with a sync check, shell, UI primitives, typed API client; **sign-in and sign-out work**; **first module screens: Leads (list, detail, status and notes) and a dashboard fed by real lead figures** | `admin/` |
 | Repo move into `frontend/` | Committed (`5dc0e0e`); root `.gitignore` hides leftover root build artifacts | repo root |
 
-**Next up:** deploy the backend to the VPS (set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `LEAD_INGEST_KEY`, migrate, seed the admin, change the seeded password) and add `CRM_API_URL` and `LEAD_INGEST_KEY` to the website's `.env`, so contact-form inquiries start landing in the dashboard. Until then the website only emails them.
+**Next up:** put 2FA back before real data (backend B10), provision database backups, and add a change-password screen to the admin. Then the next ERP module.
 
 ## 2. Cross-folder decisions
 
@@ -36,6 +36,7 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-29 | **Backend deployed to the VPS** (`backend/`, with `frontend/` and `admin/` wired): PM2 `awtomatig-api` on 127.0.0.1:4000, PostgreSQL on loopback, migrations applied, admin seeded; website inquiries now land in the admin's Contact Inquiries. The VPS-only `deploy.sh` also builds, migrates and restarts the backend on push to `main`. Detail, gotchas (lockfile sync, new env vars) in `backend/MEMORY.md`. |
 | 2026-10-29 | **`admin/`:** the backend address (`API_URL`) is now required in `admin/.env` and no longer has a default in the code; the VPS `admin/.env` needs it before the next build. Details in `admin/MEMORY.md`. |
 | 2026-10-29 | **`backend/`:** wrote the first-time VPS deployment steps (database and role, env, migrate, seed, PM2, wiring the website and admin) in `backend/README.md`. No code change; not yet run on the server. |
 | 2026-10-29 | **`frontend/` and `admin/`:** text fields now show no focus color or ring at all (frontend D62; checkboxes, radios and chips keep a keyboard-only outline); **`admin/`:** the sign-in password field has a show / hide eye button. Details in each folder's `MEMORY.md`. |
