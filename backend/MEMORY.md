@@ -18,7 +18,7 @@ _Last updated: 2026-10-29_
 | Architecture and rules | Written | this folder |
 | Project scaffold (NestJS 11 + Fastify, TypeScript strict, ESLint, Prettier, Jest) | ✅ Built; `npm run lint`, `typecheck`, `build` and `test` (9 tests) pass | this folder |
 | Config validation | ✅ zod, fails at boot | `src/shared/config/` |
-| Database access (pg pool + Drizzle, column helpers) | ✅ Built; verified against an unreachable database and by generating a sample migration, **not yet against a live PostgreSQL** | `src/shared/db/` |
+| Database access (pg pool + Drizzle, column helpers) | ✅ Built; verified against the local PostgreSQL 16 and on the VPS (PostgreSQL 16.15, `/api/v1/health` returns `database: up`) | `src/shared/db/` |
 | Error shape, structured logging, request id, rate limiting, CORS, security headers | ✅ Built and tested | `src/shared/errors/`, `logging/`, `src/bootstrap.ts` |
 | Health endpoints (`/live`, `/ready`) | ✅ Built | `src/shared/health/` |
 | OpenAPI contract (`openapi.json`, dev docs UI at `/api/docs`) | ✅ Built | `src/shared/openapi/`, `openapi.json` |
@@ -28,8 +28,9 @@ _Last updated: 2026-10-29_
 | `shared/` kernel: events, jobs, storage | Not started | `src/shared/` |
 | `crm` module (website contact form to leads): public ingest with a shared key, paged list, search, status filter, detail, status and notes update, dashboard stats | ✅ Built; verified against the local PostgreSQL 16 and by `test/crm.e2e-spec.ts` (13 tests) and 17 unit tests; sends no email | `src/modules/crm/` |
 | `cms` module | Not started, blocked on the CMS decision | `src/modules/cms/` |
-| Migrations applied, backups | `0000_core_auth_rbac_audit` and `0001_crm_leads` applied to the local database; not yet to staging or production; backups not provisioned | `drizzle/` |
-| First administrator | `npm run seed:admin` (idempotent) creates the admin role and user from `SEED_ADMIN_*` | `src/seed-admin.ts` |
+| Migrations applied, backups | `0000_core_auth_rbac_audit` and `0001_crm_leads` applied to the local database and to the **production VPS database** (all 8 `core` tables and `crm.leads` seen); later migrations run on every deploy; backups not provisioned | `drizzle/` |
+| First administrator | `npm run seed:admin` (idempotent) creates the admin role and user from `SEED_ADMIN_*`; **run on the VPS**, sign-in at admin.awtomatig.com works | `src/seed-admin.ts` |
+| Production deployment | ✅ **Live on the VPS** (2026-10-29): PM2 `awtomatig-api` on 127.0.0.1:4000, database `awtomatig` on 127.0.0.1:5432 (both loopback only, checked with `ss`); the website sends inquiries to it and they reach the dashboard; the VPS-only `deploy.sh` now builds, migrates and restarts the backend when `backend/` changes | VPS `~/awtomatig-v3` |
 
 ## 2. Key decisions
 
@@ -60,6 +61,9 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) section 7 (B1 to B7). Record new decision
 - **`z.string().nullable()` in a response schema becomes an array in `openapi.json`** (a `nestjs-zod` quirk), so lead `notes` is returned as an empty string when there are none.
 - **Search patterns are escaped** (`escapeLike`), so `%` and `_` typed into the search box match literally.
 - **Dashboard days and weeks are cut in the caller's time zone** (`timeZone` query, validated as an IANA name); weeks start on Monday.
+- **Keep `package-lock.json` in sync with `package.json`.** `npm ci` (used by `deploy.sh`) fails on any mismatch; the first VPS install failed on a missing `webpack` entry until the lockfile was regenerated (`npm install --package-lock-only`) and pushed. Do not run `npm install` on the VPS: it edits the lockfile there and the next `git pull` is blocked (fix: `git checkout backend/package-lock.json`).
+- **A new required env var must be added to the VPS `backend/.env` before the merge.** `deploy.sh` does not touch `.env`; a missing variable stops the API at boot.
+- **`drizzle-kit migrate` prints only "Using 'pg' driver" and no success line.** Check the tables with `psql ... -c "\dt core.*"` instead of waiting for a message.
 - **The e2e test runs in the dev database** (the app role cannot create databases): it uses unique `e2e-…@test.invalid` users and deletes them.
 
 ## 4. Open items
@@ -67,13 +71,13 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) section 7 (B1 to B7). Record new decision
 See ARCHITECTURE.md section 6: CMS (Payload vs custom), auth library, accounting design, module order.
 
 - [ ] Provision the staging and production Postgres on the VPS with WAL archiving and a first restore test.
-- [ ] Run the stack against a live PostgreSQL (`docker compose -f docker-compose.dev.yml up -d`, `/api/v1/health/ready`, a first migration). It was not done in the scaffold session because no database was available.
+- [x] ~~Run the stack against a live PostgreSQL~~: done locally, and on the VPS on 2026-10-29 (migrations applied, health `database: up`).
 - [ ] Decide the host and path for the API (`api.awtomatig.com` or `/api` behind Nginx) and update the frontend CSP.
 - [ ] CI pipeline (type-check, lint, tests, migrations on a throwaway Postgres, an `openapi.json` freshness check).
 - [x] ~~Hide `/health/*` from the access log~~: done through `customLogLevel` (`/live` and `/ready` successes are silent; `/health` is logged).
 - [ ] Add `events`, `jobs` (pg-boss) and `storage` as the first modules need them, not before.
-- [ ] Deploy auth and CRM: set `BETTER_AUTH_SECRET`, `LEAD_INGEST_KEY` (a new random value, not the local one) and `BETTER_AUTH_URL=https://admin.awtomatig.com` (and `TRUST_PROXY=true`) in the VPS `.env`, run the migration, run `seed:admin` once, then remove `SEED_ADMIN_PASSWORD`. The backend is not deployed yet (port 4000 reserved).
-- [ ] **Change the seeded administrator's password after the first sign-in** (`POST /auth/change-password` exists; the admin has no screen for it yet) and remove `SEED_ADMIN_PASSWORD` from `.env`.
+- [x] ~~Deploy auth and CRM~~: done 2026-10-29. Generated secrets and `LEAD_INGEST_KEY` on the VPS, migrated, ran `seed:admin` once with the password passed inline (never written to `.env`).
+- [ ] The administrator's password was chosen by hand at seed time. The admin has no change-password screen yet (`POST /auth/change-password` exists); until it does, a reset is `seed:admin -- --reset-password`.
 - [ ] Password reset and new-employee invites need an email sender (Gmail SMTP exists for the website form, frontend D59).
 - [ ] **Put 2FA back (B10) before real data or production use.** `backend/RULES.md` section 5 still requires it. Better Auth's `twoFactor` plugin does it; it needs a `two_factors` table, a `two_factor_enabled` column on `core.users`, a guard rule that blocks un-enrolled employees, and the admin screens (code step at sign-in, enrolment with a QR code). The git history of this change has the removed implementation.
 - [ ] Employee management: create, disable (revoke sessions), assign roles, reset passwords. Until then these are database or seed operations.
@@ -87,6 +91,7 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-29 | **Deployed to the VPS.** Followed the README steps: PostgreSQL role and database `awtomatig`, production `backend/.env` with generated secrets (mode 600), `npm install --include=dev` (the lockfile was out of sync, see Gotchas), build, migrations (all 8 `core` tables and `crm.leads` present), `seed:admin` with the password passed inline, PM2 `awtomatig-api`. Wired `LEAD_INGEST_KEY` and `CRM_API_URL=http://127.0.0.1:4000` into `frontend/.env` and confirmed `API_URL` in `admin/.env`. Verified: `/api/v1/health` returns `status ok, database up`; admin sign-in works; a website inquiry arrives; port 4000 and 5432 listen on 127.0.0.1 only. `deploy.sh` (VPS-only) now builds, migrates and restarts the backend when `backend/` changes; the first webhook deploy restarted `awtomatig-api` on its own. Not done: backups, the change-password screen, 2FA (B10). |
 | 2026-10-29 | **VPS deployment steps written** in `README.md` ("Deploying to the VPS"): create the PostgreSQL role and database, the production `.env`, `npm ci --include=dev`, build, migrate, seed the first administrator without writing the password to a file, run under PM2 as `awtomatig-api` on 127.0.0.1:4000, wire the website and admin, and the per-deploy command line for `deploy.sh`. Not executed on the server yet. |
 | 2026-10-29 | **CRM leads built (B11).** New `crm` module (`api/ service/ domain/ repo/ schema.ts`, README) and migration `0001_crm_leads` (`crm.leads`, with a unique `submission_id` for idempotency and a status check constraint). Endpoints: `POST /crm/leads` (public, needs the `x-ingest-key` header, constant-time check), `GET /crm/leads` (page, pageSize, status, q, sort, order), `GET /crm/leads/stats`, `GET /crm/leads/:id`, `PATCH /crm/leads/:id` (permissions `crm.lead.read` / `crm.lead.update`). Audit entries `crm.lead.captured` / `crm.lead.updated` hold ids only, written in the same transaction. New env `LEAD_INGEST_KEY` (32+ characters, required). `AuditService.record` accepts a transaction. Fixed a test race (auth e2e cleanup deleted other suites' users). Verified: typecheck, lint with boundaries, build, 52 tests (incl. 13 CRM e2e against PostgreSQL), live ingest through curl, `openapi.json` regenerated. |
 | 2026-10-29 | **Cleanup of files not needed to run, migrate or deploy.** Squashed `0001_remove_two_factor` into a single `0000_core_auth_rbac_audit` (only because nothing had been deployed; the local database was reset, migrated and re-seeded, and `drizzle-kit check` passes). Audited `src/` and the dependencies: the only files nothing imports are the entry points (`main`, `openapi-export`, `seed-admin`), and `reflect-metadata`, `rxjs`, `pino` and `pino-http` are peers of NestJS and `nestjs-pino`, so nothing else was removed. Kept `docker-compose.dev.yml` (documented dev database). Git-ignored build output (`dist/`) is regenerated by builds and was left alone. |
