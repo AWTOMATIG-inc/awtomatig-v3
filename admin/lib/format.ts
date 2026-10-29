@@ -9,6 +9,13 @@ export function formatDate(value: string | Date): string {
   );
 }
 
+/** `12 Oct`, from a plain `YYYY-MM-DD` date (no time zone conversion: the backend already cut it in the app's time zone). */
+export function formatDayMonth(localDate: string): string {
+  return new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", timeZone: "UTC" }).format(
+    new Date(`${localDate}T00:00:00Z`),
+  );
+}
+
 /** `12 Oct 2026, 14:05` (24-hour) */
 export function formatDateTime(value: string | Date): string {
   return new Intl.DateTimeFormat(LOCALE, {

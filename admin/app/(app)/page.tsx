@@ -51,7 +51,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         )}
 
         <div className="grid gap-20 lg:grid-cols-3">
-          {chart && <ChartCard chart={chart} unit="leads" className="lg:col-span-2" />}
+          {chart && <ChartCard chart={chart} unit="inquiries" className="lg:col-span-2" />}
           <AttentionCard items={attention} className={chart ? undefined : "lg:col-span-3"} />
         </div>
 

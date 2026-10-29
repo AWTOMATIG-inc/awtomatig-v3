@@ -626,7 +626,7 @@ Rules:
 
 Component rules:
 
-- Every interactive element needs visible **hover**, **focus-visible** and **disabled** states. A global two-tone focus ring (cyan outline, black inner ring) is provided in the base layer; don't remove it. The header's first tab stop is a "Skip to content" link to `#main`.
+- Every interactive element needs visible **hover**, **focus-visible** and **disabled** states. A global two-tone focus ring (cyan outline, black inner ring) is provided in the base layer for buttons and links; don't remove it. **Form controls are the exception (D62, which replaces D61):** text fields, textareas and selects show **no focus ring or color at all** (no outline, no border change, no fill change; the caret shows where you are typing), and only checkboxes, radios and the radio chips show a thin 1px cyan outline 2px out, and only when reached with the keyboard. Do not add a focus style to a text field. The header's first tab stop is a "Skip to content" link to `#main`.
 - Minimum touch target: **44×44px** on touch layouts. A smaller visual control keeps its size and extends its hit area with a pseudo-element, e.g. `relative size-36 before:absolute before:-inset-4` (the menu toggle).
 - Icons inherit `currentColor` and sit at 16px (labels) or 18–20px (headings).
 - Don't invent component classes for styling; use utilities. The only custom classes are in effect CSS, named by component (`.service-card`, `.hero-inner`), not by appearance (`.cyan-box`).

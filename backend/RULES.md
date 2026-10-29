@@ -50,7 +50,7 @@ Rules for everyone (and every AI agent) working in `backend/`. They add to the r
 
 ## 5. Security
 
-- Hash passwords with Argon2id (or the auth library's default). Enforce 2FA for every employee account.
+- Hash passwords with Argon2id (or the auth library's default). Enforce 2FA for every employee account (**currently switched off, decision B10; it must be back before production use with real data**).
 - Authorization is checked in the service layer, not only in controllers or the UI.
 - Public endpoints (the contact form) are rate-limited and validated, and reveal nothing about internal state.
 - Uploads: check type, size and name; store outside the web root under generated keys.
@@ -61,7 +61,7 @@ Rules for everyone (and every AI agent) working in `backend/`. They add to the r
 - `domain/` and `service/` have unit tests. A new business rule **must** come with a test that fails without it.
 - `repo/` and HTTP endpoints are tested against a **real Postgres** (a throwaway container), not a mock.
 - A bug fix starts with a failing test that reproduces it.
-- Critical flows (login and 2FA, lead capture, stock adjustment, invoice posting) have end-to-end coverage.
+- Critical flows (login, lead capture, stock adjustment, invoice posting) have end-to-end coverage.
 - Tests are deterministic: no real network, and inject the clock.
 
 ## 7. Operations
@@ -70,3 +70,7 @@ Rules for everyone (and every AI agent) working in `backend/`. They add to the r
 - Postgres and the API are not reachable from the public internet; only Nginx is.
 - Production deploys: CI green, migration applied first, then the new app. Every deploy can be rolled back.
 - Staging mirrors production's configuration. Test migrations there with a recent masked copy of production data.
+
+## 8. Memory
+
+- **Must:** keep `MEMORY.md` as the detailed record of the work in this folder (status, decisions and why, gotchas, open items, a dated change log with what was verified), and add the one-line overview entry to the root `../MEMORY.md` in the same change (root rules, section 1).

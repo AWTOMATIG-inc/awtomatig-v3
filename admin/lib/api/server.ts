@@ -10,9 +10,12 @@ import type { paths } from "./schema";
  * visitor's cookies, so the backend sees the same session as the browser.
  */
 export async function serverApi() {
+  // No default address in code: it comes from admin/.env (API_URL).
+  const baseUrl = process.env.API_URL;
+  if (!baseUrl) throw new Error("API_URL is not set. Add it to admin/.env (see .env.example) and restart the app.");
   const cookieHeader = (await cookies()).toString();
   return createClient<paths>({
-    baseUrl: process.env.API_URL ?? "http://127.0.0.1:4000",
+    baseUrl,
     headers: cookieHeader ? { cookie: cookieHeader } : undefined,
     cache: "no-store",
   });

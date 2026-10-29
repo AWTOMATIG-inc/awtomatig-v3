@@ -29,6 +29,12 @@ describe("API shell", () => {
     expect(response.json()).toEqual({ code: "SERVICE_UNAVAILABLE", message: "The database is not reachable" });
   });
 
+  it("reports 503 from the details endpoint too when PostgreSQL is unreachable", async () => {
+    const response = await app.inject({ method: "GET", url: "/api/v1/health" });
+    expect(response.statusCode).toBe(503);
+    expect(response.json()).toEqual({ code: "SERVICE_UNAVAILABLE", message: "The database is not reachable" });
+  });
+
   it("returns an unknown route as the single error shape", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/nope" });
     expect(response.statusCode).toBe(404);

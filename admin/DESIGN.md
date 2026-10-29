@@ -191,7 +191,7 @@ Rules:
 
 ## 6. Shadows, borders and motion
 
-- **Borders:** 1px `border-border`. Inputs, cards and tables all use it. A focused control shows the global cyan `:focus-visible` ring from the base layer (do not remove it).
+- **Borders:** 1px `border-border`. Inputs, cards and tables all use it. A focused button or link shows the global two-tone `:focus-visible` ring from the base layer (do not remove it); a focused input, select or textarea shows **nothing** (no ring, border or fill change; the caret is the indicator), and a checkbox or radio a thin 1px cyan outline 2px out, only when reached with the keyboard (both from the base layer, as on the website, frontend D62).
 - **Shadows:** `shadow-card` for menus and popovers, `shadow-floating` for dialogs. Nothing else has a shadow. `shadow-glow*` and `shadow-glass` are not used.
 - **Motion:** `ease-out-quint`, **200ms** for color and hover changes, 250ms for a menu or dialog opening (fade plus an 8px translate). No looping animation. A request in progress shows a 16px spinner in the button or a static skeleton (flat `surface-subtle` blocks, no shimmer). Everything respects `prefers-reduced-motion` (`motion-safe:` / `motion-reduce:`).
 
@@ -218,9 +218,10 @@ Sizes: `md` (40px, the default; forms and toolbars) and a new admin size **`sm` 
 ### 7.2 Form controls
 
 - **Field:** label above (`type-body-14 font-medium`, 6px gap), control, then optional helper (`type-body-14 text-fg-muted`) or error. Required fields mark `*` after the label in `fg-muted`, not red.
-- **Input / select / textarea:** 40px tall, `rounded-6`, `bg-surface`, 1px `border-border`, `px-12`, `type-body-14`, placeholder `text-black/40`. Hover darkens the border to `border-black/40`; focus shows the cyan ring. Disabled is `opacity-40` on `bg-surface-subtle`.
+- **Input / select / textarea** (`Input`, `Select`, `Textarea` in `components/ui/Field.tsx`; `Select` has a `compact` variant, 32px tall and only as wide as its longest option, for a status picker inside a 48px table row; the textarea is at least 120px tall and resizes vertically only): 40px tall, `rounded-6`, `bg-surface`, 1px `border-border`, `px-12`, `type-body-14`, placeholder `text-black/40`. Hover darkens the border to `border-black/40`; focus shows the cyan ring. Disabled is `opacity-40` on `bg-surface-subtle`.
 - **Error:** the border becomes `border-status-error`, and a `type-body-14` message with a 14px `status-error` alert icon sits under the field (message text in `fg-primary`, see 3.2).
-- **Checkbox / radio / switch:** 18px, charcoal when checked (not cyan: cyan stays the primary-action color), cyan focus ring.
+- **Checkbox / radio / switch:** 18px, charcoal when checked (not cyan: cyan stays the primary-action color), thin cyan keyboard-focus outline.
+- **Password field** (`PasswordInput` in `components/ui/PasswordInput.tsx`): an `Input` with an eye button inside its right edge that shows or hides what was typed. It starts hidden, the button is labelled "Show password" / "Hide password" with `aria-pressed`, and the text keeps 44px clear of it. Use it for every password field.
 - **Form layout:** one column up to 640px wide for short forms; two columns of fields at `lg` for long ones, 20px gap. Related fields are grouped under a `type-heading-18` section title with a hairline above. The primary and cancel buttons sit bottom-right in a sticky footer for long forms. Validate on blur and on submit, and keep the user's input on error.
 
 ### 7.3 Table (the core component)
@@ -301,7 +302,7 @@ Order, from the top, follows urgency: totals, then trend, then what to do, then 
 
 Every module follows the same skeleton so the app feels like one tool:
 
-- **List page:** page title and one `primary` button (top right) → tabs or filters → `DataTable`.
+- **List page:** page title and one `primary` button (top right) → tabs or filters → `DataTable`. Reference: **Contact Inquiries** (the sidebar entry for `app/(app)/crm/leads/`): a plain GET form (search and status) above the table so filters live in the URL, sortable column titles as links, the contact detail (an email as a `mailto:` link) in the row, a status that is changed in place with a compact select (a plain badge without the update permission), a "1–20 of 45" footer with Previous / Next, an empty line that says whether filters hid the rows.
 - **Detail page:** a header with the record's name, its status badge and the main actions; a two-column body (a 2/3 content column of cards, a 1/3 column of meta and related items); an activity card at the bottom from the audit log.
 - **Create / edit:** the form layout in 7.2, in a page for long forms and in a dialog for short ones.
 

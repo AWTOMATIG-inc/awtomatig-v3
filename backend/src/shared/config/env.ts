@@ -22,6 +22,12 @@ const envSchema = z.object({
         .filter(Boolean),
     ),
   RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(120),
+  // Signs sessions. Rotating it signs everyone out.
+  BETTER_AUTH_SECRET: z.string().min(32, "must be at least 32 characters"),
+  // The public origin of the admin app (the browser talks to it, and /api is rewritten to this API). Used for cookies and origin checks.
+  BETTER_AUTH_URL: z.url(),
+  // Shared with the website's server. Only a request that sends it may add a lead (POST /api/v1/crm/leads).
+  LEAD_INGEST_KEY: z.string().min(32, "must be at least 32 characters"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
 });
 

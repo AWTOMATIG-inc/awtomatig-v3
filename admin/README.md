@@ -7,12 +7,12 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md), [RULES.md](RULES.md) and [DESIGN.md](DE
 ## Getting started
 
 ```bash
-cp .env.example .env     # API_URL and NEXT_PUBLIC_TIMEZONE
+cp .env.example .env     # API_URL (required, no default) and NEXT_PUBLIC_TIMEZONE
 npm install
 npm run dev              # http://localhost:3001
 ```
 
-In development the app signs you in as a fixed development user, because the backend has no authentication yet. Open `/?demo=1` to see the dashboard with clearly labelled sample data. In a production build every page redirects to `/login`, and sign-in is disabled until the backend ships authentication: the admin fails closed.
+Start the backend first (in `backend/`: migrate, `npm run seed:admin`, `npm run start:dev`), then sign in with the seeded administrator on http://localhost:3001. With the backend down every page redirects to `/login` (the admin fails closed). After signing in, `/?demo=1` shows the dashboard with clearly labelled sample data (development only).
 
 ## Commands
 
@@ -29,8 +29,9 @@ In development the app signs you in as a fixed development user, because the bac
 ```
 app/
   layout.tsx  globals.css  robots.ts  not-found.tsx
-  (auth)/login/          sign-in screen (form validated; not wired to the backend yet)
+  (auth)/login/          sign-in
   (app)/                 the signed-in shell: layout.tsx (sidebar, topbar), page.tsx (dashboard), loading, error
+    crm/leads/           Leads list and lead detail (CRM)
 components/
   ui/                    Button, Card, DataTable, Field/Input, PageHeader, SegmentedLinks, StatusBadge, EmptyState, Skeleton
   layout/                Sidebar, MobileNav (drawer), Topbar, Breadcrumb
@@ -38,7 +39,7 @@ components/
   dashboard/             KpiCard, AttentionCard, ActivityTable
 lib/
   api/                   typed client (browser) and serverApi() (server), generated schema
-  auth/                  getSession / requireSession / can (the seam for backend auth)
+  auth/                  session.ts (getSession / requireSession / can) and client.ts (sign-in, sign-out)
   dashboard/             types, data (real; empty until modules exist), demo (development only)
   nav.ts  format.ts  config.ts  cn.ts
 scripts/check-tokens-sync.mjs   fails when a shared token differs from the website

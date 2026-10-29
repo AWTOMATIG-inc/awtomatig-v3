@@ -2,8 +2,9 @@ export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from ".
 export { Card, CardHeader } from "./Card";
 export { DataTable } from "./DataTable";
 export { EmptyState } from "./EmptyState";
-export { Field, Input } from "./Field";
+export { Field, Input, Select, Textarea } from "./Field";
 export { PageHeader } from "./PageHeader";
+export { PasswordInput } from "./PasswordInput";
 export { SegmentedLinks, type SegmentedOption } from "./SegmentedLinks";
 export { Skeleton } from "./Skeleton";
 export { StatusBadge, type StatusTone } from "./StatusBadge";
