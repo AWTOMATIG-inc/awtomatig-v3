@@ -1,10 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button, Field, Input } from "@/components/ui";
+import { Button, Field, Input, PasswordInput } from "@/components/ui";
+import { AuthError, signIn } from "@/lib/auth/client";
 
 const schema = z.object({
   email: z.email("Enter your work email address."),
@@ -14,19 +17,27 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 /**
- * The sign-in form: validated on blur and on submit, input kept on error (DESIGN.md section 7.2). It is not wired to the
- * backend yet, because the backend has no authentication module. While `enabled` is false the button is disabled and says why.
+ * The sign-in form: validated on blur and on submit, input kept on error (DESIGN.md section 7.2). `next` is already checked to
+ * be a local path.
  */
-export function LoginForm({ enabled }: { enabled: boolean }) {
+export function LoginForm({ next }: { next: string }) {
+  const router = useRouter();
+  const [formError, setFormError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema), mode: "onBlur" });
 
-  // Replace with a call to the backend's sign-in endpoint (through the typed `api` client) when it exists.
-  async function onSubmit() {
-    if (!enabled) return;
+  async function onSubmit(values: Values) {
+    setFormError(null);
+    try {
+      await signIn(values.email, values.password);
+      router.replace(next);
+      router.refresh();
+    } catch (error) {
+      setFormError(error instanceof AuthError ? error.message : "Something went wrong. Try again in a moment.");
+    }
   }
 
   return (
@@ -42,23 +53,23 @@ export function LoginForm({ enabled }: { enabled: boolean }) {
         />
       </Field>
       <Field id="password" label="Password" required error={errors.password?.message}>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="current-password"
           invalid={!!errors.password}
           aria-describedby={errors.password ? "password-error" : undefined}
           {...register("password")}
         />
       </Field>
-      <Button type="submit" variant="primary" fullWidth disabled={!enabled || isSubmitting}>
-        Sign in
-      </Button>
-      {!enabled && (
-        <p className="type-body-14 text-fg-muted" role="status">
-          Sign-in is not available yet. It is turned on when the backend authentication module is released.
+      {formError && (
+        <p role="alert" className="type-body-14 text-fg-primary flex items-start gap-8">
+          <span aria-hidden="true" className="bg-status-error mt-8 size-6 shrink-0 rounded-full" />
+          {formError}
         </p>
       )}
+      <Button type="submit" variant="primary" fullWidth disabled={isSubmitting}>
+        {isSubmitting ? "Signing in" : "Sign in"}
+      </Button>
     </form>
   );
 }

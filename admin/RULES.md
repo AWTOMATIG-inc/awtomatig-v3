@@ -43,5 +43,5 @@ Rules for everyone (and every AI agent) working in `admin/`. They add to the roo
 
 ## 6. Quality
 
-- Run type-check, lint and the build before a PR. Add component or end-to-end tests for critical flows (login and 2FA, creating a lead, posting an invoice).
-- Keep this folder's `MEMORY.md` current (see the root rules).
+- Run type-check, lint and the build before a PR. Add component or end-to-end tests for critical flows (login, creating a lead, posting an invoice).
+- Keep this folder's `MEMORY.md` current with the detail of every change (what, why, what was verified), and add the overview line to the root `MEMORY.md` (see the root rules, section 1).

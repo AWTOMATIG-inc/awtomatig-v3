@@ -6,7 +6,7 @@
 - The system docs are imported below. Treat them as the source of truth for cross-folder decisions.
 - When implementing from Figma (Figma MCP), map Figma values to the existing tokens and `type-*` utilities instead of copying raw px or hex values. If a value has no matching token, flag it to the user rather than silently inlining it. This applies to `frontend/` and `admin/`.
 - After a design token changes, update the CSS tokens and that folder's `DESIGN.md` in the same change. A change to a token that `admin/` copies from `frontend/` is mirrored in both (see `admin/DESIGN.md`).
-- Each `MEMORY.md` is project memory. When you make a decision, ship something or resolve an open item, update its status table, decisions, open items and change log.
+- Memory has two levels. A folder's `MEMORY.md` is the detailed record of the work in that folder (status table, decisions, open items, dated change log with what was verified). The root `MEMORY.md` is the overview: one status row per folder and a short change-log line per piece of work saying which folder changed. When you decide, build, fix, clean up or resolve something, update the folder's memory and add the root line in the same change, before you report the task done.
 
 @ARCHITECTURE.md
 

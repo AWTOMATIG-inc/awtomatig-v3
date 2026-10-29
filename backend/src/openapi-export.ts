@@ -10,6 +10,9 @@ import { buildOpenApiDocument } from "./shared/openapi/setup";
 // Commit the file: a PR that changes an endpoint shows the contract diff, and frontend/admin generate their client from it.
 async function main(): Promise<void> {
   process.env.DATABASE_URL ??= "postgres://export:export@localhost:5432/export";
+  process.env.BETTER_AUTH_SECRET ??= "openapi-export-openapi-export-openapi-export";
+  process.env.BETTER_AUTH_URL ??= "http://localhost:3001";
+  process.env.LEAD_INGEST_KEY ??= "openapi-export-openapi-export-openapi-export";
   process.env.LOG_LEVEL = "silent";
   const app = await createApp();
   await app.init();

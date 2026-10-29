@@ -1,7 +1,12 @@
 import { parseEnv } from "./env";
 
 describe("parseEnv", () => {
-  const valid = { DATABASE_URL: "postgres://user:pass@localhost:5432/db" };
+  const valid = {
+    DATABASE_URL: "postgres://user:pass@localhost:5432/db",
+    BETTER_AUTH_SECRET: "x".repeat(32),
+    BETTER_AUTH_URL: "http://localhost:3001",
+    LEAD_INGEST_KEY: "y".repeat(32),
+  };
 
   it("applies defaults", () => {
     const env = parseEnv(valid);
@@ -28,5 +33,11 @@ describe("parseEnv", () => {
 
   it("requires DATABASE_URL", () => {
     expect(() => parseEnv({})).toThrow(/DATABASE_URL/);
+  });
+
+  it("rejects a short auth secret and a bad auth URL", () => {
+    expect(() => parseEnv({ ...valid, BETTER_AUTH_SECRET: "short", BETTER_AUTH_URL: "nope" })).toThrow(
+      /BETTER_AUTH_SECRET[\s\S]*BETTER_AUTH_URL/,
+    );
   });
 });

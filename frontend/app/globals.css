@@ -716,6 +716,33 @@
     box-shadow: 0 0 0 2px var(--color-black);
   }
 
+  /* Form controls. Text fields, textareas and selects show no focus ring or color at all (the caret shows where you are
+     typing). Checkboxes and radios, which have no caret, keep a thin 1px cyan outline 2px out, and only when reached with the
+     keyboard. Buttons and links keep the two-tone ring above. */
+  input:not(
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="button"],
+      [type="submit"],
+      [type="reset"],
+      [type="file"],
+      [type="image"],
+      [type="hidden"]
+    ):focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  input[type="checkbox"]:focus-visible,
+  input[type="radio"]:focus-visible {
+    outline: 1px solid var(--color-action-primary);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
   /* Tailwind v4 dropped the pointer cursor on buttons that v3 preflight had */
   button {
     cursor: pointer;

@@ -6,7 +6,7 @@ The repo-wide instructions come from the root `CLAUDE.md` and `AGENTS.md`. This 
 
 - The full design system guideline is imported below. Follow it for every UI change, and treat `app/globals.css` as the source of truth for token values.
 - After a design token changes, update both `app/globals.css` and DESIGN.md in the same change. If `admin/` copies the token, mirror it there (see `admin/DESIGN.md`).
-- MEMORY.md is this folder's memory. When you make a decision, ship a section or resolve an open item, update its status table, decisions, open items and change log.
+- MEMORY.md is this folder's memory: the detailed record of the work done here. When you decide, build a section, fix, clean up or resolve an open item, update its status table, decisions, open items and dated change log, and add a one-line overview entry to the root `../MEMORY.md` (which folder changed and what), in the same change.
 
 @RULES.md
 

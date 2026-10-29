@@ -66,7 +66,7 @@ These rules are enforced in CI (see [RULES.md](RULES.md), "Module boundaries").
 
 | Concern | Decision |
 | --- | --- |
-| **Auth** | Employees only. Email and password plus mandatory 2FA, sessions in an httpOnly cookie. Library: Better Auth (**Open**, confirm; company SSO if one exists). No public sign-up. |
+| **Auth** | Employees only. Email and password, sessions in an httpOnly cookie. **2FA is planned but switched off for now (B10).** Library: Better Auth (B9). Sessions are database rows behind an httpOnly cookie, not JWTs. No public sign-up. |
 | **Authorization** | Role-based, with permissions of the form `module.resource.action` (`inventory.stock.adjust`). Roles are data in `core.`; checks happen in the service layer. |
 | **Validation** | zod at every edge (HTTP input, env, event payloads). DTO types derive from the schemas. |
 | **API style** | REST + JSON under `/api/v1`, with an OpenAPI spec generated from code. Frontend and admin generate their types from it. |
@@ -79,7 +79,7 @@ These rules are enforced in CI (see [RULES.md](RULES.md), "Module boundaries").
 
 ## 4. Website integration
 
-- The contact form posts to `POST /api/v1/crm/leads`, which validates, stores a lead, rate-limits and notifies staff. This replaces the website's `mailto:` fallback (frontend D47). When it ships, update `connect-src` in the frontend CSP (`frontend/next.config.ts`).
+- The contact form's Server Action (`frontend/`, running on the same VPS) posts to `POST /api/v1/crm/leads` server to server with the shared `x-ingest-key` (`LEAD_INGEST_KEY`); the backend validates, stores the lead and returns its id. It sends no email: the website emails the team and the visitor itself (frontend D59 and D60), so the working Gmail app password stays in `frontend/.env`. The browser never calls the backend, so the website's CSP does not change.
 - CMS content is read by the website at build time or by revalidation, so pages stay static.
 - The public API surface is deliberately tiny: the form and read-only CMS.
 
@@ -90,7 +90,8 @@ Unit tests for `domain/` and `service/`; integration tests against a real Postgr
 ## 6. Open items
 
 - [ ] **CMS: Payload CMS vs a custom `cms` module.** Leaning custom, so there is one auth, one audit log and one database convention. Payload is faster to start but adds a second framework with its own tables and auth.
-- [ ] Auth library (Better Auth vs alternatives) and any SSO requirement.
+- [x] ~~Auth library~~: Better Auth (B9). Company SSO is still open.
+- [ ] Auth follow-ups: password reset and "email a new employee" need an email sender; account lock-out after repeated failures (today: rate limits only); 2FA (B10); an admin screen to create employees and manage roles.
 - [ ] Accounting design (double-entry ledger) before any money screen exists.
 - [ ] ERP module order and scope.
 
@@ -108,3 +109,6 @@ Newest last. Supersede, never rewrite.
 | B6 | 2026-10-28 | Drizzle chosen over Prisma (confirmed after comparing both) | Each module imports only its own tables, so module boundaries are enforced by imports. Prisma's single generated client would expose every table to every module. |
 | B7 | 2026-10-28 | Scaffold pinned to NestJS 11 and TypeScript 5.9; `fastify` overridden to `^5.12.7` | `nestjs-zod` and `@nestjs/swagger` 11 do not yet support Nest 12 or TypeScript 6+. The override removes known Fastify advisories. Details in MEMORY.md. |
 | B8 | 2026-10-28 | Module boundaries are enforced in `npm run lint` by dependency-cruiser | A rule in prose drifts. `.dependency-cruiser.cjs` fails the build on cross-module imports of `repo/`, `domain/`, `api/` or schema, on a framework import in `domain/`, and on `drizzle-orm` or `pg` outside `repo/`. |
+| B9 | 2026-10-29 | Authentication is Better Auth with cookie sessions (not JWT), roles as data | Single backend, small known user base: a session row can be revoked at once and the cookie is httpOnly. JWTs would add nothing but slower revocation. Better Auth covers password hashing, sessions, 2FA and rate limits, and keeps users in our own Postgres (`core` schema). Details in MEMORY.md. |
+| B10 | 2026-10-29 | Two-factor authentication is removed for now | Decided by the project owner to simplify the first release. Supersedes the 2FA part of B9. It is a requirement in RULES.md section 5 and must come back before real data or production use; the plan is in MEMORY.md open items. |
+| B11 | 2026-10-29 | The `crm` module only stores and serves leads; the website keeps sending the emails; the website's Server Action calls it server to server with a shared key | Matches the working email setup and keeps the app password out of the backend. The key stops anyone from filling the CRM through the public `/api` path of the admin domain. Idempotent by `submissionId`. Supersedes the earlier idea that the backend "notifies staff". |

@@ -28,7 +28,7 @@ If a folder's rule and a root rule conflict, the folder's rule wins for that fol
 ## Working rules (all folders)
 
 1. **Stay in your folder.** Never import across `frontend/`, `backend/` and `admin/`. Run commands from inside the folder you are changing (each has its own `package.json`).
-2. **Keep the docs true.** A new convention, component, decision or open item is written down in the same change: in the folder's own docs, or in the root docs if it affects more than one folder. Each folder's `MEMORY.md` has a status table, decisions, open items and a change log; update it when you decide, ship or resolve something.
+2. **Keep the docs true.** A new convention, component, decision or open item is written down in the same change: in the folder's own docs, or in the root docs if it affects more than one folder. Memory has two levels (see [RULES.md](RULES.md) section 1): each folder's `MEMORY.md` is the detailed record of that folder's work (status table, decisions, open items, dated change log), and the root `MEMORY.md` is the overview (one status row per folder, cross-folder items, and a short change-log line per piece of work naming the folder). Update both in the same change; a task is not done until they are.
 3. **If docs and code disagree, the code wins.** Then fix the docs.
 4. **Verify before saying done.** Run the folder's type-check, lint and build (and tests, where they exist), and report what was and was not checked.
 5. **No surprises.** Do not add a dependency, change the architecture, or touch a database migration unless the request includes it.

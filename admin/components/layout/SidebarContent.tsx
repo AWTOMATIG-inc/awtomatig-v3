@@ -1,9 +1,11 @@
 "use client";
 
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
+import { signOut } from "@/lib/auth/client";
 import { cn } from "@/lib/cn";
 import { NAV } from "@/lib/nav";
 import logo from "@/public/images/awtomatig-full-logo.png";
@@ -25,6 +27,7 @@ function initials(name: string): string {
 /** The charcoal sidebar body: logo, grouped navigation, user. Used by the desktop sidebar and the mobile drawer. */
 export function SidebarContent({ user }: { user: SidebarUser }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div className="bg-surface-inverse text-fg-inverse flex h-full flex-col">
@@ -74,10 +77,24 @@ export function SidebarContent({ user }: { user: SidebarUser }) {
         >
           {initials(user.name)}
         </span>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="type-body-14 truncate text-white">{user.name}</p>
           <p className="type-caption-12 truncate text-white/60">{user.role}</p>
         </div>
+        <button
+          type="button"
+          aria-label="Sign out"
+          title="Sign out"
+          onClick={() => {
+            void signOut().finally(() => {
+              router.replace("/login");
+              router.refresh();
+            });
+          }}
+          className="ease-out-quint rounded-8 relative flex size-32 shrink-0 items-center justify-center text-white/60 transition-colors duration-200 before:absolute before:-inset-6 hover:bg-white/12 hover:text-white motion-reduce:transition-none"
+        >
+          <LogOut strokeWidth={1.5} aria-hidden="true" className="size-18" />
+        </button>
       </div>
     </div>
   );

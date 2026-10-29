@@ -68,7 +68,7 @@ One git repository, three independent packages, each with its own `package.json`
 ## 5. Open items (system level)
 
 - [ ] Error tracking and uptime monitoring tooling.
-- [ ] Network access for `admin` (public with 2FA, or VPN / IP allowlist).
+- [ ] Network access for `admin` (public, ideally with 2FA once it is back, or VPN / IP allowlist).
 - [ ] Module order and ownership for the ERP.
 
 ## 6. Decision log
@@ -81,3 +81,4 @@ Newest last. Add a row per decision; supersede, never rewrite. Folder-specific d
 | S2 | 2026-10-28 | Three folders in one repo: `frontend/`, `backend/`, `admin/` | The marketing site stays small, static and fast; the ERP UI will grow large. Separate deploys, separate auth surfaces, and the admin app can sit behind a VPN without touching the public site. |
 | S3 | 2026-10-28 | The OpenAPI spec is the contract between folders | Separately deployed apps must not share source. Types are generated, never hand-copied. |
 | S4 | 2026-10-28 | Common docs at the root, folder-specific docs in the folder, a `MEMORY.md` in every folder | Keeps each folder self-contained for people and AI agents, with one place for cross-cutting decisions. |
+| S5 | 2026-10-29 | Website inquiries reach the CRM through the website's Server Action, server to server, with a shared key; the website keeps sending the emails | The browser never calls the backend (no CORS, no CSP change). The backend stays a store, so the working email setup (Gmail app password in `frontend/.env`) is untouched. If the backend is down the team is still emailed, so no inquiry is lost. Details in `backend/src/modules/crm/README.md`, frontend D60 and admin AD9. |

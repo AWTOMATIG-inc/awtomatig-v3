@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { useId, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/app/components/ui";
 import { ChevronRightIcon } from "@/app/components/icons";
 import { SITE } from "@/lib/site";
@@ -9,11 +9,11 @@ import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
 import { sendInquiry } from "./sendInquiry";
 
 const FIELD =
-  "type-body-14 h-48 w-full rounded-8 bg-surface-subtle px-16 text-fg-strong placeholder:text-black/40 transition-colors duration-200 hover:bg-off-white focus-visible:bg-off-white motion-reduce:transition-none";
+  "type-body-14 h-48 w-full rounded-8 bg-surface-subtle px-16 text-fg-strong placeholder:text-black/40 transition-colors duration-200 hover:bg-off-white motion-reduce:transition-none";
 const LABEL = "type-caption-12 block font-medium uppercase";
 
 const CHIP_BASE =
-  "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black motion-reduce:transition-none";
+  "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-action-primary motion-reduce:transition-none";
 
 function Required() {
   return (
@@ -74,11 +74,15 @@ export default function InquiryForm() {
   const id = useId();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [pending, startTransition] = useTransition();
+  // One id per message, kept until it is sent: pressing Send again after an error cannot store the lead twice.
+  const submissionId = useRef<string | null>(null);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
+    submissionId.current ??= crypto.randomUUID();
+    data.set("submissionId", submissionId.current);
     startTransition(async () => {
       try {
         const result = await sendInquiry(data);
@@ -90,6 +94,7 @@ export default function InquiryForm() {
           project_type: result.type,
         });
         form.reset();
+        submissionId.current = null;
         setStatus({ kind: "sent" });
       } catch {
         setStatus({ kind: "error", message: "We couldn't send your message right now." });

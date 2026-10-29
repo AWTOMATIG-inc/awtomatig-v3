@@ -32,7 +32,7 @@ This repo is also read by Claude Code; `CLAUDE.md` points it at the same three f
 
 ## Environment
 
-Copy `.env.example` to `.env`. `NEXT_PUBLIC_GTM_ID` loads Google Tag Manager (GA4 and Microsoft Clarity) in production builds only. `NEXT_PUBLIC_*` values are baked in at build time, so rebuild after changing them.
+Copy `.env.example` to `.env`. `NEXT_PUBLIC_GTM_ID` loads Google Tag Manager (GA4 and Microsoft Clarity) in production builds only. `NEXT_PUBLIC_*` values are baked in at build time, so rebuild after changing them. The contact form's server-only values are `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO` (the emails) and `CRM_API_URL`, `LEAD_INGEST_KEY` (saving the lead in the backend; see `.env.example`).
 
 ## Deployment
 

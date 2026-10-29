@@ -2,7 +2,7 @@
 
 The employee-only UI for the CMS and the ERP modules. It talks only to the backend API. System-wide context is in the root [ARCHITECTURE.md](../ARCHITECTURE.md). Rules are in [RULES.md](RULES.md). Status and history are in [MEMORY.md](MEMORY.md). How to run it is in [README.md](README.md).
 
-Status: **scaffolded** (shell, dashboard, sign-in form, shared components, typed API client, token sync check). No module screens yet, and sign-in is not wired because the backend has no authentication module.
+Status: **scaffolded, with working sign-in** (shell, dashboard, sign-in, shared components, typed API client, token sync check). No module screens yet.
 
 ---
 
@@ -31,8 +31,9 @@ Status: **scaffolded** (shell, dashboard, sign-in form, shared components, typed
 ```
 admin/
   app/
-    (auth)/login/    # sign-in
+    (auth)/login/    # sign-in (email and password)
     (app)/           # the signed-in shell (layout.tsx), dashboard (page.tsx)
+      crm/leads/     # Leads: list (page.tsx, LeadsTable.tsx) and detail ([id]/page.tsx, LeadEditor.tsx)
       <module>/      # one folder per backend module, when its screens exist
   components/
     ui/              # primitives: Button, Card, DataTable, Field, PageHeader, …
@@ -40,7 +41,8 @@ admin/
     charts/  dashboard/
   lib/
     api/             # typed client (browser), serverApi() (server), generated schema
-    auth/            # getSession / requireSession / can
+    crm/             # lead statuses, labels and the list's URL helpers
+    auth/            # session.ts (server: getSession / requireSession / can), client.ts (browser: sign-in, sign-out)
     dashboard/       # types, data, demo (development only)
   scripts/           # check-tokens-sync.mjs
 ```
@@ -49,15 +51,16 @@ One feature folder per backend module, mirroring `backend/src/modules/`. A featu
 
 ## 4. Requests and the backend
 
-- The browser only talks to this app. `next.config.ts` rewrites `/api/*` to the backend (`API_URL`), so the httpOnly session cookie is same-origin and CORS is not involved. `API_URL` is read at build time: rebuild after changing it.
+- The browser only talks to this app. `next.config.ts` rewrites `/api/*` to the backend (`API_URL`), so the httpOnly session cookie is same-origin and CORS is not involved. `API_URL` is read at build time: rebuild after changing it. It is **required** and has no default in the code: the app refuses to start or build without it, so the address always comes from `admin/.env` of the place that runs it.
 - Server Components call the backend directly through `serverApi()`, which forwards the visitor's cookies.
 - The contract is `backend/openapi.json`. After a backend change, run `npm run api:generate` and fix what the compiler reports.
 
 ## 5. Auth and permissions
 
 - Session comes from the backend (httpOnly cookie). The admin app holds no tokens in JavaScript-readable storage.
-- **Fails closed.** `lib/auth/session.ts` is the one seam. Until the backend has authentication, development gets a fixed development user and every other environment gets no session: all pages redirect to `/login`, whose form is disabled with an explanation. When the backend ships auth, replace the body of `getSession()` with a call to its session endpoint; callers do not change.
-- Pages are protected in the `(app)` layout with `requireSession()`. Layouts do not re-run on client navigation, so once real auth exists also check in each data fetch and add a `proxy.ts` optimistic redirect (Next 16 renamed `middleware` to `proxy`).
+- **Fails closed.** `getSession()` in `lib/auth/session.ts` calls `GET /api/v1/auth/session` with the visitor's cookie. No session, or a backend that cannot be reached, means signed out. There is no development bypass: sign in with a real (seeded) account.
+- Pages are protected twice: `proxy.ts` (Next 16's rename of `middleware`) redirects a request with no session cookie to `/login?next=…` (an optimistic check that only looks for the cookie), and the `(app)` layout calls `requireSession()`, which validates the session with the backend. Layouts do not re-run on client navigation, so data fetches rely on the backend's 401 (every API call is checked there). `?next=` accepts local paths only (`safeNextPath`).
+- Sign-in and sign-out are plain `fetch` calls in `lib/auth/client.ts` to `/api/v1/auth/*` (Better Auth's endpoints, which are not in `openapi.json`); backend error codes become user messages in that one file.
 - The UI hides what a user may not do based on the permissions the backend returns (`module.resource.action`, helper `can()`). This is convenience only: the backend always enforces them.
 
 ## 6. Security
@@ -71,8 +74,9 @@ One feature folder per backend module, mirroring `backend/src/modules/`. A featu
 
 ## 8. Open items
 
-- [ ] Wire sign-in, session and sign-out to the backend once its authentication module exists; flip `SIGN_IN_ENABLED`.
-- [ ] Network access: public with 2FA, or VPN / IP allowlist (root open item).
+- [x] ~~Wire sign-in, session and sign-out to the backend~~ (AD7).
+- [ ] A change-password / security screen (the backend endpoint exists), and handling an expired session mid-use (today a 401 sends the next navigation to `/login`).
+- [ ] Network access: public (with 2FA once it is back), or VPN / IP allowlist (root open item).
 - [ ] Host: `admin.awtomatig.com` or a path.
 - [ ] Dialog, menu and toast primitives, added with the first screen that needs them.
 - [ ] Command search (⌘K) in the topbar, when there is something to search.
@@ -89,3 +93,6 @@ Newest last. Supersede, never rewrite.
 | AD4 | 2026-10-28 | Stack confirmed: Next 16, TanStack Query and Table v8, React Hook Form + zod, Recharts, Lucide, openapi-typescript + openapi-fetch | Matches the proposal. TanStack Table is pinned to v8 (v9 is a new, store-based API). |
 | AD5 | 2026-10-28 | The browser calls `/api/*` on the admin origin, rewritten to the backend | Same-origin httpOnly cookie, no CORS. |
 | AD6 | 2026-10-28 | The admin fails closed: no session outside development, sign-in disabled until backend auth exists | An unauthenticated ERP shell must never be reachable in production, even though it holds no data yet. |
+| AD7 | 2026-10-29 | Sign-in uses the backend's Better Auth endpoints through the `/api` rewrite; no development bypass; hand-written `fetch` calls instead of the Better Auth client package | Same-origin httpOnly cookie, no token in JavaScript. Two endpoints do not justify another dependency. |
+| AD8 | 2026-10-29 | 2FA screens removed for now (follows backend B10) | The backend no longer requires 2FA. When it returns, add a code step to the sign-in form and a forced enrolment screen; `qrcode` was the library used to draw the QR code. |
+| AD9 | 2026-10-29 | The first module screens are the CRM Leads list and detail, and the dashboard is fed by `GET /crm/leads/stats` | It is the first real data. Server Components fetch with `serverApi()`; only the status and notes form is a client component and uses the typed browser client. Filters, sorting and paging are in the URL. `Select` and `Textarea` joined the form primitives. |

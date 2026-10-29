@@ -50,6 +50,40 @@ const CONTROL =
   "transition-colors duration-200 ease-out-quint hover:border-black/40 " +
   "disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:opacity-40 motion-reduce:transition-none";
 
+// A table-row select: 32px tall and only as wide as its longest option, so it fits a 48px row.
+const CONTROL_COMPACT = CONTROL.replace("h-40 w-full", "h-32 w-auto").replace("px-12", "px-8");
+
+export function Select({
+  className,
+  invalid,
+  compact,
+  ...props
+}: ComponentPropsWithoutRef<"select"> & { invalid?: boolean; compact?: boolean }) {
+  return (
+    <select
+      className={cn(
+        compact ? CONTROL_COMPACT : CONTROL,
+        "cursor-pointer",
+        invalid ? "border-status-error" : "border-border",
+        className,
+      )}
+      aria-invalid={invalid || undefined}
+      {...props}
+    />
+  );
+}
+
+/** A multi-line control: the same look as `Input`, but as tall as its rows and resizable vertically only. */
+export function Textarea({ className, invalid, ...props }: ComponentPropsWithoutRef<"textarea"> & { invalid?: boolean }) {
+  return (
+    <textarea
+      className={cn(CONTROL, "h-auto min-h-120 resize-y py-10", invalid ? "border-status-error" : "border-border", className)}
+      aria-invalid={invalid || undefined}
+      {...props}
+    />
+  );
+}
+
 export function Input({ className, invalid, ...props }: ComponentPropsWithoutRef<"input"> & { invalid?: boolean }) {
   return (
     <input

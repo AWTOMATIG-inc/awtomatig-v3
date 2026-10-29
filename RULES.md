@@ -12,7 +12,10 @@ Rules that apply to the whole repository and to every AI agent working in it. Ag
 - Work on a branch, open a PR, get one review. No direct pushes to `main`.
 - Commit messages are imperative with one topic per commit (`add stock adjustment use case`). Do not mix refactors with features.
 - A change that alters a decision updates the matching decision log in the same PR: root `ARCHITECTURE.md` for system-wide decisions, otherwise the folder's own docs.
-- **Each folder has a `MEMORY.md`.** When you make a decision, ship something or resolve an open item, update that folder's status, decisions, open items and change log in the same change. Cross-folder items go in the root `MEMORY.md`.
+- **Memory has two levels, and both are mandatory in the same change as the work.** A task is not done until they are written.
+  - **Each folder's `MEMORY.md`** (`frontend/`, `backend/`, `admin/`) is the detailed record of the work done in that folder: the status table, decisions and why, gotchas, open items and a dated change log saying what changed, what was verified and what was not. Update it whenever you decide, build, fix, clean up or resolve something in that folder.
+  - **The root `MEMORY.md`** is the overview: one status row per folder, cross-folder decisions and open items, and a short dated change-log line for each piece of work that says which folder(s) changed and what, pointing to the folder's memory for the detail. No implementation detail at the root.
+  - A change in one folder updates that folder's memory and adds one overview line at the root. A change that spans folders updates each folder's memory and adds one root line.
 - **Must not** commit secrets, `.env` files, dumps of real data or build output. Each folder keeps an up-to-date `.env.example`.
 
 ## 2. TypeScript (all folders)

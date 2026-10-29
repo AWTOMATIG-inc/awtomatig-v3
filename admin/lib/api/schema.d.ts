@@ -4,6 +4,38 @@
  */
 
 export interface paths {
+    "/api/v1/auth/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SessionController_session"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HealthController_health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health/live": {
         parameters: {
             query?: never;
@@ -36,13 +68,178 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/crm/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["LeadsController_list"];
+        put?: never;
+        post: operations["LeadsController_capture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crm/leads/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["LeadsController_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crm/leads/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["LeadsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["LeadsController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        SessionDto: {
+            user: {
+                id: string;
+                name: string;
+                email: string;
+            };
+            roles: string[];
+            permissions: string[];
+        };
+        HealthDetailsDto: {
+            /** @enum {string} */
+            status: "ok";
+            /** @enum {string} */
+            database: "up";
+            uptimeSeconds: number;
+            /** Format: date-time */
+            timestamp: string;
+        };
         HealthDto: {
             /** @enum {string} */
             status: "ok";
+        };
+        CaptureLeadDto: {
+            /** Format: uuid */
+            submissionId: string;
+            name: string;
+            /** Format: email */
+            email: string;
+            /** @default  */
+            company: string;
+            /** @default  */
+            budget: string;
+            helpWith: string;
+            projectType: string;
+            message: string;
+            /** @enum {boolean} */
+            consent: true;
+            /** @default website-contact */
+            source: string;
+        };
+        CapturedLeadDto: {
+            /** Format: uuid */
+            id: string;
+        };
+        LeadListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+                company: string;
+                budget: string;
+                helpWith: string;
+                projectType: string;
+                source: string;
+                /** @enum {string} */
+                status: "new" | "contacted" | "qualified" | "won" | "lost";
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        LeadStatsDto: {
+            days: number;
+            /** @enum {string} */
+            bucket: "day" | "week";
+            needsReply: number;
+            open: number;
+            inRange: number;
+            previousRange: number;
+            staleAfterDays: number;
+            staleCount: number;
+            stale: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                company: string;
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+            series: {
+                start: string;
+                count: number;
+            }[];
+            activity: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                at: string;
+                actor: string;
+                action: string;
+            }[];
+        };
+        LeadDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            email: string;
+            company: string;
+            budget: string;
+            helpWith: string;
+            projectType: string;
+            source: string;
+            /** @enum {string} */
+            status: "new" | "contacted" | "qualified" | "won" | "lost";
+            /** Format: date-time */
+            createdAt: string;
+            message: string;
+            notes: string;
+            /** Format: date-time */
+            consentAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateLeadDto: {
+            /** @enum {string} */
+            status?: "new" | "contacted" | "qualified" | "won" | "lost";
+            notes?: string | null;
         };
     };
     responses: never;
@@ -53,6 +250,58 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    SessionController_session: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionDto"];
+                };
+            };
+            /** @description No valid session */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    HealthController_health: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthDetailsDto"];
+                };
+            };
+            /** @description PostgreSQL is not reachable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     HealthController_live: {
         parameters: {
             query?: never;
@@ -91,6 +340,147 @@ export interface operations {
             };
             /** @description PostgreSQL is not reachable */
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LeadsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "new" | "contacted" | "qualified" | "won" | "lost";
+                q?: string;
+                sort?: "createdAt" | "name" | "status";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadListDto"];
+                };
+            };
+        };
+    };
+    LeadsController_capture: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The shared LEAD_INGEST_KEY */
+                "x-ingest-key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CaptureLeadDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapturedLeadDto"];
+                };
+            };
+            /** @description Missing or wrong ingest key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LeadsController_stats: {
+        parameters: {
+            query?: {
+                days?: number;
+                timeZone?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadStatsDto"];
+                };
+            };
+        };
+    };
+    LeadsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadDto"];
+                };
+            };
+            /** @description No such lead */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LeadsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLeadDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadDto"];
+                };
+            };
+            /** @description No such lead */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
