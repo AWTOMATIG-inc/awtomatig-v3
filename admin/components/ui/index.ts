@@ -1,10 +1,14 @@
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from "./Button";
 export { Card, CardHeader } from "./Card";
 export { DataTable } from "./DataTable";
+export { Dialog } from "./Dialog";
 export { EmptyState } from "./EmptyState";
-export { Field, Input, Select, Textarea } from "./Field";
+export { Checkbox, Field, Input, Select, Textarea } from "./Field";
+export { IconButton } from "./IconButton";
 export { PageHeader } from "./PageHeader";
+export { Pagination } from "./Pagination";
 export { PasswordInput } from "./PasswordInput";
 export { SegmentedLinks, type SegmentedOption } from "./SegmentedLinks";
 export { Skeleton } from "./Skeleton";
+export { SortHeader } from "./SortHeader";
 export { StatusBadge, type StatusTone } from "./StatusBadge";

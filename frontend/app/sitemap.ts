@@ -1,26 +1,43 @@
 import type { MetadataRoute } from "next";
 import { PRIVACY_POLICY, TERMS } from "@/app/components/sections/shared/legal/legal";
 import { CASE_STUDIES } from "@/app/components/sections/shared/case-studies/caseStudies";
+import { getOpenJobs } from "@/lib/careers";
 import { SERVICES } from "@/lib/services";
 import { ROUTES, SITE } from "@/lib/site";
 
-export const dynamic = "force-static";
+// Rebuilt at most once a minute (not frozen at build time) so a newly published opening reaches the sitemap without a deploy.
+export const revalidate = 60;
 
 // Last meaningful content change per route. Update the date when a page's content changes (Google reads lastmod,
 // not changefreq or priority). Legal pages use their own "Last updated" date.
 const CONTENT_UPDATED = "2026-10-27";
 const LAST_MODIFIED: Record<string, string> = { "/privacy": PRIVACY_POLICY.updated, "/terms": TERMS.updated };
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = [
     ...ROUTES,
     ...SERVICES.map((service) => `/services/${service.id}`),
     ...CASE_STUDIES.map((study) => `/case-studies/${study.id}`),
   ];
-  return paths.map((path) => ({
+  const pages: MetadataRoute.Sitemap = paths.map((path) => ({
     url: new URL(path, SITE.url).toString(),
     lastModified: LAST_MODIFIED[path] ?? CONTENT_UPDATED,
     changeFrequency: "monthly",
     priority: path === "/" ? 1 : 0.8,
   }));
+
+  // Open positions only. If the backend cannot be reached the sitemap simply has no job URLs this time: it is still valid.
+  const jobs = await getOpenJobs();
+  const openings: MetadataRoute.Sitemap = jobs.ok
+    ? jobs.jobs
+        .filter((job) => job.acceptingApplications)
+        .map((job) => ({
+          url: new URL(`/careers/${job.slug}`, SITE.url).toString(),
+          ...(job.publishedAt && { lastModified: job.publishedAt }),
+          changeFrequency: "weekly" as const,
+          priority: 0.6,
+        }))
+    : [];
+
+  return [...pages, ...openings];
 }

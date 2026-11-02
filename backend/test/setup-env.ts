@@ -6,3 +6,7 @@ process.env.CORS_ORIGINS = "http://localhost:3000";
 process.env.BETTER_AUTH_SECRET = "test-secret-test-secret-test-secret-0123456789";
 process.env.BETTER_AUTH_URL = "http://localhost:3001";
 process.env.LEAD_INGEST_KEY = "test-ingest-key-test-ingest-key-0123456789";
+process.env.R2_ACCOUNT_ID = "test-account";
+process.env.R2_ACCESS_KEY_ID = "test-access-key";
+process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
+process.env.R2_PRIVATE_BUCKET = "test-private-bucket";

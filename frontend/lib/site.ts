@@ -47,14 +47,15 @@ export const SITE = {
     { href: "/services", label: "Services" },
     { href: "/case-studies", label: "Case Studies" },
     { href: "/about", label: "About" },
+    { href: "/careers", label: "Careers" },
     { href: "/contact", label: "Contact" },
   ],
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
     { href: "/terms", label: "Terms & Conditions" },
   ],
-  /** Routes that use the light navbar (white / off-white pages); every other route gets the dark one */
-  lightRoutes: ["/contact", "/privacy", "/terms"] as string[],
+  /** Routes that use the light navbar (white / off-white pages), and everything below them (/careers/<job>); every other route gets the dark one */
+  lightRoutes: ["/contact", "/privacy", "/terms", "/careers"] as string[],
 };
 
 /** The footer's "Pages" column: SITE.nav plus Process, which is deliberately left out of the navbar. */

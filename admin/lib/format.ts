@@ -38,6 +38,25 @@ export function formatNumber(value: number): string {
   return new Intl.NumberFormat(LOCALE).format(value);
 }
 
+/** `20 Nov 2025`, from a plain `YYYY-MM-DD` date (a deadline, a completion date): no time zone conversion, it is a calendar day. */
+export function formatPlainDate(localDate: string): string {
+  return new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(
+    new Date(`${localDate}T00:00:00Z`),
+  );
+}
+
+/** `80,000.50`: an amount from the API (a decimal string) without the currency, for the second half of a range. Two decimals, like `formatMoney`. */
+export function formatAmount(amount: string): string {
+  return new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(amount));
+}
+
+/** `84 KB` or `1.2 MB` */
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${formatNumber(bytes)} B`;
+  if (bytes < 1024 * 1024) return `${formatNumber(Math.round(bytes / 1024))} KB`;
+  return `${new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 }).format(bytes / (1024 * 1024))} MB`;
+}
+
 /** A short money figure for a KPI card: `BDT 1.24M`. The exact amount is on the list the card links to. */
 export function formatMoneyCompact(amount: string, currency: string): string {
   return new Intl.NumberFormat("en-US", {

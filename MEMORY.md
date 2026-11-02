@@ -2,32 +2,33 @@
 
 The overview of the whole system: one status row per folder, decisions and open items that affect more than one folder, and a short change log saying **which folder changed and what**. It holds no implementation detail: that lives in the folder's own memory (`frontend/MEMORY.md`, `backend/MEMORY.md`, `admin/MEMORY.md`), which is the detailed record of the work done there. Read this and the folder's memory before starting work. After any change, add a one-line entry here and the full detail in the folder's memory, in the same change (see [RULES.md](RULES.md) section 1).
 
-- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S4)
+- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S6)
 - **Rules:** [RULES.md](RULES.md)
 
 ---
 
 ## 1. Current status
 
-_Last updated: 2026-10-29_
+_Last updated: 2026-11-02_
 
 | Area | Status | Location |
 | --- | --- | --- |
-| Marketing website | Built; see its own memory for sections and open items | `frontend/` |
-| Backend (CMS + ERP API) | Scaffolded plus **authentication** (Better Auth, roles, audit; 2FA removed for now) and the **`crm` module** (contact inquiries); **deployed on the VPS** (PM2 `awtomatig-api`, loopback only, migrated, admin seeded); lint, build and tests pass; no other business module | `backend/` |
-| Admin / ERP UI | Scaffolded (Next.js 16): tokens with a sync check, shell, UI primitives, typed API client; **sign-in and sign-out work**; **first module screens: Leads (list, detail, status and notes) and a dashboard fed by real lead figures** | `admin/` |
+| Marketing website | Built; see its own memory for sections and open items. **Careers pages built** (`/careers`, job pages with the application form and confirmation email); needs Nginx 6 MB upload limit on the VPS before release | `frontend/` |
+| Backend (CMS + ERP API) | Scaffolded plus **authentication** (Better Auth, roles, audit; 2FA removed for now), the **`crm` module** (contact inquiries) and the **`recruitment` module** (job openings, applications, resumes in private R2, dashboard stats); the VPS has the auth and `crm` parts (PM2 `awtomatig-api`, loopback only); **recruitment is built and tested but not yet released to the VPS**; lint, build and 215 tests pass; no CMS or ERP module | `backend/` |
+| Admin / ERP UI | Scaffolded (Next.js 16): tokens with a sync check, shell, UI primitives, typed API client; **sign-in and sign-out work**; **module screens: Contact Inquiries, Recruitment → Job Openings (openings, applications, applicant pages) and a dashboard with real inquiry and recruitment figures** | `admin/` |
 | Repo move into `frontend/` | Committed (`5dc0e0e`); root `.gitignore` hides leftover root build artifacts | repo root |
 
-**Next up:** put 2FA back before real data (backend B10), provision database backups, and add a change-password screen to the admin. Then the next ERP module.
+**Next up:** release the recruitment system (the VPS checklist in [RECRUITMENT_PLAN.md](RECRUITMENT_PLAN.md) section 9: Nginx 6 MB, `R2_*` in the backend `.env`, one real test application and email), put 2FA back before real data (backend B10), provision database backups, and add a change-password screen to the admin. Then the next ERP module.
 
 ## 2. Cross-folder decisions
 
-See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S4). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
+See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S6). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
 
 ## 3. Open items
 
 - [x] Commit the move of the website into `frontend/` (`5dc0e0e`).
 - [ ] Update `frontend/README.md` and CI/deploy scripts for the new paths if they reference the old root.
+- [ ] **Release the recruitment system** (checklist in [RECRUITMENT_PLAN.md](RECRUITMENT_PLAN.md) section 9). Beyond the server steps it needs two owner decisions: 2FA (backend B10) before real candidate data, and a read-through (ideally legal review) of the Privacy Policy, which now covers applications and resumes.
 - [ ] System-level open items are listed in ARCHITECTURE.md section 5.
 
 ## 4. Change log
@@ -36,6 +37,16 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-11-02 | **`frontend/`:** the Privacy Policy now covers job applications and resumes (what is collected, who handles it, retention, deletion on request) and no longer says the contact form only opens the visitor's email app, which stopped being true when it started saving and emailing inquiries. `tsc`, `lint`, `build` pass and the page was checked on a production build. Still a draft for the owner and a lawyer to review. Detail in `frontend/MEMORY.md`. |
+| 2026-11-02 | **Recruitment Phase 5 built** (all three folders), **which completes the build; only the VPS release remains.** `backend/`: new `GET /recruitment/stats` for the dashboard. `admin/`: the dashboard now shows **New applications** and **Open positions** cards in their own Recruitment row, and long-waiting applications join the "Needs attention" list. `frontend/`: job pages carry Google for Jobs structured data (`JobPosting`) while a job accepts applications, and open jobs are in the sitemap (refreshed every minute). Root docs brought up to date (stale "not started" tables, new decision S6). **All 215 backend tests pass (13 suites) against a throwaway PostgreSQL**, and `lint`, `typecheck` and `build` pass in all three folders; the dashboard was driven in headless Chrome with sample data. **Not done, because it needs the VPS or you:** the release checklist (see the plan, section 9). Detail in each folder's `MEMORY.md`. |
+| 2026-11-02 | **`backend/`:** resumes in the private R2 bucket are now stored as `career/<job title>/<candidate's file name>.pdf` instead of ids (B15). An upload never replaces a file: if the name is taken, a short id is added to the next one. 214 backend tests pass, and the real bucket was checked with three submissions (test data removed). Nothing to migrate; the website and admin are unchanged. Detail in `backend/MEMORY.md`. |
+| 2026-11-02 | **`frontend/`:** the careers application's resume field is now a full-width drop zone that turns into a file row with Replace and Remove buttons. `tsc`, `lint`, `build` pass and the states were checked in headless Chrome. Detail in `frontend/MEMORY.md`. |
+| 2026-11-02 | **Recruitment Phase 4 built** (`frontend/`): **`/careers`** (open positions, with separate "no vacancies" and "could not load" states) and **`/careers/[slug]`** (job details and the application form: education and experience rows, screening questions, PDF resume, consent), a `submitApplication` Server Action that posts to the backend with the shared key, and the candidate confirmation email. Careers is in the navbar and footer; Server Actions now accept 6 MB. `tsc`, `lint` and `build` pass, and one real application was submitted through the page to the local backend and R2, the duplicate was refused, and the test data was removed (0 left). **Not done:** the VPS needs `client_max_body_size 6m;` in Nginx, a real test email has not been sent (SMTP was off), and JSON-LD, sitemap entries and the dashboard cards are Phase 5. Detail in `frontend/MEMORY.md` (D63). |
+| 2026-11-02 | **Recruitment Phase 3 built** (`admin/`): **Recruitment → Job Openings**: the list with application counts, the new and edit opening form with the screening-question builder, an opening's page (Applications and Details tabs, publish / close / reopen with confirmation), and the applicant page (details, resume in a new tab through a 5-minute signed link, status and notes). New shared `Dialog`, `IconButton`, `Checkbox`, `SortHeader` and `Pagination`; the CRM list uses the last two. `typecheck`, `lint` and `build` pass, and the whole flow was driven in headless Chrome against the running dev servers and local database (37 checks, test data and resumes removed afterwards). Dashboard cards are Phase 5. Phase 3 is done. Detail in `admin/MEMORY.md` (AD10). |
+| 2026-11-02 | **Recruitment Phase 2 built** (`backend/`): public careers endpoints, the application submission with a PDF resume stored in the private R2 bucket (duplicate email / phone refused, retries safe), and the review endpoints with a 5-minute signed resume link; job list now shows application counts. Migration `0003` (4 new tables). All 206 backend tests pass against a throwaway PostgreSQL. `0003` applied to the dev database and the real-bucket upload and signed-link check passed, so Phase 2 is done. Detail in `backend/MEMORY.md` (B14). |
+| 2026-11-02 | **Recruitment Phase 1 built** (`backend/`): job openings API (create, list, edit with screening questions, publish, close, reopen) in a new `recruitment` module with migration `0002`. All 119 backend tests pass against a throwaway PostgreSQL, including the CRM and auth suites. Migration applied to the dev database (confirmed in pgAdmin) and the deploy script migrates the VPS. The recruitment e2e tests also passed against the dev database (28 of 28, no rows left). Phase 1 is done. Detail in `backend/MEMORY.md` (B13). |
+| 2026-11-02 | **Recruitment Phase 0 built** (`backend/`): R2 file storage service, multipart upload support (5 MB), `R2_*` env vars, ingest-key guard shared by `crm` and the coming recruitment module, `npm run storage:check`. Checks pass and `storage:check` passed against the real R2 bucket; the database e2e suites were not run. Needs `R2_*` in the VPS `backend/.env` before deploy. Detail in `backend/MEMORY.md` (B12). |
+| 2026-11-02 | **Recruitment system planned** (`backend/`, `admin/`, `frontend/`; nothing built yet): wrote [RECRUITMENT_PLAN.md](RECRUITMENT_PLAN.md) with decisions, assumptions, data model, API, screens, six phases and the VPS checklist. Resumes go to the private R2 bucket (PDF only), applications reach the backend through the website's Server Action like inquiries (S5). Needs three new backend packages (AWS S3 client, presigner, `@fastify/multipart`) and new migrations. No folder memory changed: no work done in a folder yet. |
 | 2026-10-29 | **Backend deployed to the VPS** (`backend/`, with `frontend/` and `admin/` wired): PM2 `awtomatig-api` on 127.0.0.1:4000, PostgreSQL on loopback, migrations applied, admin seeded; website inquiries now land in the admin's Contact Inquiries. The VPS-only `deploy.sh` also builds, migrates and restarts the backend on push to `main`. Detail, gotchas (lockfile sync, new env vars) in `backend/MEMORY.md`. |
 | 2026-10-29 | **`admin/`:** the backend address (`API_URL`) is now required in `admin/.env` and no longer has a default in the code; the VPS `admin/.env` needs it before the next build. Details in `admin/MEMORY.md`. |
 | 2026-10-29 | **`backend/`:** wrote the first-time VPS deployment steps (database and role, env, migrate, seed, PM2, wiring the website and admin) in `backend/README.md`. No code change; not yet run on the server. |

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { Button, Card, EmptyState, Input, PageHeader, Select } from "@/components/ui";
+import { Button, Card, EmptyState, Input, PageHeader, Pagination, Select } from "@/components/ui";
 import { serverApi } from "@/lib/api/server";
 import { can, requireSession } from "@/lib/auth/session";
 import { LEAD_STATUSES, LEADS_PAGE_SIZE, leadsHref, parseLeadParams, STATUS_LABEL } from "@/lib/crm/leads";
-import { formatNumber } from "@/lib/format";
 
 import { LeadsTable } from "./LeadsTable";
 
@@ -103,33 +102,13 @@ export default async function LeadsPage({
           )}
         </div>
 
-        {data && data.total > 0 && (
-          <div className="border-border type-body-14 text-fg-muted flex flex-wrap items-center justify-between gap-12 border-t px-16 py-12">
-            <p>
-              {formatNumber((data.page - 1) * data.pageSize + 1)}–{formatNumber(Math.min(data.page * data.pageSize, data.total))}{" "}
-              of {formatNumber(data.total)}
-            </p>
-            <div className="flex items-center gap-8">
-              {data.page > 1 ? (
-                <Button href={leadsHref({ ...params, page: data.page - 1 })} size="sm">
-                  Previous
-                </Button>
-              ) : (
-                <Button size="sm" disabled>
-                  Previous
-                </Button>
-              )}
-              {data.page < lastPage ? (
-                <Button href={leadsHref({ ...params, page: data.page + 1 })} size="sm">
-                  Next
-                </Button>
-              ) : (
-                <Button size="sm" disabled>
-                  Next
-                </Button>
-              )}
-            </div>
-          </div>
+        {data && (
+          <Pagination
+            page={data.page}
+            pageSize={data.pageSize}
+            total={data.total}
+            hrefFor={(page) => leadsHref({ ...params, page })}
+          />
         )}
       </Card>
     </>

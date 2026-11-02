@@ -1,10 +1,9 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
 
-import { DataTable } from "@/components/ui";
+import { DataTable, SortHeader } from "@/components/ui";
 import type { components } from "@/lib/api/schema";
 import { type LeadListParams, leadsHref, type LeadSort } from "@/lib/crm/leads";
 import { formatDate } from "@/lib/format";
@@ -13,21 +12,15 @@ import { LeadStatusSelect } from "./LeadStatusSelect";
 
 type Lead = components["schemas"]["LeadListDto"]["items"][number];
 
-/** A column title that sorts the list: the first click sorts by it, the next one flips the direction. */
-function SortHeader({ label, field, params }: { label: string; field: LeadSort; params: LeadListParams }) {
+/** Where a click on a column title leads: that column sorted, or the opposite direction when it already is. */
+function sortHref(params: LeadListParams, field: LeadSort): string {
   const active = params.sort === field;
-  const nextOrder = active && params.order === "asc" ? "desc" : "asc";
-  const Icon = params.order === "asc" ? ArrowUp : ArrowDown;
-  return (
-    <Link
-      href={leadsHref({ ...params, sort: field, order: active ? nextOrder : field === "createdAt" ? "desc" : "asc", page: 1 })}
-      aria-label={`Sort by ${label}`}
-      className="ease-out-quint hover:text-fg-strong inline-flex items-center gap-4 uppercase transition-colors duration-200 motion-reduce:transition-none"
-    >
-      {label}
-      {active && <Icon strokeWidth={1.5} aria-hidden="true" className="size-14" />}
-    </Link>
-  );
+  const order = active ? (params.order === "asc" ? "desc" : "asc") : field === "createdAt" ? "desc" : "asc";
+  return leadsHref({ ...params, sort: field, order, page: 1 });
+}
+
+function Header({ label, field, params }: { label: string; field: LeadSort; params: LeadListParams }) {
+  return <SortHeader label={label} href={sortHref(params, field)} active={params.sort === field} order={params.order} />;
 }
 
 /** The leads list in the shared table. Sorting, filtering and paging are links, so they happen on the server (root rules). */
@@ -35,7 +28,7 @@ export function LeadsTable({ leads, params, canUpdate }: { leads: readonly Lead[
   const columns: ColumnDef<Lead>[] = [
     {
       accessorKey: "name",
-      header: () => <SortHeader label="Name" field="name" params={params} />,
+      header: () => <Header label="Name" field="name" params={params} />,
       cell: ({ row }) => (
         <Link
           href={`/crm/leads/${row.original.id}`}
@@ -62,14 +55,14 @@ export function LeadsTable({ leads, params, canUpdate }: { leads: readonly Lead[
     { accessorKey: "helpWith", header: "Interested in" },
     {
       accessorKey: "status",
-      header: () => <SortHeader label="Status" field="status" params={params} />,
+      header: () => <Header label="Status" field="status" params={params} />,
       cell: ({ row }) => (
         <LeadStatusSelect id={row.original.id} name={row.original.name} status={row.original.status} canUpdate={canUpdate} />
       ),
     },
     {
       accessorKey: "createdAt",
-      header: () => <SortHeader label="Received" field="createdAt" params={params} />,
+      header: () => <Header label="Received" field="createdAt" params={params} />,
       cell: ({ getValue }) => <span className="whitespace-nowrap tabular-nums">{formatDate(getValue() as string)}</span>,
     },
   ];

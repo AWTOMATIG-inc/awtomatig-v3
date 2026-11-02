@@ -14,6 +14,8 @@ export interface Kpi {
   value: string;
   context?: string;
   href: string;
+  /** The module the figure comes from ("Inquiries", "Recruitment"). The page adds a small heading per group when there is more than one. */
+  group?: string;
 }
 
 export interface ChartPoint {

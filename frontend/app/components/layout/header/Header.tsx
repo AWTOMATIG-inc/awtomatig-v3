@@ -114,7 +114,9 @@ function useHideOnScroll() {
 // across navigation, so it must read the current page itself rather than trust a prop from the last page that rendered it.
 export default function Header() {
   const pathname = usePathname();
-  const theme: keyof typeof THEMES = SITE.lightRoutes.includes(pathname) ? "light" : "dark";
+  const theme: keyof typeof THEMES = SITE.lightRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+    ? "light"
+    : "dark";
   const t = THEMES[theme];
   const isScrolled = useIsScrolled();
   const [isScrolledAway, showHeader] = useHideOnScroll();

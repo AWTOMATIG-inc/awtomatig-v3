@@ -2,7 +2,7 @@
 
 The employee-only UI for the CMS and the ERP modules. It talks only to the backend API. System-wide context is in the root [ARCHITECTURE.md](../ARCHITECTURE.md). Rules are in [RULES.md](RULES.md). Status and history are in [MEMORY.md](MEMORY.md). How to run it is in [README.md](README.md).
 
-Status: **scaffolded, with working sign-in** (shell, dashboard, sign-in, shared components, typed API client, token sync check). No module screens yet.
+Status: **scaffolded, with working sign-in** (shell, dashboard, sign-in, shared components, typed API client, token sync check) and two modules' screens: CRM Contact Inquiries and Recruitment Job Openings.
 
 ---
 
@@ -34,6 +34,7 @@ admin/
     (auth)/login/    # sign-in (email and password)
     (app)/           # the signed-in shell (layout.tsx), dashboard (page.tsx)
       crm/leads/     # Leads: list (page.tsx, LeadsTable.tsx) and detail ([id]/page.tsx, LeadEditor.tsx)
+      recruitment/jobs/  # Job Openings: list, new/, JobForm.tsx (create and edit), [id]/ (tabs, JobActions, applications table), [id]/applications/[applicationId]/ (applicant page)
       <module>/      # one folder per backend module, when its screens exist
   components/
     ui/              # primitives: Button, Card, DataTable, Field, PageHeader, …
@@ -42,6 +43,7 @@ admin/
   lib/
     api/             # typed client (browser), serverApi() (server), generated schema
     crm/             # lead statuses, labels and the list's URL helpers
+    recruitment/     # jobs.ts, applications.ts (types, labels, URL helpers), job-form.ts (form checks and request bodies)
     auth/            # session.ts (server: getSession / requireSession / can), client.ts (browser: sign-in, sign-out)
     dashboard/       # types, data, demo (development only)
   scripts/           # check-tokens-sync.mjs
@@ -78,7 +80,7 @@ One feature folder per backend module, mirroring `backend/src/modules/`. A featu
 - [ ] A change-password / security screen (the backend endpoint exists), and handling an expired session mid-use (today a 401 sends the next navigation to `/login`).
 - [ ] Network access: public (with 2FA once it is back), or VPN / IP allowlist (root open item).
 - [ ] Host: `admin.awtomatig.com` or a path.
-- [ ] Dialog, menu and toast primitives, added with the first screen that needs them.
+- [x] ~~Dialog primitive~~ (AD10). Menu and toast primitives are still to come, with the first screen that needs them.
 - [ ] Command search (⌘K) in the topbar, when there is something to search.
 
 ## 9. Decision log
@@ -96,3 +98,4 @@ Newest last. Supersede, never rewrite.
 | AD7 | 2026-10-29 | Sign-in uses the backend's Better Auth endpoints through the `/api` rewrite; no development bypass; hand-written `fetch` calls instead of the Better Auth client package | Same-origin httpOnly cookie, no token in JavaScript. Two endpoints do not justify another dependency. |
 | AD8 | 2026-10-29 | 2FA screens removed for now (follows backend B10) | The backend no longer requires 2FA. When it returns, add a code step to the sign-in form and a forced enrolment screen; `qrcode` was the library used to draw the QR code. |
 | AD9 | 2026-10-29 | The first module screens are the CRM Leads list and detail, and the dashboard is fed by `GET /crm/leads/stats` | It is the first real data. Server Components fetch with `serverApi()`; only the status and notes form is a client component and uses the typed browser client. Filters, sorting and paging are in the URL. `Select` and `Textarea` joined the form primitives. |
+| AD10 | 2026-11-02 | The recruitment screens follow the CRM pattern (Server Components fetch with `serverApi()`; client components only for mutations through the typed browser client), with three additions: React Hook Form + zod for the long opening form, a native `<dialog>` `Dialog` primitive for confirmations, and shared `SortHeader` and `Pagination` primitives that the CRM list now uses too | The form has repeating question rows and many fields, which is what React Hook Form is for; native `<dialog>` gives focus trapping, Esc and focus return without a dependency; a third copy of the sort header and the paging footer would have been the moment to share them. Filters, sort, paging and the opening's tab are in the URL. Client checks are feedback only; the backend's field messages are shown next to their fields through `lib/api/errors.ts`. No new dependency. |

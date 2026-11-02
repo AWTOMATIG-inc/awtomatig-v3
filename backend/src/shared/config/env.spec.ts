@@ -6,6 +6,10 @@ describe("parseEnv", () => {
     BETTER_AUTH_SECRET: "x".repeat(32),
     BETTER_AUTH_URL: "http://localhost:3001",
     LEAD_INGEST_KEY: "y".repeat(32),
+    R2_ACCOUNT_ID: "acct",
+    R2_ACCESS_KEY_ID: "key",
+    R2_SECRET_ACCESS_KEY: "secret",
+    R2_PRIVATE_BUCKET: "bucket",
   };
 
   it("applies defaults", () => {
@@ -18,6 +22,12 @@ describe("parseEnv", () => {
       RATE_LIMIT_MAX: 120,
     });
     expect(env.CORS_ORIGINS).toEqual([]);
+    expect(env.R2_PUBLIC_BUCKET).toBeUndefined();
+  });
+
+  it("requires the R2 storage settings but not the public bucket", () => {
+    expect(() => parseEnv({ ...valid, R2_PRIVATE_BUCKET: undefined })).toThrow(/R2_PRIVATE_BUCKET/);
+    expect(() => parseEnv({ ...valid, R2_PUBLIC_BASE_URL: "nope" })).toThrow(/R2_PUBLIC_BASE_URL/);
   });
 
   it("coerces numbers and splits the CORS list", () => {
