@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import helmet from "@fastify/helmet";
+import multipart from "@fastify/multipart";
 import rateLimit from "@fastify/rate-limit";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
@@ -12,6 +13,7 @@ import { parseEnv } from "./shared/config/env";
 import { setupOpenApiUi } from "./shared/openapi/setup";
 
 export const API_PREFIX = "api/v1";
+export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 /** Builds the configured Fastify application. Shared by the server, the OpenAPI export and the tests. */
 export async function createApp(): Promise<NestFastifyApplication> {
@@ -48,6 +50,8 @@ export async function createApp(): Promise<NestFastifyApplication> {
     errorResponseBuilder: (_request, context) =>
       new HttpException(`Too many requests. Try again in ${context.after}.`, HttpStatus.TOO_MANY_REQUESTS),
   });
+  // Job applications arrive as multipart with one PDF. The cap is enforced while streaming, so a larger file is never buffered.
+  await app.register(multipart, { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1, fields: 20, fieldSize: 262_144 } });
   app.enableCors({ origin: env.CORS_ORIGINS, credentials: true });
 
   // Development only. (@fastify/static is ESM-only, which Jest cannot load, so tests run without the UI.)

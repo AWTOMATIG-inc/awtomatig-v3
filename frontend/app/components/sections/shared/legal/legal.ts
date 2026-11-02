@@ -9,14 +9,16 @@ export type LegalDocument = {
   sections: { heading: string; paragraphs: string[] }[];
 };
 
-// First drafts written from what the site does today (no accounts; GA4 + Clarity via GTM; the inquiry form opens the
-// visitor's email app). They must be reviewed by the owner / legal before launch and updated when the form gets a backend.
+// First drafts written from what the site does today (no visitor accounts; GA4 + Clarity via GTM; the inquiry form saves the
+// inquiry in the CRM and emails the team and the visitor; job applications are stored in the backend with the resume in a private
+// Cloudflare R2 bucket and confirmed by email). They must be reviewed by the owner / legal before launch, and updated whenever
+// the site starts collecting or sharing something new (retention is not automatic yet: see frontend/MEMORY.md).
 
 export const PRIVACY_POLICY: LegalDocument = {
   eyebrow: "Legal",
   title: "Privacy Policy",
-  updated: "2026-10-28",
-  intro: `This policy explains what personal information ${SITE.name} receives through this website and how we use it.`,
+  updated: "2026-11-02",
+  intro: `This policy explains what personal information ${SITE.name} receives through this website, including project inquiries and job applications, and how we use it.`,
   sections: [
     {
       heading: "Who we are",
@@ -29,25 +31,38 @@ export const PRIVACY_POLICY: LegalDocument = {
       paragraphs: [
         "This website has no user accounts and no advertising.",
         'We use Google Analytics and Microsoft Clarity, loaded through Google Tag Manager, to understand how visitors use the site: which pages are viewed, how people move between them, and anonymised recordings of clicks and scrolling. They only set cookies if you accept them in the cookie banner; if you reject them, or until you choose, they collect no cookies and only cookieless measurement is sent. These services receive technical data such as your IP address, browser and device. We use this only to improve the website. You can change your choice at any time with "Cookie settings" at the bottom of every page.',
-        "The project inquiry form on the Contact page does not send anything from the website. When you submit it, it prepares an email in your own email app, which you then choose to send. If you send it, we receive the details you entered (such as your name, work email, company, budget range and project details) and anything you attach.",
+        "When you send the project inquiry form on the Contact page, the website sends us what you entered: your name, work email, company, budget range, what you need help with, the project type and your message. We save it in our own system, email it to our team, and email you a confirmation with a copy of what you sent.",
+        "When you apply for a job on the Careers page, we collect what you enter in the application: your name, email address and phone number, your education and work history, links to your GitHub or LinkedIn profile if you add them, your answers to the questions for that position, and the resume (a PDF) you upload. We also record that you agreed to this policy, and when. Please include only what the application asks for, and nothing you would not want us to hold.",
         "Like any website, our hosting provider processes technical data such as IP addresses in server logs to deliver and protect the site.",
       ],
     },
     {
       heading: "How we use it",
       paragraphs: [
-        "We use the information you send us only to respond to your inquiry, discuss your project and, if we work together, to deliver and manage that work. We do not sell your information or use it for unrelated marketing.",
+        "We use the information you send us in an inquiry only to respond to you, discuss your project and, if we work together, to deliver and manage that work.",
+        "We use the information in a job application only to consider you for the position you applied for and to contact you about it. Our team reads applications in an internal system that only signed-in employees can open, and a resume is opened through a link that expires after a few minutes.",
+        "We do not sell your information or use it for unrelated marketing.",
+      ],
+    },
+    {
+      heading: "Where it is stored and who handles it",
+      paragraphs: [
+        "Inquiries and job applications are stored in our own database. Resumes are stored in a private file storage service from Cloudflare that is not open to the public. Confirmation emails are sent through Google's email service. Along with our hosting provider and the analytics services described above, these providers handle information only to provide those services to us, and they may process it in other countries.",
+        "We do not share your information with anyone else, except where the law requires it.",
       ],
     },
     {
       heading: "How long we keep it",
       paragraphs: [
-        "We keep inquiry emails for as long as they are needed to respond to you and to keep records of our business relationship. You can ask us to delete them at any time.",
+        "We keep inquiries for as long as they are needed to respond to you and to keep records of our business relationship.",
+        "We keep a job application for as long as it is needed to consider it and to keep a record of our hiring. You can ask us to delete your application and resume at any time.",
       ],
     },
     {
       heading: "Your rights",
-      paragraphs: [`You can ask to see, correct or delete the personal information we hold about you by emailing ${SITE.email}.`],
+      paragraphs: [
+        `You can ask to see, correct or delete the personal information we hold about you, including an inquiry or a job application and its resume, by emailing ${SITE.email}.`,
+      ],
     },
     {
       heading: "Changes to this policy",

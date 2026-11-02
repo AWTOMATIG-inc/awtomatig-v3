@@ -8,3 +8,4 @@ export { default as VideoPlayer } from "./video-player/VideoPlayer";
 export { default as TagMarquee } from "./tag-marquee/TagMarquee";
 export { default as Reveal } from "./reveal/Reveal";
 export { default as CountUp } from "./count-up/CountUp";
+export { default as Field, FIELD, LABEL, Required } from "./form/Field";

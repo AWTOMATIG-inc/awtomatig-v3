@@ -116,6 +116,198 @@ export interface paths {
         patch: operations["LeadsController_update"];
         trace?: never;
     };
+    "/api/v1/recruitment/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["JobsController_list"];
+        put?: never;
+        post: operations["JobsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["JobsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["JobsController_update"];
+        trace?: never;
+    };
+    "/api/v1/recruitment/jobs/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["JobsController_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/jobs/{id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["JobsController_close"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/jobs/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["JobsController_reopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/public/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicJobsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/public/jobs/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicJobsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/public/jobs/{slug}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PublicJobsController_apply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/jobs/{id}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recruitment/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ApplicationsController_update"];
+        trace?: never;
+    };
+    "/api/v1/recruitment/applications/{id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_resume"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -240,6 +432,283 @@ export interface components {
             /** @enum {string} */
             status?: "new" | "contacted" | "qualified" | "won" | "lost";
             notes?: string | null;
+        };
+        JobListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                title: string;
+                /** @enum {string} */
+                jobType: "full_time" | "part_time" | "contractual";
+                /** @enum {string} */
+                workMode: "onsite" | "remote" | "hybrid";
+                vacancies: number;
+                location: string;
+                /** Format: date */
+                deadlineOn: string;
+                /** @enum {string} */
+                status: "draft" | "open" | "closed";
+                acceptingApplications: boolean;
+                /** Format: date-time */
+                publishedAt: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                applicationCount: number;
+                newApplicationCount: number;
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        CreateJobDto: {
+            title: string;
+            /** @enum {string} */
+            jobType: "full_time" | "part_time" | "contractual";
+            /** @enum {string} */
+            workMode: "onsite" | "remote" | "hybrid";
+            vacancies: number;
+            location: string;
+            officeTiming: string;
+            description: string;
+            /** @default  */
+            requirements: string;
+            /** @default  */
+            benefits: string;
+            /** @default null */
+            salaryMin: string | null;
+            /** @default null */
+            salaryMax: string | null;
+            /** Format: date */
+            deadlineOn: string;
+            /** @default false */
+            publish: boolean;
+            /** @default [] */
+            questions: {
+                text: string;
+                /** @default true */
+                required: boolean;
+            }[];
+        };
+        JobDto: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            title: string;
+            /** @enum {string} */
+            jobType: "full_time" | "part_time" | "contractual";
+            /** @enum {string} */
+            workMode: "onsite" | "remote" | "hybrid";
+            vacancies: number;
+            location: string;
+            /** Format: date */
+            deadlineOn: string;
+            /** @enum {string} */
+            status: "draft" | "open" | "closed";
+            acceptingApplications: boolean;
+            /** Format: date-time */
+            publishedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            applicationCount: number;
+            newApplicationCount: number;
+            salaryMin: string | null;
+            salaryMax: string | null;
+            /** @enum {string} */
+            salaryCurrency: "BDT";
+            officeTiming: string;
+            description: string;
+            requirements: string;
+            benefits: string;
+            /** Format: date-time */
+            closedAt: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+            questions: {
+                /** Format: uuid */
+                id: string;
+                position: number;
+                text: string;
+                required: boolean;
+            }[];
+        };
+        UpdateJobDto: {
+            title?: string;
+            /** @enum {string} */
+            jobType?: "full_time" | "part_time" | "contractual";
+            /** @enum {string} */
+            workMode?: "onsite" | "remote" | "hybrid";
+            vacancies?: number;
+            location?: string;
+            officeTiming?: string;
+            description?: string;
+            requirements?: string;
+            benefits?: string;
+            salaryMin?: string | null;
+            salaryMax?: string | null;
+            /** Format: date */
+            deadlineOn?: string;
+            questions?: {
+                /** Format: uuid */
+                id?: string;
+                text: string;
+                /** @default true */
+                required: boolean;
+            }[];
+        };
+        ReopenJobDto: {
+            /** Format: date */
+            deadlineOn?: string;
+        };
+        PublicJobListDto: {
+            items: {
+                slug: string;
+                title: string;
+                /** @enum {string} */
+                jobType: "full_time" | "part_time" | "contractual";
+                /** @enum {string} */
+                workMode: "onsite" | "remote" | "hybrid";
+                vacancies: number;
+                location: string;
+                officeTiming: string;
+                salaryMin: string | null;
+                salaryMax: string | null;
+                /** Format: date */
+                deadlineOn: string;
+                /** Format: date-time */
+                publishedAt: string | null;
+                acceptingApplications: boolean;
+            }[];
+        };
+        PublicJobDto: {
+            slug: string;
+            title: string;
+            /** @enum {string} */
+            jobType: "full_time" | "part_time" | "contractual";
+            /** @enum {string} */
+            workMode: "onsite" | "remote" | "hybrid";
+            vacancies: number;
+            location: string;
+            officeTiming: string;
+            salaryMin: string | null;
+            salaryMax: string | null;
+            /** Format: date */
+            deadlineOn: string;
+            /** Format: date-time */
+            publishedAt: string | null;
+            acceptingApplications: boolean;
+            description: string;
+            requirements: string;
+            benefits: string;
+            questions: {
+                /** Format: uuid */
+                id: string;
+                position: number;
+                text: string;
+                required: boolean;
+            }[];
+        };
+        SubmittedApplicationDto: {
+            /** Format: uuid */
+            id: string;
+        };
+        RecruitmentStatsDto: {
+            openJobs: number;
+            closingSoon: number;
+            closingSoonDays: number;
+            newApplications: number;
+            staleAfterDays: number;
+            staleCount: number;
+            stale: {
+                /** Format: uuid */
+                id: string;
+                fullName: string;
+                /** Format: uuid */
+                jobId: string;
+                jobTitle: string;
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+        };
+        ApplicationListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                fullName: string;
+                email: string;
+                phone: string;
+                /** @enum {string} */
+                status: "new" | "shortlisted" | "interview" | "hired" | "rejected";
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        ApplicationDto: {
+            /** Format: uuid */
+            id: string;
+            fullName: string;
+            email: string;
+            phone: string;
+            /** @enum {string} */
+            status: "new" | "shortlisted" | "interview" | "hired" | "rejected";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            jobId: string;
+            jobTitle: string;
+            jobSlug: string;
+            /** Format: uri */
+            githubUrl: string | null;
+            /** Format: uri */
+            linkedinUrl: string | null;
+            resume: {
+                name: string;
+                size: number;
+            };
+            notes: string;
+            /** Format: date-time */
+            consentedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            educations: {
+                degree: string;
+                fieldOfStudy: string;
+                institution: string;
+                /** Format: date */
+                completedOn: string | null;
+                ongoing: boolean;
+                grade: string;
+            }[];
+            experiences: {
+                company: string;
+                title: string;
+                /** Format: date */
+                fromOn: string;
+                /** Format: date */
+                toOn: string | null;
+                current: boolean;
+                responsibilities: string;
+            }[];
+            answers: {
+                /** Format: uuid */
+                questionId: string;
+                question: string;
+                answer: string;
+            }[];
+        };
+        UpdateApplicationDto: {
+            /** @enum {string} */
+            status?: "new" | "shortlisted" | "interview" | "hired" | "rejected";
+            notes?: string | null;
+        };
+        ResumeLinkDto: {
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
         };
     };
     responses: never;
@@ -480,6 +949,470 @@ export interface operations {
                 };
             };
             /** @description No such lead */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    JobsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "draft" | "open" | "closed";
+                q?: string;
+                sort?: "createdAt" | "deadlineOn" | "title";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobListDto"];
+                };
+            };
+        };
+    };
+    JobsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateJobDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+        };
+    };
+    JobsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    JobsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateJobDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    JobsController_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The job is not a draft */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    JobsController_close: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The job is not open */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    JobsController_reopen: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReopenJobDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The job is not closed */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicJobsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicJobListDto"];
+                };
+            };
+        };
+    };
+    PublicJobsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicJobDto"];
+                };
+            };
+            /** @description No such job, or it is still a draft */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicJobsController_apply: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The shared LEAD_INGEST_KEY */
+                "x-ingest-key": string;
+            };
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description JSON: submissionId, fullName, email, phone, links, educations, experiences, answers, consent */
+                    payload: string;
+                    /**
+                     * Format: binary
+                     * @description A PDF, 5 MB at most
+                     */
+                    resume: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmittedApplicationDto"];
+                };
+            };
+            /** @description Missing or wrong ingest key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such job, or it is still a draft */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ALREADY_APPLIED, or NOT_ACCEPTING_APPLICATIONS */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationsController_stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecruitmentStatsDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "new" | "shortlisted" | "interview" | "hired" | "rejected";
+                q?: string;
+                sort?: "createdAt" | "fullName" | "status";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationListDto"];
+                };
+            };
+            /** @description No such job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description No such application */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateApplicationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description No such application */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationsController_resume: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumeLinkDto"];
+                };
+            };
+            /** @description No such application, or its file is missing */
             404: {
                 headers: {
                     [name: string]: unknown;

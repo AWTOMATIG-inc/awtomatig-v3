@@ -213,6 +213,8 @@ The website's `Button`, copied, with the same variants and the same rule: **neve
 | `light` | Actions on the charcoal sidebar (rare). |
 | `tint`, `glass` | Not used. |
 
+Icon-only actions (move a row up or down, remove a row) use `IconButton` (`components/ui/IconButton.tsx`): a 32px outlined square with the icon at 16px, a 44px touch target from a pseudo-element, and a required `label` that becomes its `aria-label` and tooltip.
+
 Sizes: `md` (40px, the default; forms and toolbars) and a new admin size **`sm` (32px, 13px label, `rounded-6`)** for table row actions and dense toolbars. On touch layouts the hit area extends to 44px with a pseudo-element, as on the website. The admin `Button` (`components/ui/Button.tsx`) has the variants `primary`, `outline`, `dark` and `light` only, and it changes color on hover without the website's lift or glow. Destructive confirmations use the `dark` variant, and the destructive nature is carried by the dialog text and a `status-error` icon, because red text on a red or white button fails contrast (section 3.2).
 
 ### 7.2 Form controls
@@ -220,7 +222,8 @@ Sizes: `md` (40px, the default; forms and toolbars) and a new admin size **`sm` 
 - **Field:** label above (`type-body-14 font-medium`, 6px gap), control, then optional helper (`type-body-14 text-fg-muted`) or error. Required fields mark `*` after the label in `fg-muted`, not red.
 - **Input / select / textarea** (`Input`, `Select`, `Textarea` in `components/ui/Field.tsx`; `Select` has a `compact` variant, 32px tall and only as wide as its longest option, for a status picker inside a 48px table row; the textarea is at least 120px tall and resizes vertically only): 40px tall, `rounded-6`, `bg-surface`, 1px `border-border`, `px-12`, `type-body-14`, placeholder `text-black/40`. Hover darkens the border to `border-black/40`; focus shows the cyan ring. Disabled is `opacity-40` on `bg-surface-subtle`.
 - **Error:** the border becomes `border-status-error`, and a `type-body-14` message with a 14px `status-error` alert icon sits under the field (message text in `fg-primary`, see 3.2).
-- **Checkbox / radio / switch:** 18px, charcoal when checked (not cyan: cyan stays the primary-action color), thin cyan keyboard-focus outline.
+- **Checkbox / radio / switch:** 18px, charcoal when checked (not cyan: cyan stays the primary-action color), thin cyan keyboard-focus outline. `Checkbox` (in `Field.tsx`) puts the label to the right and makes the whole label clickable.
+- **Repeating rows** (the screening questions of an opening): each row is a `rounded-8` bordered block with a `type-caption-12 uppercase` row number, `IconButton`s for move up, move down and remove at its right, the row's field, and its options (a `Checkbox`). Move buttons are disabled at the ends. An "Add question" `outline` button sits under the list and is disabled at the limit, which the card's subtitle shows ("2 of 20").
 - **Password field** (`PasswordInput` in `components/ui/PasswordInput.tsx`): an `Input` with an eye button inside its right edge that shows or hides what was typed. It starts hidden, the button is labelled "Show password" / "Hide password" with `aria-pressed`, and the text keeps 44px clear of it. Use it for every password field.
 - **Form layout:** one column up to 640px wide for short forms; two columns of fields at `lg` for long ones, 20px gap. Related fields are grouped under a `type-heading-18` section title with a hairline above. The primary and cancel buttons sit bottom-right in a sticky footer for long forms. Validate on blur and on submit, and keep the user's input on error.
 
@@ -232,7 +235,7 @@ One `DataTable` serves every list.
 - **Header row:** 40px, `bg-surface-subtle`, `type-caption-12 uppercase text-fg-muted`, a sort icon on sortable columns, sticky on scroll.
 - **Body rows:** 48px (40px in the compact density), `type-body-14`, a 1px `border-border` hairline between rows, `px-16`. Hover is `bg-surface-subtle`; a selected row is `bg-action-primary/12`. No zebra striping.
 - **Cells:** text left, numbers and money right (tabular), dates left. The primary column (name, number) is `font-medium` and is the link to the record. Row actions are an `sm` icon button or a "⋯" menu at the right edge, never a cluster of colored buttons.
-- **Footer:** "1–25 of 312" on the left, previous / next on the right. Pagination, sorting and filtering are server-side (root rules). Page size 25 by default.
+- **Footer:** "1–25 of 312" on the left, previous / next on the right (`Pagination`). A sortable column title is a link (`SortHeader`) that shows an arrow when it is the active sort. Pagination, sorting and filtering are server-side (root rules). Page size 25 by default.
 - **Empty:** one centered line in `type-body-16 text-fg-muted` ("No overdue invoices.") with, if useful, an `outline` button to the next step. No illustrations, no exclamation marks.
 - **Loading:** the header plus 8 skeleton rows. **Error:** an inline message with a "Try again" button inside the card.
 - Bulk actions appear in the toolbar once rows are selected, replacing the filters, with the count ("3 selected").
@@ -254,7 +257,7 @@ A neutral chip (`rounded-6`, `bg-surface-subtle`, `type-caption-12`, `px-8 py-2`
 
 ### 7.7 Dialog, menu, toast
 
-- **Dialog:** `rounded-16`, `surface`, `shadow-floating`, `p-24`, max 520px wide (720px for forms), black/40 scrim, focus trapped, closes on Esc. `type-heading-20` title, body in `type-body-14`/`16`, actions bottom-right: `outline` Cancel, then the action. A destructive confirmation names what will change ("Delete invoice INV-0042? This cannot be undone.") and uses the `dark` button labeled with the verb ("Delete invoice").
+- **Dialog** (`components/ui/Dialog.tsx`, the browser's `<dialog>` opened with `showModal`, so focus is trapped, Esc closes it and focus returns to the opener): `rounded-16`, `surface`, `shadow-floating`, `p-24`, max 520px wide (720px for forms), black/40 scrim, focus trapped, closes on Esc. `type-heading-20` title, body in `type-body-14`/`16`, actions bottom-right: `outline` Cancel, then the action. A destructive confirmation names what will change ("Delete invoice INV-0042? This cannot be undone.") and uses the `dark` button labeled with the verb ("Delete invoice").
 - **Menu / popover:** `rounded-12`, 1px border, `shadow-card`, 4px padding, 36px items (`rounded-8`, `type-body-14`, hover `bg-surface-subtle`).
 - **Toast:** bottom-right, `rounded-12`, charcoal with white text, `type-body-14`, auto-dismisses in 5s, one line, with an optional undo. Confirm real outcomes only ("Invoice INV-0042 sent"). Errors stay until dismissed.
 
@@ -281,10 +284,10 @@ The dashboard is a **worklist and a summary, not a status screen**. Every block 
 ### 8.1 Layout (desktop, content area ≤ 1440px)
 
 1. **Page header:** `type-heading-28` "Dashboard" on the left. On the right, a segmented date range (`7 days`, `30 days`, `90 days`; 30 selected). No greeting, no illustration.
-2. **KPI row:** four KPI cards in a `grid-cols-4` with a 20px gap (two columns at `md`, one below `sm`). Each is a link to a pre-filtered list. The first release shows only figures the live modules can supply, for example: **Open leads**, **Quotes awaiting reply**, **Overdue invoices** (amount, in the card's figure) and **Items below reorder level**. Hide a card whose module is not built yet.
+2. **KPI row:** four KPI cards in a `grid-cols-4` with a 20px gap (two columns at `md`, one below `sm`). Each is a link to a pre-filtered list. The first release shows only figures the live modules can supply, for example: **Open leads**, **Quotes awaiting reply**, **Overdue invoices** (amount, in the card's figure) and **Items below reorder level**. Hide a card whose module is not built yet. **Once two modules have cards, each module gets its own row** with a small uppercase heading (`type-caption-12 text-fg-muted`, the KPI label style): Inquiries (needing a reply, in the range, open) and Recruitment (new applications, open positions). A module with nothing to show leaves its row out, and a single module shows no heading.
 3. **Main row** (`lg:grid-cols-3`, 20px gap):
    - **Trend chart** (spans 2 columns): one chart, such as *Leads per week* (bars; the current week in cyan), with a segmented switch (Leads / Revenue) only when both exist.
-   - **Needs attention** (1 column): a list of up to 6 actionable rows, each "what, who, how long" with a static status dot where relevant, linking to the record ("INV-0042 · Acme Ltd · 14 days overdue", "Lead from the website · no reply for 3 days"). A "View all" text link at the bottom. Empty: "Nothing needs attention."
+   - **Needs attention** (1 column): a list of up to 6 actionable rows (merged one by one from each module, so a busy module cannot hide the others), each "what, who, how long" with a static status dot where relevant, linking to the record ("INV-0042 · Acme Ltd · 14 days overdue", "Lead from the website · no reply for 3 days"). A "View all" text link at the bottom. Empty: "Nothing needs attention."
 4. **Recent activity** (full width): a compact `DataTable` of the last 8 entries from the audit log (when, who, what), with a "View all activity" link.
 
 Order, from the top, follows urgency: totals, then trend, then what to do, then history.
@@ -305,6 +308,7 @@ Every module follows the same skeleton so the app feels like one tool:
 - **List page:** page title and one `primary` button (top right) → tabs or filters → `DataTable`. Reference: **Contact Inquiries** (the sidebar entry for `app/(app)/crm/leads/`): a plain GET form (search and status) above the table so filters live in the URL, sortable column titles as links, the contact detail (an email as a `mailto:` link) in the row, a status that is changed in place with a compact select (a plain badge without the update permission), a "1–20 of 45" footer with Previous / Next, an empty line that says whether filters hid the rows.
 - **Detail page:** a header with the record's name, its status badge and the main actions; a two-column body (a 2/3 content column of cards, a 1/3 column of meta and related items); an activity card at the bottom from the audit log.
 - **Create / edit:** the form layout in 7.2, in a page for long forms and in a dialog for short ones.
+- **A record with a list inside it** (a job opening and its applications): the detail header carries the status and the actions that change its life (publish, close, reopen; the destructive one asks first), a two-option `SegmentedLinks` switches between the list (default) and the record's own details form, and the tab is in the URL. Reference: **Job Openings** (`app/(app)/recruitment/jobs/`). A person's page (an applicant) is a detail page: a 2/3 column of cards (contact, education, experience, answers) and a 1/3 column with the file and the review (status and private notes).
 
 ---
 

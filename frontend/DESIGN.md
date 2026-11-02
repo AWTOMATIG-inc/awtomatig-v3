@@ -362,7 +362,11 @@ Current usage: the navbar wraps its pill in a `site-container` inside the full-w
 lib/                                  # non-UI code: see AGENTS.md "Structure"
 ├── site.ts                           # SITE: name, url, email, optional links, nav, lightRoutes, CAPABILITY_TAGS
 ├── services.ts                       # SERVICES: the one list of services (id, name, short label)
-└── metadata.ts                       # pageMetadata(): per-page title / canonical / Open Graph / Twitter
+├── metadata.ts                       # pageMetadata(): per-page title / canonical / Open Graph / Twitter
+├── jobPosting.ts                     # buildJobPosting(): schema.org JobPosting for an open job (Google for Jobs)
+├── careers.ts                        # server-side fetchers for the backend's public careers endpoints (open jobs, one job) and their types
+├── mailer.ts                         # getMailer(): the Gmail SMTP transport (careers; the contact form has its own copy)
+└── throttle.ts                       # createLimiter(): in-memory sliding-window limiter
 
 app/
 ├── globals.css                      # tokens, type-* and shared utilities, base styles; @imports the effect CSS files
@@ -381,11 +385,14 @@ app/
     │   │   └── Button.tsx           # variants and sizes are Tailwind class maps
     │   ├── eyebrow/
     │   │   └── Eyebrow.tsx          # brand mark + uppercase label above a section title
+    │   ├── form/
+    │   │   └── Field.tsx            # Field (label + control + error / hint), FIELD and LABEL classes, Required star: shared by the contact and careers forms
     │   ├── video-player/
     │   │   └── VideoPlayer.tsx      # client: video with a big play button and a glass control bar (no current consumer; kept for reuse)
     │   └── lines-background/
     │       ├── LinesBackground.tsx  # client: animated bands + lasers on a canvas, driven by a preset
     │       └── lines-background.css # effect: the glow and film-grain layers
+    ├── seo/                         # BreadcrumbJsonLd (top-level pages), JobPostingJsonLd (a job's page, while it takes applications)
     ├── icons/                       # SVG icon components
     │   ├── index.ts                 # import { WhatsAppIcon, MailIcon } from "@/app/components/icons"
     │   ├── MailIcon.tsx, WhatsAppIcon.tsx
@@ -428,6 +435,20 @@ app/
         │       ├── HowWeThinkSection.tsx       # heading + logo card + shared FeatureGrid
         │       ├── LogoCard.tsx                # dark card: logo, stem, hairline, dashed lines
         │       └── howWeThink.ts               # PRINCIPLES content
+        ├── careers/                 # Careers pages (app/(site)/careers/, app/(site)/careers/[slug]/)
+        │   ├── careers.ts           # JOB_TYPE_LABEL, WORK_MODE_LABEL, formatSalary / formatDate / toLines / toParagraphs
+        │   ├── Notice.tsx           # calm message panel: no vacancies, load failure
+        │   ├── hero/CareersHeroSection.tsx      # light hero on the Contact page's CONTACT_LINES preset
+        │   ├── openings/            # OpeningsSection (list + empty + error states), JobCard, JobTag
+        │   ├── job/JobDetailsSection.tsx        # a job's title, tags, description / requirements / benefits and the summary card with Apply
+        │   └── apply/
+        │       ├── ApplySection.tsx             # id="apply", only while the job accepts applications
+        │       ├── ApplicationForm.tsx          # client: the whole form, state, client-side checks, success panel
+        │       ├── RowEditors.tsx               # repeatable Education and Experience rows
+        │       ├── ResumePicker.tsx             # client: full-width PDF drop zone / file row with Replace and Remove
+        │       ├── application.ts               # LIMITS, types, validateApplication(), readDraft(): shared by the form and the action
+        │       ├── submitApplication.ts         # Server Action: honeypot, per-IP limit, re-validation, multipart POST to the backend, email
+        │       └── applicationEmail.ts          # renderApplicationConfirmation(): the candidate email (the one place raw hex is allowed)
         ├── case-studies/            # Case Studies page (app/case-studies/page.tsx)
         │   ├── hero/
         │   │   └── CaseStudiesHeroSection.tsx  # content for the shared PageHero
@@ -592,7 +613,9 @@ Rules:
 | **Inquiry (Contact)** | `InquirySection` (`sections/contact/inquiry/`), off-white, after the hero: `lg:grid-cols-[1fr_739px]`, 50px gap. Left: `<Eyebrow>`, a three-line `type-heading-60` title, a `type-body-16-compact max-w-540` intro (desktop `<br>`s) and a 531px `<dl>` of three rows (`type-caption-12 uppercase` label over a `type-body-16 font-medium` value, `p-16`, `border-border` frame and dividers). Right: `InquiryForm` (client), a white `rounded-16` card, `p-28`, `type-heading-28` title, fields 48px tall (`rounded-8`, `bg-surface-subtle`, `type-body-14`, placeholder `text-black/40`) with `type-caption-12 font-medium uppercase` labels (required `*` in `status-warning`), 20px between groups. Choice chips are visually styled radio inputs (`peer` + `peer-checked:`): 41px chips with `rounded-12`, off-white; selected = cyan (help area) or charcoal (project type). The upload box is `bg-warning/12` with a dashed `warning/20` border, `UploadCloudIcon`, and a `light` `card` Button opening a hidden file input. Submit is the primary `lg` Button, full width. |
 | **Proven (Contact)** | `ProvenSection` (`sections/contact/proven/`), off-white, `lg:pt-101` / `lg:pb-116`. Header row on a `360fr / 971fr` grid (`<Eyebrow>` with `lg:mt-5`, three-line `type-heading-60`). 70px below, four white `rounded-16` stat cards (`lg:grid-cols-4`, 20px gap, 235px tall): a `type-label-14 uppercase` label at the top and, pinned to the bottom, a `type-heading-50 font-normal` figure and a `type-body-14 max-w-240` description. The "Trusted By Leading Companies" hairline row, the pause/play toggle and the logo slider are `MarqueeTrack` (client): a `type-heading-24 tracking-tight` heading between two `bg-border` hairlines (53px gaps) with an `outline` `md` Button (`aria-pressed`, `PauseIcon` / `PlayIcon`) next to it — required so the always-on CSS animation has a way to stop (WCAG 2.2.2) — then seven partner logos (`public/images/partners/`, data in `proven.ts`) spread edge to edge (`justify-between`, 12px inset), each at its design height and shown grey (`grayscale` for colour logos, `brightness-0 opacity-60` for the white ones; no `cursor-pointer`, since the logos aren't links). The track also pauses on hover and `focus-within`. Below `lg` the cards are 2-up and the logos wrap. |
 | **Legal page** | `/privacy` and `/terms` (both in `SITE.lightRoutes`, so `<Header>` picks the light theme on its own): `<LegalSection doc={…}>` (`sections/shared/legal/`), off-white, `pt-safe-120 lg:pt-safe-160` to clear the fixed navbar. A `max-w-720` column: `<Eyebrow>`, `type-heading-60` title, `type-body-14 text-fg-muted` "Last updated" `<time>`, a `type-body-20` intro, then numbered sections between `border-border` hairlines (`py-32`): a `type-heading-24 tracking-tight` heading with its `NN.` in `text-black/40`, and `type-body-16` paragraphs 12px apart. The documents are plain data in `legal.ts`. |
-| **Light navbar** | `Header` reads `usePathname()` against `SITE.lightRoutes` (`lib/site.ts`) and picks the `light` theme on white / off-white pages (Contact, Privacy, Terms) with no prop to set: the `light` theme map in `Header.tsx` swaps in the dark logo, `text-fg-strong` links (hover dims to 60%, since cyan text is not allowed on light), the `light` Button, a `glass glass-light` pill and mobile menu (`--glass-fill-light*`, `--glass-border-light`, `--shadow-glass-light`) and black toggle bars. Everything else is the dark navbar. Add a route to `lightRoutes` to give it the light theme. |
+| **Light navbar** | `Header` reads `usePathname()` against `SITE.lightRoutes` (`lib/site.ts`) and picks the `light` theme on white / off-white pages (Contact, Privacy, Terms, Careers and every job page under it) with no prop to set: the `light` theme map in `Header.tsx` swaps in the dark logo, `text-fg-strong` links (hover dims to 60%, since cyan text is not allowed on light), the `light` Button, a `glass glass-light` pill and mobile menu (`--glass-fill-light*`, `--glass-border-light`, `--shadow-glass-light`) and black toggle bars. Everything else is the dark navbar. Add a route to `lightRoutes` to give it (and the pages below it, like `/careers/<slug>`) the light theme. |
+| **Careers** | `/careers`: the Contact page's light hero (`CONTACT_LINES`), then off-white `OpeningsSection` with one white `rounded-16` `JobCard` per open job (title in `type-heading-28`, `rounded-60` tags for type / work mode / location, a Salary and Apply by `<dl>`, a `dark` `card` Button). No jobs and a failed load are two different `Notice` panels, so an outage never reads as "no vacancies". `/careers/<slug>`: `JobDetailsSection` (back link, title, tags, then a `minmax(0,1fr) / 380px` grid: description, requirements and benefits on the left, a sticky white summary card with the one cyan `Apply now` Button on the right), then `ApplySection` (the Contact inquiry's `1fr / 739px` rhythm) with `ApplicationForm`. The form is the Contact form's look (white `rounded-16` card, `FIELD` inputs, `LABEL` labels) with `Section` blocks (`border-t`, `type-heading-24`), repeatable bordered `rounded-12` rows with an outline `Remove` Button, a full-width `ResumePicker` (a dashed `border-black/20` `rounded-12` drop zone on `surface-subtle`: cloud icon, `type-body-14` prompt, `type-caption-12` hint and an outline `md` `Choose PDF` Button; once a file is chosen it becomes a row with an extension tile, the name, the size, `Replace` (outline) and `Remove` (dark) Buttons, and the border turns `status-warning` on an error), and inline errors (`Field` `error`: dark `type-caption-12 font-medium` text, plus an orange outline on the control through `aria-invalid`, because `status-warning` text on white fails contrast). A job that no longer accepts applications shows a note and no form. |
+| **Confirmation email** | `applicationEmail.ts` is **the one deliberate exception to "no raw hex"**: mail clients cannot read CSS variables, so the token values (charcoal, cyan, off-white, white, gray, black, `fg-muted` flattened to #484848) are copied into that file, each commented with its token. If one of those tokens changes in `globals.css`, change it there too. 600px single column of nested tables with inline styles, Arial / Helvetica instead of Inter (web fonts are unreliable in mail), cyan used once (the rule under the charcoal header). |
 | **Cookie banner** | `CookieConsent` (`layout/cookie-consent/`), rendered by the root layout when GTM is on. A fixed card, 16px from the bottom and sides on phones, `max-w-400` from `sm`, 24px from the bottom-left from `lg`: `bg-surface-inverse rounded-12 border-white/12 shadow-card p-20`, a `type-heading-18` title, `type-body-14 text-white/60` copy with a Privacy Policy link, then Accept (`light`) and Reject (`glass`) `card` buttons of equal width (rejecting must be as easy as accepting). `role="dialog"`, not modal; focus moves to it when it is reopened from the footer's "Cookie settings". |
 | **Glass nav pill** | Transparent at the top of the page; once scrolled or opened, the `glass` material (§7.3) fades in on an `aria-hidden` span behind the pill (`rounded-10`, `group-data-scrolled:opacity-100`). |
 | **Hide-on-scroll header** | Once the page's hero (`[data-hero]`) has been scrolled past (the first 120px on a page without one), the header slides up and fades out (`data-hidden`, 450ms `ease-out-quint`) after 8px of scrolling down, and returns after 8px of scrolling up. It never hides while the mobile menu is open, and it reappears when it receives keyboard focus. |

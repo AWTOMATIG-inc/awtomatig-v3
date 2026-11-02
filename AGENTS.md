@@ -9,8 +9,8 @@ One git repository, three independent apps that never import from each other (th
 | Folder | What it is | Stack | State |
 | --- | --- | --- | --- |
 | `frontend/` | Public marketing website | Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS v4 | Built |
-| `backend/` | API: CMS and ERP modules | NestJS 11 (Fastify), PostgreSQL, Drizzle, zod, TypeScript | Scaffolded, no business module yet |
-| `admin/` | Internal employee UI (CMS and ERP screens) | Next.js 16, TypeScript, Tailwind CSS v4, TanStack Query and Table, Recharts | Scaffolded (shell, dashboard); sign-in not wired |
+| `backend/` | API: CMS and ERP modules | NestJS 11 (Fastify), PostgreSQL, Drizzle, zod, TypeScript | Live: authentication, `crm` and `recruitment` modules; no CMS or ERP module yet |
+| `admin/` | Internal employee UI (CMS and ERP screens) | Next.js 16, TypeScript, Tailwind CSS v4, TanStack Query and Table, Recharts | Live: sign-in, dashboard, Contact Inquiries, Recruitment |
 
 ## Read before you work
 

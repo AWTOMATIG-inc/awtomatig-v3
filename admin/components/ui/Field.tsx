@@ -84,6 +84,20 @@ export function Textarea({ className, invalid, ...props }: ComponentPropsWithout
   );
 }
 
+/** An 18px checkbox with its label to the right, charcoal when checked (DESIGN.md section 7.2). The whole label is clickable. */
+export function Checkbox({ label, className, ...props }: Omit<ComponentPropsWithoutRef<"input">, "type"> & { label: string }) {
+  return (
+    <label className={cn("type-body-14 text-fg-primary inline-flex min-h-24 cursor-pointer items-center gap-8", className)}>
+      <input
+        type="checkbox"
+        className="accent-surface-inverse size-18 shrink-0 cursor-pointer disabled:cursor-not-allowed"
+        {...props}
+      />
+      {label}
+    </label>
+  );
+}
+
 export function Input({ className, invalid, ...props }: ComponentPropsWithoutRef<"input"> & { invalid?: boolean }) {
   return (
     <input

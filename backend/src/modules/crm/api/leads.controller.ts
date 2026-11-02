@@ -10,6 +10,7 @@ import {
 import { ZodSerializerDto } from "nestjs-zod";
 
 import { type AuthContext, CurrentAuth, Public, RequirePermission } from "../../../shared/auth/auth.decorators";
+import { IngestKeyGuard } from "../../../shared/auth/ingest-key.guard";
 import { LeadsService } from "../service/leads.service";
 import {
   CapturedLeadDto,
@@ -22,7 +23,6 @@ import {
   ListLeadsQueryDto,
   UpdateLeadDto,
 } from "./leads.dto";
-import { LeadIngestGuard } from "./lead-ingest.guard";
 
 @ApiTags("crm")
 @Controller("crm/leads")
@@ -35,7 +35,7 @@ export class LeadsController {
    */
   @Post()
   @Public()
-  @UseGuards(LeadIngestGuard)
+  @UseGuards(IngestKeyGuard)
   @HttpCode(201)
   @ZodSerializerDto(CapturedLeadDto)
   @ApiHeader({ name: "x-ingest-key", required: true, description: "The shared LEAD_INGEST_KEY" })

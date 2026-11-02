@@ -1,50 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
-import { Button } from "@/app/components/ui";
+import { useId, useRef, useState, useTransition, type FormEvent } from "react";
+import { Button, Field, FIELD, LABEL, Required } from "@/app/components/ui";
 import { ChevronRightIcon } from "@/app/components/icons";
 import { SITE } from "@/lib/site";
 import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
 import { sendInquiry } from "./sendInquiry";
 
-const FIELD =
-  "type-body-14 h-48 w-full rounded-8 bg-surface-subtle px-16 text-fg-strong placeholder:text-black/40 transition-colors duration-200 hover:bg-off-white motion-reduce:transition-none";
-const LABEL = "type-caption-12 block font-medium uppercase";
-
 const CHIP_BASE =
   "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-action-primary motion-reduce:transition-none";
-
-function Required() {
-  return (
-    <span aria-hidden="true" className="text-status-warning">
-      {" "}
-      *
-    </span>
-  );
-}
-
-function Field({
-  label,
-  required,
-  children,
-  htmlFor,
-}: {
-  label: string;
-  required?: boolean;
-  children: ReactNode;
-  htmlFor: string;
-}) {
-  return (
-    <div>
-      <label htmlFor={htmlFor} className={LABEL}>
-        {label}
-        {required && <Required />}
-      </label>
-      <div className="mt-8">{children}</div>
-    </div>
-  );
-}
 
 // Single-choice chips: real radio inputs, so keyboard and screen readers work. `active` is the selected look.
 function ChipGroup({ legend, name, options, active }: { legend: string; name: string; options: string[]; active: string }) {

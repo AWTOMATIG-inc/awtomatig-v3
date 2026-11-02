@@ -36,6 +36,9 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Server Actions default to 1 MB. The careers application form posts a resume (5 MB cap) plus its fields, so allow 6 MB.
+  // Nginx must allow the same (client_max_body_size 6m). This applies to every Server Action, the contact form included.
+  experimental: { serverActions: { bodySizeLimit: "6mb" } },
   // No remote image patterns: every image is a local asset under public/images, imported and optimized by
   // next/image at build time. Add a pattern here only when a real external image host is needed (e.g. a CMS).
   images: { formats: ["image/avif", "image/webp"] },

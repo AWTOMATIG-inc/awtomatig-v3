@@ -5,7 +5,7 @@ Inquiries from the website's Contact form ("leads"), stored by the website's ser
 ## Layout
 
 ```
-api/       leads.controller.ts, leads.dto.ts (zod DTOs), lead-ingest.guard.ts
+api/       leads.controller.ts, leads.dto.ts (zod DTOs); the ingest-key guard lives in shared/auth/ingest-key.guard.ts
 service/   leads.service.ts   use cases: capture, list, get, update, stats
 domain/    lead.ts            statuses, zod schemas, pure helpers (no framework, no database)
 repo/      leads.repo.ts      the only place that reads or writes crm.leads

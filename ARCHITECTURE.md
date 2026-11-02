@@ -18,8 +18,8 @@ Put a document at the root only if it applies to more than one folder. Anything 
 | Part | Folder | Audience | State |
 | --- | --- | --- | --- |
 | Marketing website | `frontend/` | Public | Built (Next.js 16) |
-| Backend API (CMS + ERP modules) | `backend/` | The admin app, plus the website's contact form | Not started |
-| Internal admin / ERP UI | `admin/` | Employees only | Not started |
+| Backend API (CMS + ERP modules) | `backend/` | The admin app, plus the website's contact form and careers pages | Live: auth, `crm`, `recruitment`; no CMS or ERP module yet |
+| Internal admin / ERP UI | `admin/` | Employees only | Live: sign-in, dashboard, Contact Inquiries, Recruitment |
 
 The ERP is **internal only**: used by the company and its employees, not sold to clients. That means a **single tenant** (no `tenant_id` columns) and a known, small user base.
 
@@ -82,3 +82,4 @@ Newest last. Add a row per decision; supersede, never rewrite. Folder-specific d
 | S3 | 2026-10-28 | The OpenAPI spec is the contract between folders | Separately deployed apps must not share source. Types are generated, never hand-copied. |
 | S4 | 2026-10-28 | Common docs at the root, folder-specific docs in the folder, a `MEMORY.md` in every folder | Keeps each folder self-contained for people and AI agents, with one place for cross-cutting decisions. |
 | S5 | 2026-10-29 | Website inquiries reach the CRM through the website's Server Action, server to server, with a shared key; the website keeps sending the emails | The browser never calls the backend (no CORS, no CSP change). The backend stays a store, so the working email setup (Gmail app password in `frontend/.env`) is untouched. If the backend is down the team is still emailed, so no inquiry is lost. Details in `backend/src/modules/crm/README.md`, frontend D60 and admin AD9. |
+| S6 | 2026-11-02 | Recruitment follows S5: candidates apply through the website's Server Action, server to server with the shared key; the backend stores the application, and the resume goes to the private Cloudflare R2 bucket (`career/<job title>/<file name>.pdf`, never replacing a file) and is opened only through a 5-minute signed link; the website sends the candidate's confirmation email | Same reasons as S5: no browser-to-backend traffic, no CSP change, the Gmail app password stays in the website. R2 keeps files out of Postgres and off the VPS disk. Plan and phases in `RECRUITMENT_PLAN.md`; details in backend B12 to B15, frontend D63 and admin AD10. |
