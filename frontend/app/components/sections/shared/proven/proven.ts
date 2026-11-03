@@ -1,4 +1,4 @@
-import { PARTNER_LOGOS } from "../../shared/partners/partners";
+import { PARTNER_LOGOS } from "../partners/partners";
 
 type ProvenStat = {
   label: string;

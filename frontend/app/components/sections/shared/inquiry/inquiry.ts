@@ -14,6 +14,15 @@ export const BUDGETS = ["Under $5k", "$5k – $15k", "$15k – $50k", "$50k+", "
 
 export const HELP_OPTIONS = [...SERVICES.map((service) => service.name), "Not sure yet"];
 
+// The campaign page's form (website infrastructure) has its own, shorter list
+export const CAMPAIGN_PROJECT_TYPES = ["New build", "Rebuild / Migration", "Integration", "Ongoing support", "Not sure yet"];
+
+// Which form sent the inquiry, shown to the team in the notification email
+export const INQUIRY_SOURCES: Record<string, string> = {
+  contact: "Contact page",
+  "website-infrastructure": "Website Infrastructure page",
+};
+
 export const PROJECT_TYPES = [
   "New project",
   "Rebuild / Migration",

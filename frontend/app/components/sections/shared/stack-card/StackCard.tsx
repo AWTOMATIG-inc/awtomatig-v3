@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { ArrowDownThinIcon } from "@/app/components/icons";
-import { LAYERS } from "./ecosystem";
+import { LAYERS } from "./layers";
 
 // Dark card showing People → Process → Systems → Technology as a centred column of chips
 export default function StackCard() {

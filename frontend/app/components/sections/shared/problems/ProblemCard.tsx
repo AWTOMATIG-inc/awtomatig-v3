@@ -1,5 +1,5 @@
 import MockupStage from "./MockupStage";
-import type { Problem } from "./operations";
+import type { Problem } from "./problems";
 import SystemsMockup from "./SystemsMockup";
 import OwnershipMockup from "./OwnershipMockup";
 import VisibilityMockup from "./VisibilityMockup";
@@ -25,7 +25,7 @@ export default function ProblemCard({ problem }: { problem: Problem }) {
       </MockupStage>
       <div className="px-20 pt-20 pb-16">
         <h3 className="type-heading-22">{problem.title}</h3>
-        <p className="type-body-16 text-fg-primary mt-8 max-w-268">{problem.description}</p>
+        <p className="type-body-16 text-fg-primary mt-8 max-w-274">{problem.description}</p>
       </div>
     </article>
   );

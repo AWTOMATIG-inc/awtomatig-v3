@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Decor from "@/public/images/awtomatig-mark-decor.png";
 import { Eyebrow } from "@/app/components/ui";
-import { PILLARS, PROBLEMS } from "./operations";
-import ProblemCard from "./ProblemCard";
+import ProblemsBlock from "../../shared/problems/ProblemsBlock";
+import { PILLARS } from "./operations";
 
 export default function OperationsSection() {
   return (
@@ -47,22 +47,7 @@ export default function OperationsSection() {
 
         <div className="border-border mt-60 border-t lg:mt-117" />
 
-        {/* When things break down */}
-        <div className="grid gap-20 pt-60 lg:grid-cols-[365fr_565fr_390fr] lg:gap-0 lg:pt-116">
-          <Eyebrow className="self-start lg:mt-10">When things break down</Eyebrow>
-          <h2 className="type-heading-60 max-w-[8em]">Complexity grows quietly.</h2>
-          <p className="type-body-16 max-w-390 self-end">
-            Disconnected tools, manual processes and unclear ownership accumulate as businesses grow.
-          </p>
-        </div>
-
-        <ul className="mt-40 grid gap-20 pb-60 md:grid-cols-2 lg:mt-77 lg:pb-104 xl:grid-cols-4">
-          {PROBLEMS.map((problem) => (
-            <li key={problem.title} className="flex">
-              <ProblemCard problem={problem} />
-            </li>
-          ))}
-        </ul>
+        <ProblemsBlock />
       </div>
     </section>
   );

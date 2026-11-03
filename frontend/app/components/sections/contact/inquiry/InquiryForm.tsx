@@ -5,8 +5,8 @@ import { useId, useRef, useState, useTransition, type FormEvent } from "react";
 import { Button, Field, FIELD, LABEL, Required } from "@/app/components/ui";
 import { ChevronRightIcon } from "@/app/components/icons";
 import { SITE } from "@/lib/site";
-import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
-import { sendInquiry } from "./sendInquiry";
+import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "../../shared/inquiry/inquiry";
+import { sendInquiry } from "../../shared/inquiry/sendInquiry";
 
 const CHIP_BASE =
   "type-body-14 inline-flex h-41 cursor-pointer items-center rounded-12 px-24 transition-colors duration-200 select-none peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-action-primary motion-reduce:transition-none";
@@ -147,6 +147,8 @@ export default function InquiryForm() {
           />
         </Field>
       </div>
+
+      <input type="hidden" name="source" value="contact" />
 
       {/* Honeypot: off screen and out of the tab order; people never fill it, bots do */}
       <div aria-hidden="true" className="sr-only">

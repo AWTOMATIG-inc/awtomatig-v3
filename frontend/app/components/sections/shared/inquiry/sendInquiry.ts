@@ -2,7 +2,8 @@
 
 import { headers } from "next/headers";
 import nodemailer from "nodemailer";
-import { BUDGETS, HELP_OPTIONS, PROJECT_TYPES } from "./inquiry";
+import { BUDGETS, CAMPAIGN_PROJECT_TYPES, HELP_OPTIONS, INQUIRY_SOURCES, PROJECT_TYPES } from "./inquiry";
+import { renderInquiryConfirmation, renderInquiryNotification, type InquiryEmailData } from "./inquiryEmail";
 
 export type InquiryResult = { ok: true; help: string; type: string } | { ok: false; error: string };
 
@@ -88,7 +89,7 @@ async function storeLead(submissionId: string, inquiry: Inquiry): Promise<boolea
   }
 }
 
-// Sends the Contact page inquiry to the team (CONTACT_TO) and a confirmation to the visitor, through SMTP, and stores it in the
+// Sends the Contact page (and campaign page) inquiry to the team (CONTACT_TO) and a confirmation to the visitor, through SMTP, and stores it in the
 // CRM. Reply-To on the team email is the visitor, so replying answers them. The visitor sees success when the lead was stored or
 // the team was emailed: only if both fail is it reported as an error.
 export async function sendInquiry(data: FormData): Promise<InquiryResult> {
@@ -103,13 +104,14 @@ export async function sendInquiry(data: FormData): Promise<InquiryResult> {
   const budget = value("budget");
   const help = value("help");
   const type = value("type");
-  const improve = value("improve");
+  // The campaign form's message is optional but the CRM stores a non-empty one; the Contact form still requires it in the browser
+  const improve = value("improve") || "No message provided.";
+  const source = value("source") in INQUIRY_SOURCES ? value("source") : "contact";
   // One id per form, kept by the browser until the message is sent, so a retry cannot store the lead twice.
   const submissionId = UUID_RE.test(value("submissionId")) ? value("submissionId") : crypto.randomUUID();
 
   if (
     !name ||
-    !improve ||
     !EMAIL_RE.test(email) ||
     data.get("consent") !== "on" ||
     name.length > LIMITS.name ||
@@ -118,7 +120,7 @@ export async function sendInquiry(data: FormData): Promise<InquiryResult> {
     improve.length > LIMITS.improve ||
     !BUDGETS.includes(budget) ||
     !HELP_OPTIONS.includes(help) ||
-    !PROJECT_TYPES.includes(type)
+    ![...PROJECT_TYPES, ...CAMPAIGN_PROJECT_TYPES].includes(type)
   ) {
     return { ok: false, error: "Please check the form and try again." };
   }
@@ -127,23 +129,26 @@ export async function sendInquiry(data: FormData): Promise<InquiryResult> {
   if (throttled(ip)) return { ok: false, error: "Too many messages from this connection. Please try again later." };
 
   const inquiry: Inquiry = { name, email, company, budget, help, type, improve };
-  const details = [
-    ["Name", name],
-    ["Work email", email],
-    ["Company", company],
-    ["Budget / range", budget],
-    ["Needs help with", help],
-    ["Project type", type],
-    ["What we're trying to improve", improve],
-  ]
-    .map(([label, v]) => `${label}: ${v || "-"}`)
-    .join("\n\n");
+  // Both emails are built from the same data; the budget is only shown when the form asked for one (the Contact form)
+  const emailData: InquiryEmailData = {
+    name,
+    email,
+    company,
+    service: help,
+    projectType: type,
+    budget: source === "contact" ? budget : undefined,
+    message: improve,
+    source: INQUIRY_SOURCES[source],
+    receivedAt: `${new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Asia/Dhaka" }).format(
+      new Date(),
+    )} (Dhaka time)`,
+  };
 
   // The three jobs are independent, so none waits for another and one failing does not stop the others.
   const [stored, emailedTeam] = await Promise.all([
     storeLead(submissionId, inquiry),
-    notifyTeam(inquiry, details),
-    confirmToVisitor(inquiry, details),
+    notifyTeam(emailData),
+    confirmToVisitor(emailData),
   ]);
 
   if (!stored && !emailedTeam) return { ok: false, error: "We couldn't send your message right now." };
@@ -165,17 +170,19 @@ function mailer() {
   return { transport, from: SMTP_USER, team: CONTACT_TO.split(",").map((to) => to.trim()) };
 }
 
-// The email to the team (CONTACT_TO).
-async function notifyTeam({ name, email, company }: Inquiry, details: string): Promise<boolean> {
+// The email to the team (CONTACT_TO), on the shared template. Reply-To is the visitor, so replying answers them.
+async function notifyTeam(data: InquiryEmailData): Promise<boolean> {
   const mail = mailer();
   if (!mail) return false;
   try {
+    const { subject, html, text } = renderInquiryNotification(data);
     await mail.transport.sendMail({
       from: { name: "AWTOMATIG website", address: mail.from },
       to: mail.team,
-      replyTo: { name, address: email },
-      subject: `Project inquiry: ${company || name}`,
-      text: details,
+      replyTo: { name: data.name, address: data.email },
+      subject,
+      html,
+      text,
     });
     return true;
   } catch (err) {
@@ -184,28 +191,24 @@ async function notifyTeam({ name, email, company }: Inquiry, details: string): P
   }
 }
 
-// The confirmation to the visitor, with what they filled in. Plain text, and no visitor text in a header (the subject is fixed).
-async function confirmToVisitor({ name, email }: Inquiry, details: string): Promise<boolean> {
+// The confirmation to the visitor, on the same template, with a copy of what they filled in. No visitor text goes in a header
+// but the display name (the subject is fixed).
+async function confirmToVisitor(data: InquiryEmailData): Promise<boolean> {
   const mail = mailer();
   if (!mail) return false;
-  if (!confirmationAllowed(email)) {
+  if (!confirmationAllowed(data.email)) {
     console.warn("[inquiry] confirmation skipped: too many for one address");
     return false;
   }
   try {
+    const { subject, html, text } = renderInquiryConfirmation(data);
     await mail.transport.sendMail({
       from: { name: "AWTOMATIG", address: mail.from },
-      to: { name, address: email },
+      to: { name: data.name, address: data.email },
       replyTo: mail.team[0],
-      subject: "We received your inquiry",
-      text: [
-        `Hi ${name},`,
-        "Thanks for getting in touch. We received your inquiry and will reply within 1 business day.",
-        "This is what you sent us:",
-        details,
-        "If anything is wrong or you want to add something, just reply to this email.",
-        "AWTOMATIG",
-      ].join("\n\n"),
+      subject,
+      html,
+      text,
     });
     return true;
   } catch (err) {

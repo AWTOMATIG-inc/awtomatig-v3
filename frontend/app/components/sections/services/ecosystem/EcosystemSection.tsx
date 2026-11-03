@@ -1,6 +1,6 @@
 import { Eyebrow } from "@/app/components/ui";
 import FeatureGrid from "../../shared/feature-grid/FeatureGrid";
-import StackCard from "./StackCard";
+import StackCard from "../../shared/stack-card/StackCard";
 import { AREAS } from "./ecosystem";
 
 // Services page: how the four disciplines connect, with the People → Technology stack beside them
