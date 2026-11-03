@@ -5,6 +5,8 @@ import { PlayIcon } from "@/app/components/icons";
 import type { WorkStep } from "./workPath";
 
 const INTERVAL = 500;
+// How long a touch holds the autoplay
+const HOLD = 3000;
 // The last title overhangs the edge by a few px at 1440; only a real overflow counts as scrollable
 const SCROLL_SLACK = 16;
 // How far the cyan rail runs on and fades out beyond the active step (measured: about 190 design px)
@@ -18,8 +20,8 @@ const NODES = {
   active: "border-6 border-transparent bg-action-primary/20",
 };
 
-/** The six-step timeline. The active step advances by itself every half second and loops (paused for a while after a touch,
- *  off screen and under reduced motion). Mouse clicks, hover and dragging do nothing; on touch screens the row scrolls
+/** The six-step timeline. The active step advances by itself every half second and loops (paused for a few seconds after a touch
+ *  and while off screen; it ignores the reduced-motion setting, which only makes the sideways scroll instant). Mouse clicks, hover and dragging do nothing; on touch screens the row scrolls
  *  sideways by swipe when it is wider than the screen. */
 export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
   const [active, setActive] = useState(0);
@@ -40,9 +42,10 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
     return () => observer.disconnect();
   }, []);
 
-  // Autoplay: restarts on every change, so a click gives the chosen step a full interval
+  // Autoplay: it runs whatever the reduced-motion setting says (many phones have it on, and only the highlight moves; the
+  // sideways scroll below stays instant in that case)
   useEffect(() => {
-    if (paused || !visible || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || !visible) return;
     const id = window.setInterval(() => setActive((current) => (current + 1) % steps.length), INTERVAL);
     return () => window.clearInterval(id);
   }, [active, paused, visible, steps.length]);
@@ -77,7 +80,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
   const hold = () => {
     setHeld(true);
     window.clearTimeout(holdTimer.current);
-    holdTimer.current = window.setTimeout(() => setHeld(false), 8000);
+    holdTimer.current = window.setTimeout(() => setHeld(false), HOLD);
   };
 
   return (
