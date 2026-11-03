@@ -1,4 +1,19 @@
-export type Problem = { title: string; description: string; mockup: "systems" | "visibility" | "workflows" | "ownership" };
+export type PanelCopy = {
+  title: string;
+  subtitle: string;
+  /** Pill at the top right (the Operations panel only) */
+  badge?: string;
+  rows: { label: string; status: string }[];
+};
+
+export type Problem = {
+  title: string;
+  description: string;
+  mockup: "systems" | "visibility" | "workflows" | "ownership";
+  /** Own wording for the illustration: the chip / step labels, or the panel text. Rows keep their icons and colours. */
+  labels?: string[];
+  panel?: PanelCopy;
+};
 
 export const PROBLEMS: Problem[] = [
   {

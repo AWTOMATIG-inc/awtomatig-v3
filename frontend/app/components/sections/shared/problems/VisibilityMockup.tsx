@@ -1,4 +1,5 @@
 import { BarChartIcon, DatabaseIcon, PersonIcon } from "@/app/components/icons";
+import type { PanelCopy } from "./problems";
 import StatusListMockup, { type StatusRow } from "./StatusListMockup";
 
 const ROWS: StatusRow[] = [
@@ -8,6 +9,14 @@ const ROWS: StatusRow[] = [
   { label: "System sync", status: "Needs review", tone: "caution", icon: DatabaseIcon },
 ];
 
-export default function VisibilityMockup() {
-  return <StatusListMockup title="Operations" subtitle="Live system status" badge="4 Issues" rows={ROWS} />;
+export default function VisibilityMockup({ panel }: { panel?: PanelCopy }) {
+  const rows = panel ? ROWS.map((row, i) => ({ ...row, ...panel.rows[i] })) : ROWS;
+  return (
+    <StatusListMockup
+      title={panel?.title ?? "Operations"}
+      subtitle={panel?.subtitle ?? "Live system status"}
+      badge={panel ? panel.badge : "4 Issues"}
+      rows={rows}
+    />
+  );
 }

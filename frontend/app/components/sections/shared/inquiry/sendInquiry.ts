@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import nodemailer from "nodemailer";
-import { BUDGETS, CAMPAIGN_PROJECT_TYPES, HELP_OPTIONS, INQUIRY_SOURCES, PROJECT_TYPES } from "./inquiry";
+import { BUDGETS, CAMPAIGN_PROJECT_TYPES, CAMPAIGN_SERVICES, HELP_OPTIONS, INQUIRY_SOURCES, PROJECT_TYPES } from "./inquiry";
 import { renderInquiryConfirmation, renderInquiryNotification, type InquiryEmailData } from "./inquiryEmail";
 
 export type InquiryResult = { ok: true; help: string; type: string } | { ok: false; error: string };
@@ -119,7 +119,7 @@ export async function sendInquiry(data: FormData): Promise<InquiryResult> {
     company.length > LIMITS.company ||
     improve.length > LIMITS.improve ||
     !BUDGETS.includes(budget) ||
-    !HELP_OPTIONS.includes(help) ||
+    ![...HELP_OPTIONS, ...CAMPAIGN_SERVICES].includes(help) ||
     ![...PROJECT_TYPES, ...CAMPAIGN_PROJECT_TYPES].includes(type)
   ) {
     return { ok: false, error: "Please check the form and try again." };

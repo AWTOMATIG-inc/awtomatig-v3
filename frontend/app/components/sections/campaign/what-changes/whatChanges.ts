@@ -4,22 +4,22 @@ import type { Feature } from "../../shared/feature-grid/FeatureGrid";
 export const OUTCOMES: Feature[] = [
   {
     title: "Clearer workflows",
-    description: "Teams understand how work moves and who owns each step.",
+    description: "Give enquiries, internal requests, and routine tasks a defined next step and responsible owner.",
     icon: GearClusterIcon,
   },
   {
     title: "Better visibility",
-    description: "Systems & reporting make the operating picture easier to understand.",
+    description: "Make agreed records, work status, and reporting easier for the right people to access.",
     icon: GearBulbIcon,
   },
   {
     title: "Less manual work",
-    description: "Connected systems reduce repetitive tasks and unnecessary handoffs.",
+    description: "Reduce avoidable duplicate entry through suitable integrations and workflow automation.",
     icon: SitemapIcon,
   },
   {
-    title: "Easier to scale",
-    description: "A stronger foundation can support new requirements with less complexity.",
+    title: "Room to grow",
+    description: "Adapt your website, systems, and support as service areas, staff, and client requirements expand.",
     icon: ChatGearIcon,
   },
 ];

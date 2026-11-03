@@ -7,17 +7,17 @@ import { HELP_STEPS } from "./howWeHelp";
 export default function HowWeHelpSection() {
   return (
     <section id="how-we-help" aria-labelledby="how-we-help-title" className="bg-surface-subtle text-fg-strong">
-      <div className="site-container pt-60 pb-60 lg:pt-120 lg:pb-120">
+      <div className="site-container pt-60 pb-60 lg:pt-90 lg:pb-90">
         <div className="grid gap-20 lg:grid-cols-[371fr_960fr] lg:gap-0">
           <Eyebrow className="self-start lg:mt-8">How we help</Eyebrow>
           <div>
             <h2 id="how-we-help-title" className="type-heading-60">
-              The right solution starts with the
-              <br className="max-lg:hidden" /> right operating structure.
+              Start with the workflow
+              <br className="max-lg:hidden" /> that needs to work better.
             </h2>
             <p className="type-body-16 mt-20 max-w-640 lg:mt-24 lg:max-w-none">
-              We look at the environment around the problem — not just the individual tool or task — then define what
-              <br className="max-lg:hidden" /> should be built, connected, operated and improved.
+              We review the people, processes, and tools around your requirement, then agree
+              <br className="max-lg:hidden" /> what to build, connect, operate, or improve.
             </p>
           </div>
         </div>

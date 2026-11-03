@@ -9,22 +9,25 @@ const STEPS: { label: string; icon: ComponentType<SVGProps<SVGSVGElement>>; clas
   { label: "Update Spreadsheet", icon: TableIcon, className: "ml-12" },
 ];
 
-export default function WorkflowsMockup() {
+export default function WorkflowsMockup({ labels }: { labels?: string[] }) {
   return (
     <ol className="flex flex-col gap-10 pt-31 pl-18">
-      {STEPS.map(({ label, icon: Icon, className }, i) => (
-        <li
-          key={label}
-          style={{ transitionDelay: `${i * 170}ms` }}
-          className={`type-body-14 rounded-8 bg-surface text-fg-primary flex h-40 w-259 items-center gap-14 pr-3 pl-16 ease-[cubic-bezier(0.34,1.35,0.64,1)] motion-safe:-translate-y-200 motion-safe:opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-1000 motion-safe:group-data-shown:translate-y-0 motion-safe:group-data-shown:opacity-100 ${className}`}
-        >
-          <span>{String(i + 1).padStart(2, "0")}.</span>
-          <span>{label}</span>
-          <span className="rounded-6 bg-surface-subtle ml-auto grid size-34 place-items-center">
-            <Icon className="size-18" />
-          </span>
-        </li>
-      ))}
+      {STEPS.map(({ label: defaultLabel, icon: Icon, className }, i) => {
+        const label = labels?.[i] ?? defaultLabel;
+        return (
+          <li
+            key={label}
+            style={{ transitionDelay: `${i * 170}ms` }}
+            className={`type-body-14 rounded-8 bg-surface text-fg-primary flex h-40 w-259 items-center gap-14 pr-3 pl-16 ease-[cubic-bezier(0.34,1.35,0.64,1)] motion-safe:-translate-y-200 motion-safe:opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-1000 motion-safe:group-data-shown:translate-y-0 motion-safe:group-data-shown:opacity-100 ${className}`}
+          >
+            <span>{String(i + 1).padStart(2, "0")}.</span>
+            <span>{label}</span>
+            <span className="rounded-6 bg-surface-subtle ml-auto grid size-34 place-items-center">
+              <Icon className="size-18" />
+            </span>
+          </li>
+        );
+      })}
     </ol>
   );
 }

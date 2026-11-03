@@ -8,6 +8,8 @@ type OutcomeCardProps = {
   className?: string;
   /** Text style and width of the paragraph (default Body / 15) */
   descriptionClassName?: string;
+  /** The dot label above the title (default "Business outcome") */
+  label?: string;
 };
 
 /** Dark "Business outcome" card: the Trusted operations card's cyan glow from the top-right corner and its diagonal
@@ -18,13 +20,14 @@ export default function OutcomeCard({
   description,
   className = "p-24 lg:p-36",
   descriptionClassName = "type-body-15",
+  label = "Business outcome",
 }: OutcomeCardProps) {
   return (
     <div className={`bg-trusted-card text-fg-inverse rounded-16 relative isolate flex flex-col overflow-hidden ${className}`}>
       <span aria-hidden="true" className="diag-ribs absolute inset-0 -z-10 text-white/6" />
       <p className="type-label-14 flex items-center gap-12 uppercase">
         <span aria-hidden="true" className="bg-action-primary size-8 rounded-full" />
-        Business outcome
+        {label}
       </p>
 
       <h3 className="type-heading-40 text-gradient-display mt-80 w-fit lg:mt-auto">{title}</h3>

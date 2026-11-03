@@ -7,34 +7,42 @@ import HowWeHelpSection from "@/app/components/sections/campaign/how-we-help/How
 import HowWeWorkSection from "@/app/components/sections/campaign/how-we-work/HowWeWorkSection";
 import ProvenCaseStudiesSection from "@/app/components/sections/campaign/case-studies/ProvenCaseStudiesSection";
 import WhatChangesSection from "@/app/components/sections/campaign/what-changes/WhatChangesSection";
+import { CLEANING_FAQS, CLEANING_STATS } from "@/app/components/sections/campaign/cleaning";
 import FaqSection from "@/app/components/sections/shared/faq/FaqSection";
 import LetsTalkSection from "@/app/components/sections/campaign/lets-talk/LetsTalkSection";
 import ProvenSection from "@/app/components/sections/shared/proven/ProvenSection";
 import { pageMetadata } from "@/lib/metadata";
 
+// The background video of "Relevant experience", public in the Cloudflare R2 bucket (the host is allowed in the CSP, next.config.ts)
+const PROOF_VIDEO = "https://pub-15cceab11b2f454f828f50cb4ba7a3c5.r2.dev/output-compressed.mp4";
+
 export const metadata: Metadata = pageMetadata({
-  title: "Website Infrastructure for B2B Businesses",
+  title: "Cleaning Company Websites & Business Systems",
   description:
-    "AWTOMATIG helps growing B2B teams build, operate and improve the digital infrastructure behind websites, content systems and connected business workflows.",
-  path: "/website-infrastructure",
+    "Website development, CRM integrations, internal tools, and back-office support for established cleaning companies. Discuss your next improvement with AWTOMATIG.",
+  path: "/cleaning-company-solutions",
 });
 
-export default function WebsiteInfrastructureCampaignPage() {
+export default function CleaningCompanySolutionsPage() {
   return (
     <>
       <CampaignHeroSection />
       <ProvenSection
         id="proof"
-        eyebrow="Trust / Proof"
+        eyebrow="Relevant experience"
         title={
           <>
-            Trusted to support the
-            <br className="max-lg:hidden" /> systems behind
-            <br className="max-lg:hidden" /> growing businesses.
+            Supporting the systems
+            <br className="max-lg:hidden" /> behind established
+            <br className="max-lg:hidden" /> businesses.
           </>
         }
+        stats={CLEANING_STATS}
+        logoCaption="Selected businesses we have supported"
+        videoSrc={PROOF_VIDEO}
         decor
-        topPadding="lg:pt-116"
+        topPadding="lg:pt-90"
+        bottomPadding="lg:pb-90"
       />
       <CapabilitiesSection />
       <ProblemsSection />
@@ -43,7 +51,22 @@ export default function WebsiteInfrastructureCampaignPage() {
       <HowWeWorkSection />
       <ProvenCaseStudiesSection />
       <BuiltForB2bSection />
-      <FaqSection />
+      <FaqSection
+        paddingClassName="py-60 lg:pt-90 lg:pb-90"
+        items={CLEANING_FAQS}
+        eyebrow="Common questions"
+        card={{
+          text: (
+            <>
+              Have a specific
+              <br /> requirement?
+              <br /> Let’s discuss it.
+            </>
+          ),
+          label: "Discuss your needs",
+          href: "#get-started",
+        }}
+      />
       <LetsTalkSection />
     </>
   );

@@ -29,7 +29,7 @@ const DOTS = [
   { cx: 150, cy: 225, className: "fill-status-error" },
 ];
 
-export default function SystemsMockup() {
+export default function SystemsMockup({ labels }: { labels?: string[] }) {
   return (
     <>
       <svg viewBox="0 0 309 253" className="absolute inset-0 size-full" fill="none">
@@ -71,16 +71,19 @@ export default function SystemsMockup() {
           />
         ))}
       </svg>
-      {CHIPS.map(({ label, icon: Icon, className }, i) => (
-        <span
-          key={label}
-          style={{ transitionDelay: `${i * 90}ms` }}
-          className={`type-caption-12 rounded-8 bg-surface text-fg-primary absolute flex h-30 items-center gap-4 px-12 ease-[cubic-bezier(0.34,1.4,0.64,1)] motion-safe:scale-70 motion-safe:opacity-0 motion-safe:transition-[opacity,scale] motion-safe:duration-700 motion-safe:group-data-shown:scale-100 motion-safe:group-data-shown:opacity-100 ${className}`}
-        >
-          <Icon className="size-18" />
-          {label}
-        </span>
-      ))}
+      {CHIPS.map(({ label: defaultLabel, icon: Icon, className }, i) => {
+        const label = labels?.[i] ?? defaultLabel;
+        return (
+          <span
+            key={label}
+            style={{ transitionDelay: `${i * 90}ms` }}
+            className={`type-caption-12 rounded-8 bg-surface text-fg-primary absolute flex h-30 items-center gap-4 px-12 ease-[cubic-bezier(0.34,1.4,0.64,1)] motion-safe:scale-70 motion-safe:opacity-0 motion-safe:transition-[opacity,scale] motion-safe:duration-700 motion-safe:group-data-shown:scale-100 motion-safe:group-data-shown:opacity-100 ${className}`}
+          >
+            <Icon className="size-18" />
+            {label}
+          </span>
+        );
+      })}
     </>
   );
 }

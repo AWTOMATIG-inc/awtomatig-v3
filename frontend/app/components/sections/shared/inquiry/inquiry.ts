@@ -14,13 +14,27 @@ export const BUDGETS = ["Under $5k", "$5k – $15k", "$15k – $50k", "$50k+", "
 
 export const HELP_OPTIONS = [...SERVICES.map((service) => service.name), "Not sure yet"];
 
-// The campaign page's form (website infrastructure) has its own, shorter list
-export const CAMPAIGN_PROJECT_TYPES = ["New build", "Rebuild / Migration", "Integration", "Ongoing support", "Not sure yet"];
+// The campaign page's form (cleaning companies) has its own service and project lists
+export const CAMPAIGN_SERVICES = [
+  "Website Development",
+  "CRM & Integrations",
+  "Internal Tools & ERP",
+  "Back-Office Support",
+  "Maintenance & Support",
+  "Not Sure Yet",
+];
+export const CAMPAIGN_PROJECT_TYPES = [
+  "Improve Existing Setup",
+  "New Website or System",
+  "Connect Existing Tools",
+  "Ongoing Support",
+  "Not Sure Yet",
+];
 
 // Which form sent the inquiry, shown to the team in the notification email
 export const INQUIRY_SOURCES: Record<string, string> = {
   contact: "Contact page",
-  "website-infrastructure": "Website Infrastructure page",
+  "cleaning-company-solutions": "Cleaning Company Solutions page",
 };
 
 export const PROJECT_TYPES = [

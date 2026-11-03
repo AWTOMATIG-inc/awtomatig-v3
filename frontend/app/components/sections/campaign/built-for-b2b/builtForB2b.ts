@@ -6,15 +6,18 @@ export type B2bPoint = {
 
 export const B2B_POINTS: B2bPoint[] = [
   {
-    title: "Longer buying journeys",
-    lines: ["Content, tracking and integrations need to support complex", "decision paths."],
+    title: "Commercial buying journeys",
+    lines: [
+      "Help prospective clients understand your services and submit the",
+      "information needed for a useful quote conversation.",
+    ],
   },
   {
-    title: "Multiple internal teams",
-    lines: ["Publishing and platform management should not create unnecessary", "technical dependency."],
+    title: "Office and field teams",
+    lines: ["Give managers and staff clearer ways to handle check-ins, time", "records, requests, and task updates."],
   },
   {
     title: "Connected business systems",
-    lines: ["CRM, analytics, APIs and internal platforms need a cleaner", "relationship with the website."],
+    lines: ["Build a practical relationship between your website, CRM, internal", "tools, and administrative workflows."],
   },
 ];

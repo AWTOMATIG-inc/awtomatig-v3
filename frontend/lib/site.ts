@@ -47,7 +47,6 @@ export const SITE = {
     { href: "/services", label: "Services" },
     { href: "/case-studies", label: "Case Studies" },
     { href: "/about", label: "About" },
-    { href: "/careers", label: "Careers" },
     { href: "/contact", label: "Contact" },
   ],
   legal: [
@@ -58,13 +57,21 @@ export const SITE = {
   lightRoutes: ["/contact", "/privacy", "/terms", "/careers"] as string[],
 };
 
-/** The footer's "Pages" column: SITE.nav plus Process, which is deliberately left out of the navbar. */
-export const FOOTER_PAGES = [...SITE.nav.slice(0, 3), { href: "/process", label: "Process" }, ...SITE.nav.slice(3)];
+const CAREERS = { href: "/careers", label: "Careers" };
+
+/** The footer's "Pages" column: SITE.nav plus Process and Careers, which are deliberately left out of the navbar. */
+export const FOOTER_PAGES = [
+  ...SITE.nav.slice(0, 3),
+  { href: "/process", label: "Process" },
+  SITE.nav[3],
+  CAREERS,
+  ...SITE.nav.slice(4),
+];
 
 export const MAILTO = `mailto:${SITE.email}`;
 
 /** Public routes, used by the sitemap */
-export const ROUTES = [...SITE.nav, { href: "/process", label: "Process" }]
+export const ROUTES = [...SITE.nav, { href: "/process", label: "Process" }, CAREERS]
   .map((link) => link.href)
   .concat(SITE.legal.map((link) => link.href));
 

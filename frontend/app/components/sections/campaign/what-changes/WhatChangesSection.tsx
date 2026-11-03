@@ -13,31 +13,32 @@ export default function WhatChangesSection() {
       aria-labelledby="what-changes-title"
       className="text-fg-inverse"
     >
-      <div className="site-container relative z-20 py-60 lg:pt-116 lg:pb-116">
+      <div className="site-container relative z-20 py-60 lg:pt-90 lg:pb-90">
         <div className="grid gap-20 lg:grid-cols-[371fr_960fr] lg:gap-0">
           <Eyebrow className="self-start lg:mt-10">What changes</Eyebrow>
           <h2 id="what-changes-title" className="type-heading-60">
             Less friction. More control
-            <br className="max-lg:hidden" /> over the operation.
+            <br className="max-lg:hidden" /> over your operation.
           </h2>
         </div>
 
         <div className="mt-40 grid gap-20 lg:mt-80 lg:grid-cols-[586fr_722fr]">
           <OutcomeCard
             className="p-24 lg:p-36"
+            label="The practical goal"
             title={
               <>
-                A stronger operating
-                <br className="max-lg:hidden" /> foundation makes everyday
-                <br className="max-lg:hidden" /> work easier to run and
-                <br className="max-lg:hidden" /> easier to scale.
+                A clearer way to
+                <br className="max-lg:hidden" /> manage enquiries,
+                <br className="max-lg:hidden" /> people, and everyday
+                <br className="max-lg:hidden" /> work.
               </>
             }
             description={
               <>
-                The goal is not more technology. It is a cleaner
-                <br className="max-lg:hidden" /> relationship between the people, processes and systems
-                <br className="max-lg:hidden" /> already carrying the work.
+                Bring your tools and responsibilities into a working
+                <br className="max-lg:hidden" /> structure your team can use, with support where
+                <br className="max-lg:hidden" /> it is needed.
               </>
             }
           />

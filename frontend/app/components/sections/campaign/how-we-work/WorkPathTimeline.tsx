@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { PlayIcon } from "@/app/components/icons";
 import type { WorkStep } from "./workPath";
 
-const INTERVAL = 4000;
+const INTERVAL = 500;
 // The last title overhangs the edge by a few px at 1440; only a real overflow counts as scrollable
 const SCROLL_SLACK = 16;
 // How far the cyan rail runs on and fades out beyond the active step (measured: about 190 design px)
@@ -15,24 +15,22 @@ const COLUMNS = "grid-cols-[minmax(0,217fr)_minmax(0,216fr)_minmax(0,208fr)_minm
 const NODES = {
   idle: "border-6 border-border bg-surface-subtle",
   reached: "border-6 border-action-primary bg-surface-subtle",
-  active: "bg-action-primary/20",
+  active: "border-6 border-transparent bg-action-primary/20",
 };
 
-/** The six-step timeline. The active step advances by itself every few seconds (paused while the pointer or focus is
- *  inside, for a while after a touch or wheel, off screen and under reduced motion); a click picks a step, and the row
- *  scrolls sideways by touch, wheel or mouse drag when it is wider than the screen. */
+/** The six-step timeline. The active step advances by itself every half second and loops (paused for a while after a touch,
+ *  off screen and under reduced motion). Mouse clicks, hover and dragging do nothing; on touch screens the row scrolls
+ *  sideways by swipe when it is wider than the screen. */
 export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
   const [active, setActive] = useState(0);
-  const [hovering, setHovering] = useState(false);
   const [held, setHeld] = useState(false);
   const [visible, setVisible] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLOListElement>(null);
   const fill = useRef<HTMLSpanElement>(null);
   const holdTimer = useRef(0);
-  const drag = useRef({ down: false, moved: false, x: 0, left: 0 });
 
-  const paused = hovering || held;
+  const paused = held;
 
   useEffect(() => {
     const el = scroller.current;
@@ -61,7 +59,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
     };
     update();
 
-    if (view.scrollWidth - view.clientWidth > SCROLL_SLACK && !drag.current.down) {
+    if (view.scrollWidth - view.clientWidth > SCROLL_SLACK) {
       const item = items[active];
       const left = item.offsetLeft - (view.clientWidth - item.offsetWidth) / 2;
       const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -82,44 +80,8 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
     holdTimer.current = window.setTimeout(() => setHeld(false), 8000);
   };
 
-  const startDrag = (event: React.MouseEvent<HTMLDivElement>) => {
-    const view = scroller.current;
-    if (!view || event.button !== 0 || view.scrollWidth - view.clientWidth <= SCROLL_SLACK) return;
-    drag.current = { down: true, moved: false, x: event.clientX, left: view.scrollLeft };
-    const move = (e: MouseEvent) => {
-      const dx = e.clientX - drag.current.x;
-      if (Math.abs(dx) > 5) drag.current.moved = true;
-      view.scrollLeft = drag.current.left - dx;
-    };
-    const end = () => {
-      drag.current.down = false;
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", end);
-    };
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", end);
-  };
-
   return (
-    <div
-      ref={scroller}
-      className="scrollbar-hide -mr-8 overflow-x-auto overscroll-x-contain pr-8"
-      onMouseDown={startDrag}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      onFocus={() => setHovering(true)}
-      onBlur={() => setHovering(false)}
-      onTouchStart={hold}
-      onWheel={hold}
-      // A drag that moved must not also pick the step it ended on
-      onClickCapture={(event) => {
-        if (drag.current.moved) {
-          event.preventDefault();
-          event.stopPropagation();
-          drag.current.moved = false;
-        }
-      }}
-    >
+    <div ref={scroller} className="scrollbar-hide -mr-32 overflow-x-auto overscroll-x-contain pr-32" onTouchStart={hold}>
       <div className="relative min-w-1100">
         {/* Rail: from the first node's centre to the right edge, fading out; the cyan part follows the active step */}
         <span
@@ -129,7 +91,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
         <span
           ref={fill}
           aria-hidden="true"
-          className="fade-end-x bg-action-primary ease-out-quint absolute top-15.5 left-20 h-9 rounded-full transition-[width] duration-700 [--fade-length:190px] motion-reduce:transition-none"
+          className="fade-end-x bg-action-primary ease-out-quint absolute top-15.5 left-20 h-9 rounded-full transition-[width] duration-300 [--fade-length:190px] motion-reduce:transition-none"
         />
 
         <ol ref={track} className={`relative grid ${COLUMNS}`}>
@@ -138,12 +100,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
             const on = state === "active";
             return (
               <li key={step.title} className="pr-20">
-                <button
-                  type="button"
-                  aria-current={on ? "step" : undefined}
-                  onClick={() => setActive(i)}
-                  className="block w-full cursor-pointer text-left"
-                >
+                <div aria-current={on ? "step" : undefined} className="block w-full text-left">
                   <span
                     className={`relative z-10 grid size-40 place-items-center rounded-full transition-colors duration-300 motion-reduce:transition-none ${NODES[state]}`}
                   >
@@ -172,7 +129,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
                       </Fragment>
                     ))}
                   </span>
-                </button>
+                </div>
               </li>
             );
           })}
