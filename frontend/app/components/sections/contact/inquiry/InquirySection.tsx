@@ -1,7 +1,7 @@
 import { Eyebrow } from "@/app/components/ui";
 import { SITE } from "@/lib/site";
 import InquiryForm from "./InquiryForm";
-import { CONTACT_DETAILS } from "./inquiry";
+import { CONTACT_DETAILS } from "../../shared/inquiry/inquiry";
 
 // Contact page, after the hero: intro and contact details on the left, the project inquiry form on the right
 export default function InquirySection() {

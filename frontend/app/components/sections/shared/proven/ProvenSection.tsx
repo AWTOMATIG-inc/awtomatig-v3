@@ -1,21 +1,59 @@
+import Image from "next/image";
+import type { ReactNode } from "react";
+import Decor from "@/public/images/awtomatig-mark-decor.png";
 import { CountUp, Eyebrow } from "@/app/components/ui";
-import MarqueeTrack from "../../shared/partners/MarqueeTrack";
+import MarqueeTrack from "../partners/MarqueeTrack";
 import { PARTNERS, PROVEN_STATS } from "./proven";
 
 // Only stats with a real figure are shown
 const STATS = PROVEN_STATS.filter((stat) => stat.value);
 
-// Contact page: "Why AWTOMATIG" proof block: four stat cards and a row of client logos
-export default function ProvenSection() {
+type ProvenSectionProps = {
+  id?: string;
+  eyebrow?: string;
+  /** Use `<br className="max-lg:hidden" />` for the desktop line breaks */
+  title?: ReactNode;
+  /** The brand mark cropped by the top-right corner (campaign pages) */
+  decor?: boolean;
+  /** Desktop top padding of the content (the campaign design starts 15px lower) */
+  topPadding?: string;
+};
+
+// Proof block: four stat cards and a row of client logos (Contact "Why AWTOMATIG", campaign pages "Trust / Proof")
+export default function ProvenSection({
+  id = "proven",
+  eyebrow = "Why AWTOMATIG",
+  title = (
+    <>
+      Proven across the
+      <br className="max-lg:hidden" /> systems that keep
+      <br className="max-lg:hidden" /> businesses moving.
+    </>
+  ),
+  decor = false,
+  topPadding = "lg:pt-101",
+}: ProvenSectionProps) {
+  const titleId = `${id}-title`;
+
   return (
-    <section id="proven" aria-labelledby="proven-title" className="bg-surface-subtle text-fg-strong">
-      <div className="site-container py-60 lg:pt-101 lg:pb-116">
+    <section
+      id={id}
+      aria-labelledby={titleId}
+      className={`bg-surface-subtle text-fg-strong ${decor ? "relative overflow-hidden" : ""}`}
+    >
+      {decor && (
+        <Image
+          src={Decor}
+          alt=""
+          className="pointer-events-none absolute -top-105 -right-43 h-auto w-160 opacity-20 select-none lg:-top-157 lg:-right-64 lg:w-240 xl:-top-207 xl:-right-85 xl:w-317"
+        />
+      )}
+
+      <div className={`site-container relative py-60 ${topPadding} lg:pb-116`}>
         <div className="grid gap-20 lg:grid-cols-[360fr_971fr] lg:gap-0">
-          <Eyebrow className="self-start lg:mt-5">Why AWTOMATIG</Eyebrow>
-          <h2 id="proven-title" className="type-heading-60">
-            Proven across the
-            <br className="max-lg:hidden" /> systems that keep
-            <br className="max-lg:hidden" /> businesses moving.
+          <Eyebrow className="self-start lg:mt-5">{eyebrow}</Eyebrow>
+          <h2 id={titleId} className="type-heading-60">
+            {title}
           </h2>
         </div>
 

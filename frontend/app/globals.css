@@ -507,6 +507,13 @@
   mask-image: linear-gradient(to bottom, black calc(100% - var(--fade-length)), transparent);
 }
 
+/* The same soft end along the x axis (the How we work timeline rail). `fade-end-x [--fade-length:160px]` */
+@utility fade-end-x {
+  --fade-length: 200px;
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - var(--fade-length)), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - var(--fade-length)), transparent);
+}
+
 /* Display gradient (white → pale cyan). Display styles only: `type-display-100 text-gradient-display` */
 @utility text-gradient-display {
   background: var(--gradient-display);

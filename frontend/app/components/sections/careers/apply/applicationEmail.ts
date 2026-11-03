@@ -1,22 +1,8 @@
 import { SITE } from "@/lib/site";
+import { COLOR, FONT, escapeHtml } from "@/lib/emailLayout";
 
 // The confirmation email a candidate gets after applying. Pure: data in, { subject, html, text } out.
-//
-// DELIBERATE EXCEPTION to "no raw hex": mail clients cannot read CSS variables, so the design tokens are copied here as values,
-// each commented with the token it comes from. If a token changes in app/globals.css, change it here too (DESIGN.md §10).
-// Layout is a single 600px column of nested tables with inline styles, the only markup every mail client renders alike.
-const COLOR = {
-  charcoal: "#1E1E1E", // --color-charcoal (surface-inverse): header, body text
-  cyan: "#02D5E8", // --color-cyan (action-primary): the rule under the header, used once
-  offWhite: "#F0F0F0", // --color-off-white (surface-subtle): page and summary card
-  white: "#FFFFFF", // --color-white (surface): the message body
-  gray: "#D9D9D9", // --color-gray (border): hairlines
-  black: "#000000", // --color-black (fg-strong): headline and values
-  muted: "#484848", // fg-muted (black at 70% over off-white), flattened because mail clients drop alpha
-} as const;
-
-// Web fonts are unreliable in mail, so the site's Inter Tight / Inter fall back to system sans-serif.
-const FONT = "Arial, Helvetica, sans-serif";
+// Its colours, font and escaping come from lib/emailLayout.ts (the one place the token values are copied for mail).
 
 export type ApplicationConfirmation = {
   name: string;
@@ -28,9 +14,6 @@ export type ApplicationConfirmation = {
   /** Short reference the candidate can quote */
   reference: string;
 };
-
-const escapeHtml = (value: string) =>
-  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 const NEXT_STEPS = [
   ["We read your application", "Our team goes through your details, answers and resume against the role."],

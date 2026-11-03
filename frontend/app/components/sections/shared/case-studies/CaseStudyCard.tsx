@@ -1,6 +1,6 @@
 import Image from "next/image";
-import CaseStudyDetails from "../../shared/case-studies/CaseStudyDetails";
-import { CASE_STUDY_IMAGE_RADIUS, type CaseStudy } from "../../shared/case-studies/caseStudies";
+import CaseStudyDetails from "./CaseStudyDetails";
+import { CASE_STUDY_IMAGE_RADIUS, type CaseStudy } from "./caseStudies";
 
 // Showcase image on the left, details centred beside it (stacked below xl)
 export default function CaseStudyCard({ study }: { study: CaseStudy }) {

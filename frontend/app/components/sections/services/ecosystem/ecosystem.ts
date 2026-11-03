@@ -1,27 +1,9 @@
 import type { ComponentType, SVGProps } from "react";
-import {
-  ChatGearIcon,
-  GearBulbIcon,
-  GearClusterIcon,
-  GearIcon,
-  LayersIcon,
-  PeopleIcon,
-  ProgressIcon,
-  SitemapIcon,
-} from "@/app/components/icons";
+import { ChatGearIcon, GearBulbIcon, GearClusterIcon, SitemapIcon } from "@/app/components/icons";
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-export type Layer = { label: string; icon: Icon };
 export type Area = { title: string; description: string; icon: Icon };
-
-// The stack card, top to bottom
-export const LAYERS: Layer[] = [
-  { label: "People", icon: PeopleIcon },
-  { label: "Process", icon: ProgressIcon },
-  { label: "Systems", icon: GearIcon },
-  { label: "Technology", icon: LayersIcon },
-];
 
 export const AREAS: Area[] = [
   {

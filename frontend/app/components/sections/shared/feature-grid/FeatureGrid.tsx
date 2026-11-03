@@ -23,7 +23,7 @@ type FeatureGridProps = {
  *  bottom of each cell (Services "One operating ecosystem", About "How we think"; DESIGN.md §10.4). */
 export default function FeatureGrid({ features, descriptionClassName = "max-w-350" }: FeatureGridProps) {
   return (
-    <ul className="rounded-16 bg-surface grid overflow-hidden md:grid-cols-2">
+    <ul className="rounded-16 bg-surface text-fg-strong grid overflow-hidden md:grid-cols-2">
       {features.map((feature, i) => (
         <li
           key={feature.title}
