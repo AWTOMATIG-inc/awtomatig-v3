@@ -10,6 +10,8 @@ type MarqueeTrackProps = {
   /** Top margins of the heading row and of the slider (Contact is the default) */
   rowClassName?: string;
   trackClassName?: string;
+  /** Text of the heading row (default "Trusted By Leading Companies") */
+  heading?: string;
 };
 
 // "Trusted by" heading row (with a pause/play toggle) and the infinite logo slider: a client child so the
@@ -19,12 +21,13 @@ export default function MarqueeTrack({
   ruleClassName = "bg-border",
   rowClassName = "mt-50 lg:mt-58",
   trackClassName = "mt-32 lg:mt-26",
+  heading = "Trusted By Leading Companies",
 }: MarqueeTrackProps) {
   return (
     <>
       <div className={`flex items-center gap-20 lg:gap-32 ${rowClassName}`}>
         <span aria-hidden="true" className={`h-px flex-1 ${ruleClassName}`} />
-        <h3 className="type-heading-24 text-center tracking-tight">Trusted By Leading Companies</h3>
+        <h3 className="type-heading-24 text-center tracking-tight">{heading}</h3>
         <span aria-hidden="true" className={`h-px flex-1 ${ruleClassName}`} />
       </div>
 

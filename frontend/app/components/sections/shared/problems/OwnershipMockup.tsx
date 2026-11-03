@@ -1,4 +1,5 @@
 import { BarChartIcon, CloudIcon, StorefrontIcon, TableIcon } from "@/app/components/icons";
+import type { PanelCopy } from "./problems";
 import StatusListMockup, { type StatusRow } from "./StatusListMockup";
 
 const ROWS: StatusRow[] = [
@@ -8,6 +9,13 @@ const ROWS: StatusRow[] = [
   { label: "Website Issue", status: "No owner", tone: "caution", icon: StorefrontIcon },
 ];
 
-export default function OwnershipMockup() {
-  return <StatusListMockup title="Task ownership" subtitle="People, teams and ownership" rows={ROWS} />;
+export default function OwnershipMockup({ panel }: { panel?: PanelCopy }) {
+  const rows = panel ? ROWS.map((row, i) => ({ ...row, ...panel.rows[i] })) : ROWS;
+  return (
+    <StatusListMockup
+      title={panel?.title ?? "Task ownership"}
+      subtitle={panel?.subtitle ?? "People, teams and ownership"}
+      rows={rows}
+    />
+  );
 }

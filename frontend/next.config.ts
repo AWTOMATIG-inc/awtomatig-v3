@@ -15,6 +15,7 @@ const CSP =
         `script-src 'self' 'unsafe-inline' https://assets.calendly.com ${GOOGLE_TAGS} ${CLARITY}`,
         "style-src 'self' 'unsafe-inline' https://assets.calendly.com https://tagmanager.google.com https://fonts.googleapis.com",
         `img-src 'self' data: blob: https://assets.calendly.com ${GOOGLE_TAGS} ${GOOGLE_ANALYTICS} https://ssl.gstatic.com https://www.gstatic.com ${CLARITY} https://c.bing.com`,
+        "media-src 'self' https://pub-15cceab11b2f454f828f50cb4ba7a3c5.r2.dev",
         "font-src 'self' data: https://fonts.gstatic.com",
         `connect-src 'self' https://calendly.com ${GOOGLE_TAGS} ${GOOGLE_ANALYTICS} ${CLARITY} https://c.bing.com`,
         "frame-src https://calendly.com https://www.google.com",

@@ -7,13 +7,13 @@ import { B2B_POINTS } from "./builtForB2b";
 export default function BuiltForB2bSection() {
   return (
     <section id="built-for-b2b" aria-labelledby="built-for-b2b-title" className="bg-surface-subtle text-fg-strong">
-      <div className="site-container py-60 lg:pt-120 lg:pb-120">
+      <div className="site-container py-60 lg:pt-90 lg:pb-90">
         <div className="grid gap-20 lg:grid-cols-[305fr_1015fr] lg:gap-0">
-          <Eyebrow className="self-start lg:mt-10">Built for B2B</Eyebrow>
+          <Eyebrow className="self-start lg:mt-10">Built for cleaning operators</Eyebrow>
           <h2 id="built-for-b2b-title" className="type-heading-60">
-            Infrastructure shaped
-            <br className="max-lg:hidden" /> around how growing B2B
-            <br className="max-lg:hidden" /> teams actually work.
+            Built around how
+            <br className="max-lg:hidden" /> established cleaning
+            <br className="max-lg:hidden" /> teams work.
           </h2>
         </div>
 
@@ -21,14 +21,15 @@ export default function BuiltForB2bSection() {
           <OutcomeCard
             className="p-24 lg:px-28 lg:pt-28 lg:pb-20"
             descriptionClassName="type-body-16 max-w-535"
+            label="Growing operations"
             title={
               <>
-                Growth creates more systems,
-                <br className="max-lg:hidden" /> more dependencies and more
-                <br className="max-lg:hidden" /> pressure on the platform.
+                More staff, more service
+                <br className="max-lg:hidden" /> areas, and more work
+                <br className="max-lg:hidden" /> to coordinate.
               </>
             }
-            description="B2B websites increasingly sit between marketing, sales, customer journeys, internal content teams and connected systems. The infrastructure needs to support that wider operating environment, not just the front end."
+            description="Your website, office team, and field operation rely on shared information. We help improve the systems and support connecting them."
           />
 
           <ol className="rounded-16 bg-surface px-24 py-8 lg:px-36 lg:py-20">

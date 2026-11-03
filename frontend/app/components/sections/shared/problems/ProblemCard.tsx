@@ -1,11 +1,13 @@
 import MockupStage from "./MockupStage";
-import type { Problem } from "./problems";
+import type { PanelCopy, Problem } from "./problems";
 import SystemsMockup from "./SystemsMockup";
 import OwnershipMockup from "./OwnershipMockup";
 import VisibilityMockup from "./VisibilityMockup";
 import WorkflowsMockup from "./WorkflowsMockup";
 
-const MOCKUPS = {
+type MockupProps = { labels?: string[]; panel?: PanelCopy };
+
+const MOCKUPS: Record<Problem["mockup"], (props: MockupProps) => React.JSX.Element> = {
   systems: SystemsMockup,
   visibility: VisibilityMockup,
   workflows: WorkflowsMockup,
@@ -20,7 +22,7 @@ export default function ProblemCard({ problem }: { problem: Problem }) {
       {/* Illustration: a fixed 309×253 composition that shrinks with the card (mockup-scale) */}
       <MockupStage className="bg-surface-subtle @container overflow-hidden">
         <div aria-hidden="true" className="mockup-scale relative mx-auto h-253 w-309 select-none [--mockup-w:309]">
-          <Mockup />
+          <Mockup labels={problem.labels} panel={problem.panel} />
         </div>
       </MockupStage>
       <div className="px-20 pt-20 pb-16">

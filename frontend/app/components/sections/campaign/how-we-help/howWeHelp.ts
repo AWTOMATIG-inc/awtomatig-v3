@@ -4,22 +4,24 @@ import type { Feature } from "../../shared/feature-grid/FeatureGrid";
 export const HELP_STEPS: Feature[] = [
   {
     title: "Build",
-    description: "Create the infrastructure, systems or workflows required to support the business properly.",
+    description:
+      "Develop the website, internal portal, or business tool your cleaning team needs, with a defined scope and clear handover.",
     icon: GearClusterIcon,
   },
   {
     title: "Connect",
-    description: "Integrate platforms, data and operational processes into a more coherent environment.",
+    description:
+      "Link website forms, CRM records, and suitable third-party tools so information moves through an agreed workflow.",
     icon: GearBulbIcon,
   },
   {
     title: "Operate",
-    description: "Support the recurring work required to keep the environment moving day to day.",
+    description: "Assign recurring CRM updates, enquiry follow-ups, and administrative tasks to an accountable support team.",
     icon: SitemapIcon,
   },
   {
     title: "Improve",
-    description: "Optimize performance, automation and workflows as requirements evolve.",
+    description: "Refine performance, reporting, and automation as your team learns what works and requirements evolve.",
     icon: ChatGearIcon,
   },
 ];

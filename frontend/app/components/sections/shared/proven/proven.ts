@@ -1,6 +1,6 @@
 import { PARTNER_LOGOS } from "../partners/partners";
 
-type ProvenStat = {
+export type ProvenStat = {
   label: string;
   description: string;
   /** e.g. "12+"; a card is shown only once it has a real figure */ value?: string;

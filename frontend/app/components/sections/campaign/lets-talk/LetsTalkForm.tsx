@@ -4,18 +4,16 @@ import { useId, useRef, useState, useTransition, type FormEvent } from "react";
 import { ChevronRightIcon } from "@/app/components/icons";
 import { Button, Field, FIELD } from "@/app/components/ui";
 import { SITE } from "@/lib/site";
-import { CAMPAIGN_PROJECT_TYPES } from "../../shared/inquiry/inquiry";
+import { CAMPAIGN_PROJECT_TYPES, CAMPAIGN_SERVICES } from "../../shared/inquiry/inquiry";
 import { sendInquiry } from "../../shared/inquiry/sendInquiry";
 
-// This page is about one service, so the service interest is fixed (and shown like the design's select)
-const SERVICE = "Website Infrastructure";
 // The design has no budget field; the action needs one of its known values
 const NO_BUDGET = "Not sure yet";
 
 type Status = { kind: "idle" } | { kind: "sent" } | { kind: "error"; message: string };
 
 // Campaign page inquiry form: the Contact page's `sendInquiry` Server Action (CRM, team email, visitor confirmation),
-// with the service fixed to Website Infrastructure. Submitting by hand keeps the fields filled if sending fails.
+// with the cleaning-sector service and project lists. Submitting by hand keeps the fields filled if sending fails.
 export default function LetsTalkForm() {
   const id = useId();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -59,7 +57,7 @@ export default function LetsTalkForm() {
               type="text"
               required
               autoComplete="name"
-              placeholder="Type here..."
+              placeholder="Your full name"
               className={FIELD}
             />
           </Field>
@@ -70,7 +68,7 @@ export default function LetsTalkForm() {
               type="email"
               required
               autoComplete="email"
-              placeholder="Type here..."
+              placeholder="Your work email"
               className={FIELD}
             />
           </Field>
@@ -83,21 +81,26 @@ export default function LetsTalkForm() {
               name="company"
               type="text"
               autoComplete="organization"
-              placeholder="Type here..."
+              placeholder="Your company name"
               className={FIELD}
             />
           </Field>
           <Field label="Service interest" required htmlFor={`${id}-service`}>
             <div className="relative">
-              <input
+              <select
                 id={`${id}-service`}
                 name="help"
-                type="text"
-                value={SERVICE}
-                readOnly
-                aria-readonly="true"
-                className={`${FIELD} cursor-default pr-40`}
-              />
+                required
+                defaultValue=""
+                className={`${FIELD} cursor-pointer appearance-none pr-40`}
+              >
+                <option value="" disabled>
+                  Select a service
+                </option>
+                {CAMPAIGN_SERVICES.map((service) => (
+                  <option key={service}>{service}</option>
+                ))}
+              </select>
               <ChevronRightIcon className="pointer-events-none absolute top-1/2 right-16 size-16 -translate-y-1/2 rotate-90" />
             </div>
           </Field>
@@ -109,9 +112,12 @@ export default function LetsTalkForm() {
               id={`${id}-type`}
               name="type"
               required
-              defaultValue={CAMPAIGN_PROJECT_TYPES[0]}
+              defaultValue=""
               className={`${FIELD} cursor-pointer appearance-none pr-40`}
             >
+              <option value="" disabled>
+                Select a project type
+              </option>
               {CAMPAIGN_PROJECT_TYPES.map((type) => (
                 <option key={type}>{type}</option>
               ))}
@@ -124,14 +130,14 @@ export default function LetsTalkForm() {
           <textarea
             id={`${id}-improve`}
             name="improve"
-            placeholder="Tell us what you're trying to improve."
+            placeholder="What would you like to improve? Tell us about your current setup."
             className={`${FIELD} h-auto min-h-104 resize-y py-12`}
           />
         </Field>
       </div>
 
       <input type="hidden" name="budget" value={NO_BUDGET} />
-      <input type="hidden" name="source" value="website-infrastructure" />
+      <input type="hidden" name="source" value="cleaning-company-solutions" />
 
       {/* Honeypot: off screen and out of the tab order; people never fill it, bots do */}
       <div aria-hidden="true" className="sr-only">
@@ -148,11 +154,16 @@ export default function LetsTalkForm() {
           required
           className="rounded-12 border-border bg-surface accent-action-primary size-20 shrink-0 cursor-pointer border"
         />
-        <span>By submitting this form, you agree that AWTOMATIG may use your information to respond to your inquiry.</span>
+        <span>
+          I agree that AWTOMATIG may use my details to respond to this enquiry.{" "}
+          <a href="/privacy" target="_blank" className="underline underline-offset-2">
+            Privacy Policy
+          </a>
+        </span>
       </label>
 
       <Button type="submit" variant="primary" size="lg" fullWidth disabled={pending} className="mt-32">
-        {pending ? "Sending…" : "Start the conversation"}
+        {pending ? "Sending…" : "Send my enquiry"}
       </Button>
       <p role="status" className="type-body-14 text-fg-primary mt-12 text-center empty:hidden">
         {status.kind === "sent" && "Thanks, your message is on its way. We typically reply within 1 business day."}

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { FAQS } from "./faq";
+import { FAQS, type FaqItem } from "./faq";
 
 // One question open at a time; the answer grows from 0 to its height (grid rows), so it needs no measuring
-export default function FaqList() {
+export default function FaqList({ items = FAQS }: { items?: FaqItem[] }) {
   const [open, setOpen] = useState(0);
 
   return (
     <ul className="border-border border-t">
-      {FAQS.map((item, i) => {
+      {items.map((item, i) => {
         const isOpen = open === i;
         return (
           <li key={item.question} className="border-border border-b last:border-b-0">

@@ -6,12 +6,12 @@ import { WORK_STEPS } from "./workPath";
 export default function HowWeWorkSection() {
   return (
     <section id="how-we-work" aria-labelledby="how-we-work-title" className="bg-surface-subtle text-fg-strong">
-      <div className="site-container py-60 lg:pt-120 lg:pb-100">
+      <div className="site-container py-60 lg:pt-90 lg:pb-90">
         <div className="grid gap-20 lg:grid-cols-[318fr_1002fr] lg:gap-0">
           <Eyebrow className="self-start lg:mt-10">How we work</Eyebrow>
           <h2 id="how-we-work-title" className="type-heading-60">
-            A structured path from problem
-            <br className="max-lg:hidden" /> to working system.
+            From operational need
+            <br className="max-lg:hidden" /> to working solution.
           </h2>
         </div>
 
