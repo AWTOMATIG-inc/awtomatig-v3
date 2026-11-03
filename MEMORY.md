@@ -37,6 +37,7 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-11-03 | **`frontend/`:** campaign page "How we work" auto-advance no longer stops on phones with reduced motion on, and a touch pauses it for 3s instead of 8s. Detail in `frontend/MEMORY.md`. |
 | 2026-11-03 | **`frontend/`:** campaign page "How we work": the last step title is no longer cut off and every step description is four lines. Detail in `frontend/MEMORY.md`. |
 | 2026-11-03 | **`frontend/`:** campaign page "How we work": step descriptions re-broken so they no longer touch the next column, and the circle no longer flashes black when a step changes. Detail in `frontend/MEMORY.md`. |
 | 2026-11-03 | **`frontend/`:** campaign page Capabilities image now changes with the open tab (one image per item in `capabilities.ts`, all the same placeholder for now). Detail in `frontend/MEMORY.md`. |
