@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { and, asc, count, desc, eq, gte, ilike, inArray, isNull, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, inArray, isNull, ne, sql, type SQL } from "drizzle-orm";
 
 import { Database, type DbExecutor } from "../../../shared/db/database";
 import { escapeLike, type JobSortField, type JobStatus } from "../domain/job";
@@ -134,13 +134,18 @@ export class JobsRepo {
     return row ?? null;
   }
 
-  /** Open jobs whose last day (a `YYYY-MM-DD` date) is `today` or later, soonest deadline first. At most 100, so it can never be unbounded. */
-  listOpen(executor: DbExecutor, today: string) {
+  /**
+   * Jobs for the careers page (`YYYY-MM-DD` dates): open jobs still taking applications first, soonest deadline first, then closed
+   * or lapsed ones whose last day was no earlier than `since`, so the page can show them as closed for a while. No drafts. At most
+   * 100, so it can never be unbounded.
+   */
+  listVisible(executor: DbExecutor, today: string, since: string) {
+    const accepting = and(eq(jobs.status, "open"), gte(jobs.deadlineOn, today));
     return executor
       .select({ ...summaryColumns, salaryMin: jobs.salaryMin, salaryMax: jobs.salaryMax, officeTiming: jobs.officeTiming })
       .from(jobs)
-      .where(and(eq(jobs.status, "open"), gte(jobs.deadlineOn, today)))
-      .orderBy(asc(jobs.deadlineOn), desc(jobs.publishedAt), desc(jobs.id))
+      .where(and(ne(jobs.status, "draft"), gte(jobs.deadlineOn, since)))
+      .orderBy(sql`case when ${accepting} then 0 else 1 end`, asc(jobs.deadlineOn), desc(jobs.publishedAt), desc(jobs.id))
       .limit(100);
   }
 

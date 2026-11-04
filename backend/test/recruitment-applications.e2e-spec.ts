@@ -273,12 +273,14 @@ describeWithDb("Recruitment applications (real PostgreSQL, fake storage)", () =>
   });
 
   describe("the public careers endpoints", () => {
-    it("list only open jobs that are still taking applications, with nothing internal", async () => {
+    it("list open jobs, then recently closed ones flagged as closed, with nothing internal", async () => {
       const draft = await createJob({ title: `${marker} Draft`, publish: false });
       const closed = await createJob({ title: `${marker} Closed` });
       await asStaff("POST", `/recruitment/jobs/${closed.id}/close`);
       const lapsed = await createJob({ title: `${marker} Lapsed` });
       await pool.query(`update recruitment.jobs set deadline_on = $2 where id = $1`, [lapsed.id, dhakaDay(-1)]);
+      const old = await createJob({ title: `${marker} Old` });
+      await pool.query(`update recruitment.jobs set deadline_on = $2 where id = $1`, [old.id, dhakaDay(-45)]);
 
       const response = await api("GET", "/recruitment/public/jobs");
       expect(response.statusCode).toBe(200);
@@ -286,7 +288,13 @@ describeWithDb("Recruitment applications (real PostgreSQL, fake storage)", () =>
       const slugs = items.map((item) => item.slug);
 
       expect(slugs).toContain(job.slug);
-      for (const hidden of [draft, closed, lapsed]) expect(slugs).not.toContain(hidden.slug);
+      for (const hidden of [draft, old]) expect(slugs).not.toContain(hidden.slug);
+      for (const shown of [closed, lapsed]) {
+        expect(items.find((item) => item.slug === shown.slug)).toMatchObject({ acceptingApplications: false });
+      }
+      // Jobs taking applications come before the closed ones.
+      expect(slugs.indexOf(job.slug)).toBeLessThan(slugs.indexOf(closed.slug));
+      expect(slugs.indexOf(job.slug)).toBeLessThan(slugs.indexOf(lapsed.slug));
       const mine = items.find((item) => item.slug === job.slug)!;
       expect(Object.keys(mine).sort()).toEqual(
         [
