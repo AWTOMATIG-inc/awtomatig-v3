@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Button, Eyebrow } from "@/app/components/ui";
-import { CASE_STUDIES, type CaseStudy } from "./caseStudies";
+import type { CaseStudy } from "./caseStudies";
 import CaseStudyCard from "./CaseStudyCard";
 
 type CaseStudiesSectionProps = {
@@ -11,21 +11,21 @@ type CaseStudiesSectionProps = {
   description?: ReactNode;
   /** The button under the cards (default: View all case studies) */
   cta?: { label: string; href: string };
-  /** Which case studies to list (default: all) */
-  studies?: CaseStudy[];
+  /** The published case studies to list, in order */
+  studies: CaseStudy[];
   /** Section padding (default: Home's) */
   paddingClassName?: string;
 };
 
 // Desktop: the intro is sticky (top = its own offset, so it pins as the section reaches the viewport top)
 // while the cards scroll past; it releases when its bottom meets the last card's bottom.
-// Home "Selected work" and the campaign pages' "Proven in practice" share it; each passes its own copy.
+// Home "Selected work" and the campaign pages' "Proven in practice" share it; each passes its own copy and the studies it loaded.
 export default function CaseStudiesSection({
   id,
   eyebrow,
   title,
   description,
-  studies = CASE_STUDIES,
+  studies,
   paddingClassName = "pt-60 pb-60 lg:pt-120 lg:pb-115",
   cta = { label: "View all case studies", href: "/case-studies" },
 }: CaseStudiesSectionProps) {
@@ -43,13 +43,19 @@ export default function CaseStudiesSection({
             {description && <p className="type-body-16 text-fg-primary mt-32 lg:mt-auto lg:pt-40">{description}</p>}
           </div>
 
-          <ul className="flex flex-col gap-50 lg:gap-40">
-            {studies.map((study) => (
-              <li key={study.id}>
-                <CaseStudyCard study={study} />
-              </li>
-            ))}
-          </ul>
+          {studies.length > 0 ? (
+            <ul className="flex flex-col gap-50 lg:gap-40">
+              {studies.map((study) => (
+                <li key={study.id}>
+                  <CaseStudyCard study={study} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="type-body-16 text-fg-muted">
+              Our case studies will appear here soon. Start a conversation to talk about your project.
+            </p>
+          )}
         </div>
 
         <div className="mt-40 lg:grid lg:grid-cols-[403fr_928fr]">

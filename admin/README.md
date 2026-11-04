@@ -7,7 +7,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md), [RULES.md](RULES.md) and [DESIGN.md](DE
 ## Getting started
 
 ```bash
-cp .env.example .env     # API_URL (required, no default) and NEXT_PUBLIC_TIMEZONE
+cp .env.example .env     # API_URL and ASSETS_URL (required, no defaults) and NEXT_PUBLIC_TIMEZONE
 npm install
 npm run dev              # http://localhost:3001
 ```

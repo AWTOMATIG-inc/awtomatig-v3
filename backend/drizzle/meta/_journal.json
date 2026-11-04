@@ -29,6 +29,13 @@
       "when": 1793604239767,
       "tag": "0003_recruitment_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793774993085,
+      "tag": "0004_cms_case_studies",
+      "breakpoints": true
     }
   ]
 }

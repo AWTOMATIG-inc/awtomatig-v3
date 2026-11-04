@@ -25,7 +25,7 @@ Requires Node 22 or newer.
 | `npm run lint` | ESLint, the module-boundary check, then Prettier. CI runs this. |
 | `npm test` | Unit and API tests (no database needed). Set `TEST_DATABASE_URL` to a migrated PostgreSQL to also run the sign-in end-to-end test (`test/auth.e2e-spec.ts`); it creates and removes its own users. |
 | `npm run seed:admin` | Create the first administrator from `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` (and `SEED_ADMIN_NAME`). Safe to repeat; add `-- --reset-password` to change an existing password. |
-| `npm run storage:check` | Upload a tiny object to the private R2 bucket, read it back through a signed link, then delete it. Prints no keys or URLs. Needs the `R2_*` values in `.env`. |
+| `npm run storage:check` | Upload a tiny object to each R2 bucket and delete it again: the private one is read back through a signed link, the public one through its public URL (also checks that a public file is never overwritten). Prints no keys or URLs. Needs the `R2_*` values in `.env`. |
 | `npm run check:boundaries` | Fails if a module reaches into another module's `repo/`, `domain/`, `api/` or schema, or if `domain/` imports a framework. |
 | `npm run db:generate` | Create a migration from the module schemas (`src/modules/*/schema.ts`, `src/shared/**/*.schema.ts`). |
 | `npm run db:migrate` | Apply migrations to `DATABASE_URL`. |
@@ -62,7 +62,7 @@ Every value is validated at boot (`src/shared/config/env.ts`); the app refuses t
 
 The CRM needs `LEAD_INGEST_KEY` (32+ random characters), shared with the website's server: only a request that sends it as the `x-ingest-key` header can add a lead.
 
-File storage needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` and `R2_PRIVATE_BUCKET` (Cloudflare R2; required at boot, so add them to the VPS `backend/.env` before the deploy that ships this). `R2_PUBLIC_BUCKET` and `R2_PUBLIC_BASE_URL` are optional and unused. Run `npm run storage:check` to confirm access.
+File storage needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` and `R2_PRIVATE_BUCKET` (Cloudflare R2; required at boot, so add them to the VPS `backend/.env` before the deploy that ships this). `R2_PUBLIC_BUCKET` and `R2_PUBLIC_BASE_URL` (the public address of that bucket, where case study images are served) are required too. Run `npm run storage:check` to confirm access.
 
 Authentication needs `BETTER_AUTH_SECRET` (32+ random characters; rotating it signs everyone out) and `BETTER_AUTH_URL` (the public origin of the admin app, because the browser calls `/api` on that origin and Next.js rewrites it here).
 
@@ -113,7 +113,7 @@ Written from the existing setup (PM2 + Nginx, Node 22, PostgreSQL already instal
    curl -s http://127.0.0.1:4000/api/v1/health      # {"status":"ok","database":"up",...}
    ```
 
-6. **Website and admin:** add `CRM_API_URL` and `LEAD_INGEST_KEY` to `frontend/.env`. The admin has no default backend address any more, so `admin/.env` must contain `API_URL=http://127.0.0.1:4000` (read when the admin is built: rebuild it, then `pm2 restart awtomatig-admin`). Restart the website with `pm2 restart awtomatig-web --update-env`. Sign in at https://admin.awtomatig.com, send a test inquiry on the Contact page, and look for it under Contact Inquiries.
+6. **Website and admin:** add `CRM_API_URL` and `LEAD_INGEST_KEY` to `frontend/.env`. The admin has no default backend address any more, so `admin/.env` must contain `API_URL=http://127.0.0.1:4000` (read when the admin is built: rebuild it, then `pm2 restart awtomatig-admin`). Restart the website with `pm2 restart awtomatig-web --update-env`. To load the first case studies, run `node scripts/copy-case-studies.mjs` once from a machine that has them (see the file's header: it copies from the local backend to the admin address you give it). For case studies, also add `ASSETS_URL` (the public image bucket, same as `R2_PUBLIC_BASE_URL`) to `frontend/.env` and `admin/.env`, and `WEBSITE_URL=http://127.0.0.1:3010` to `backend/.env` so a publish or unpublish shows on the website at once (without it the website catches up within a minute). Sign in at https://admin.awtomatig.com, send a test inquiry on the Contact page, and look for it under Contact Inquiries.
 
 7. **Every later deploy** of `backend/` (add to the VPS `deploy.sh` next to the other folders): `npm ci --include=dev && npm run build && npm run db:migrate && pm2 restart awtomatig-api`. Migrations run before the restart and must work with the previous version (backend RULES.md section 3). Never edit or squash a migration that has run on the server.
 

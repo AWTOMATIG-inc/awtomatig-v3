@@ -28,13 +28,16 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.url(),
   // Shared with the website's server. Only a request that sends it may add a lead (POST /api/v1/crm/leads).
   LEAD_INGEST_KEY: z.string().min(32, "must be at least 32 characters"),
-  // Cloudflare R2 (S3-compatible). Only the backend holds these. The private bucket stores resumes; the public one is not used yet.
+  // Where the backend reaches the website's server (http://127.0.0.1:3010 on the VPS). Optional: when set, publishing or editing a case study
+  // asks the website to refresh at once (it sends LEAD_INGEST_KEY); when unset, the website catches up within a minute by itself.
+  WEBSITE_URL: z.url().optional(),
+  // Cloudflare R2 (S3-compatible). Only the backend holds these. The private bucket stores resumes; the public one stores case study images, which browsers load from R2_PUBLIC_BASE_URL.
   R2_ACCOUNT_ID: z.string().min(1),
   R2_ACCESS_KEY_ID: z.string().min(1),
   R2_SECRET_ACCESS_KEY: z.string().min(1),
   R2_PRIVATE_BUCKET: z.string().min(1),
-  R2_PUBLIC_BUCKET: z.string().min(1).optional(),
-  R2_PUBLIC_BASE_URL: z.url().optional(),
+  R2_PUBLIC_BUCKET: z.string().min(1),
+  R2_PUBLIC_BASE_URL: z.url(),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
 });
 

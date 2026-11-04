@@ -1,4 +1,12 @@
-import { DeleteObjectCommand, HeadObjectCommand, PutObjectCommand, S3ServiceException, type S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  HeadObjectCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3ServiceException,
+  type S3Client,
+} from "@aws-sdk/client-s3";
 
 import type { Env } from "../config/env";
 import { StorageUnavailableError } from "./storage.errors";
@@ -9,6 +17,8 @@ const env = {
   R2_ACCESS_KEY_ID: "key",
   R2_SECRET_ACCESS_KEY: "secret",
   R2_PRIVATE_BUCKET: "private-bucket",
+  R2_PUBLIC_BUCKET: "public-bucket",
+  R2_PUBLIC_BASE_URL: "https://cdn.test/",
 } as Env;
 
 function setup(send: jest.Mock) {
@@ -101,6 +111,101 @@ describe("StorageService", () => {
   it("treats a head failure other than 404 as unavailable", async () => {
     const send = jest.fn().mockRejectedValue(s3Error("AccessDenied", 403));
     await expect(setup(send).head("k")).rejects.toBeInstanceOf(StorageUnavailableError);
+  });
+
+  describe("public bucket", () => {
+    it("uploads to the public bucket, never the private one", async () => {
+      const send = jest.fn().mockResolvedValue({});
+      await setup(send).putPublic("case-study/a/image1.png", Buffer.from("x"), "image/png");
+
+      const command = firstCommand(send) as PutObjectCommand;
+      expect(command.input).toMatchObject({ Bucket: "public-bucket", Key: "case-study/a/image1.png", ContentType: "image/png" });
+    });
+
+    it("uploads only if the key is free, and says so", async () => {
+      const send = jest.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(s3Error("PreconditionFailed", 412));
+      const storage = setup(send);
+
+      await expect(storage.putPublicIfAbsent("k", Buffer.from("x"), "image/png")).resolves.toBe(true);
+      await expect(storage.putPublicIfAbsent("k", Buffer.from("x"), "image/png")).resolves.toBe(false);
+      expect(firstCommand(send)).toMatchObject({ input: { Bucket: "public-bucket", IfNoneMatch: "*" } });
+    });
+
+    it("sends the cache header when given one, and none otherwise", async () => {
+      const send = jest.fn().mockResolvedValue({});
+      const storage = setup(send);
+      await storage.putPublicIfAbsent("a", Buffer.from("x"), "image/png", "public, max-age=31536000, immutable");
+      await storage.putPublic("b", Buffer.from("x"), "image/png");
+
+      const [first, second] = (send.mock.calls as unknown[][]).map((call) => call[0] as PutObjectCommand);
+      expect(first?.input.CacheControl).toBe("public, max-age=31536000, immutable");
+      expect(second?.input.CacheControl).toBeUndefined();
+    });
+
+    it("deletes and heads in the public bucket", async () => {
+      const send = jest.fn().mockResolvedValueOnce({}).mockResolvedValueOnce({ ContentLength: 7, ContentType: "image/png" });
+      const storage = setup(send);
+
+      await storage.deletePublic("k");
+      await expect(storage.headPublic("k")).resolves.toEqual({ size: 7, contentType: "image/png" });
+      const calls = (send.mock.calls as unknown[][]).map((call) => call[0]);
+      expect(calls[0]).toBeInstanceOf(DeleteObjectCommand);
+      expect(calls[0]).toMatchObject({ input: { Bucket: "public-bucket" } });
+      expect(calls[1]).toBeInstanceOf(HeadObjectCommand);
+      expect(calls[1]).toMatchObject({ input: { Bucket: "public-bucket" } });
+    });
+
+    it("lists every page under a prefix", async () => {
+      const send = jest
+        .fn()
+        .mockResolvedValueOnce({ Contents: [{ Key: "case-study/a/image1.png" }], IsTruncated: true, NextContinuationToken: "t" })
+        .mockResolvedValueOnce({ Contents: [{ Key: "case-study/a/image2.png" }], IsTruncated: false });
+
+      await expect(setup(send).listPublic("case-study/a/")).resolves.toEqual([
+        "case-study/a/image1.png",
+        "case-study/a/image2.png",
+      ]);
+      const calls = (send.mock.calls as unknown[][]).map((call) => call[0]);
+      expect(calls[0]).toBeInstanceOf(ListObjectsV2Command);
+      expect(calls[1]).toMatchObject({ input: { Prefix: "case-study/a/", ContinuationToken: "t" } });
+    });
+
+    it("deletes a whole folder in batches and reports the count", async () => {
+      const keys = Array.from({ length: 1001 }, (_, i) => ({ Key: `case-study/a/image${i}.png` }));
+      const send = jest.fn().mockResolvedValueOnce({ Contents: keys, IsTruncated: false }).mockResolvedValue({});
+
+      await expect(setup(send).deletePublicPrefix("case-study/a/")).resolves.toBe(1001);
+      const deletes = (send.mock.calls as unknown[][]).map((call) => call[0]).filter((c) => c instanceof DeleteObjectsCommand);
+      expect(deletes).toHaveLength(2);
+      expect((deletes[0] as DeleteObjectsCommand).input.Delete?.Objects).toHaveLength(1000);
+    });
+
+    it("fails when the provider reports a delete error", async () => {
+      const send = jest
+        .fn()
+        .mockResolvedValueOnce({ Contents: [{ Key: "case-study/a/image1.png" }] })
+        .mockResolvedValueOnce({ Errors: [{ Key: "case-study/a/image1.png", Code: "AccessDenied" }] });
+
+      await expect(setup(send).deletePublicPrefix("case-study/a/")).rejects.toBeInstanceOf(StorageUnavailableError);
+    });
+
+    it("refuses a prefix that could reach the whole bucket", async () => {
+      const send = jest.fn();
+      const storage = setup(send);
+
+      for (const prefix of ["", "/", "case-study", "/case-study/", "case-study/../"]) {
+        await expect(storage.deletePublicPrefix(prefix)).rejects.toThrow(/folder path/);
+      }
+      expect(send).not.toHaveBeenCalled();
+    });
+
+    it("builds the public URL from the base URL, encoding each part and ignoring a trailing slash", () => {
+      const storage = setup(jest.fn());
+      expect(storage.publicUrl("case-study/royal-safari-tours/image1.png")).toBe(
+        "https://cdn.test/case-study/royal-safari-tours/image1.png",
+      );
+      expect(storage.publicUrl("case-study/a b/image#1.png")).toBe("https://cdn.test/case-study/a%20b/image%231.png");
+    });
   });
 
   it("signs a GET link without calling the network", async () => {
