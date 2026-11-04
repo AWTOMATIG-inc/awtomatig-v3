@@ -46,7 +46,7 @@ Under `/api/v1/recruitment/public/jobs`. They return an allow-listed shape, neve
 
 | Method and path | Who | What |
 | --- | --- | --- |
-| `GET /` | Anyone | Open jobs whose deadline has not passed, soonest deadline first, at most 100. |
+| `GET /` | Anyone | Jobs taking applications first (soonest deadline first), then jobs closed or lapsed with a last day within the past 30 days (`acceptingApplications: false`, so the careers page can badge them as closed). No drafts. At most 100. |
 | `GET /:slug` | Anyone | One job with its questions (their ids are what the form sends back). A closed or expired job returns 200 with `acceptingApplications: false`; a draft or unknown slug returns 404. |
 | `POST /:slug/applications` | The website's server, header `x-ingest-key` = `LEAD_INGEST_KEY` | Submits an application. Returns `201 { id }`. |
 

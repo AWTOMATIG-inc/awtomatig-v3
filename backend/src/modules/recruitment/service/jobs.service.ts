@@ -66,6 +66,9 @@ interface ApplicationCounts {
   fresh: number;
 }
 
+/** How long a closed or lapsed job stays on the public list, counted from its last day. */
+const CLOSED_VISIBLE_DAYS = 30;
+
 const NO_APPLICATIONS: ApplicationCounts = { total: 0, fresh: 0 };
 
 const summary = (row: JobSummaryRow, now: Date, counts: ApplicationCounts) => ({
@@ -319,10 +322,17 @@ export class JobsService {
     return detail(row, await this.repo.listQuestions(tx, id), now, counts.get(id) ?? NO_APPLICATIONS);
   }
 
-  /** The openings on the careers page: open and not past their deadline, soonest deadline first. */
+  /**
+   * The openings on the careers page: those taking applications first (soonest deadline first), then jobs that closed or lapsed
+   * within the last 30 days, flagged `acceptingApplications: false` so the page can show them as closed. Never a draft.
+   */
   async listPublic() {
     const now = new Date();
-    const rows = await this.repo.listOpen(this.database.db, dhakaDate(now));
+    const rows = await this.repo.listVisible(
+      this.database.db,
+      dhakaDate(now),
+      dhakaDate(new Date(now.getTime() - CLOSED_VISIBLE_DAYS * 86_400_000)),
+    );
     return { items: rows.map((row) => publicSummary(row, now)) };
   }
 
