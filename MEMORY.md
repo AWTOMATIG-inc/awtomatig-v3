@@ -2,14 +2,14 @@
 
 The overview of the whole system: one status row per folder, decisions and open items that affect more than one folder, and a short change log saying **which folder changed and what**. It holds no implementation detail: that lives in the folder's own memory (`frontend/MEMORY.md`, `backend/MEMORY.md`, `admin/MEMORY.md`), which is the detailed record of the work done there. Read this and the folder's memory before starting work. After any change, add a one-line entry here and the full detail in the folder's memory, in the same change (see [RULES.md](RULES.md) section 1).
 
-- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S6)
+- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S7)
 - **Rules:** [RULES.md](RULES.md)
 
 ---
 
 ## 1. Current status
 
-_Last updated: 2026-11-02_
+_Last updated: 2026-11-04_
 
 | Area | Status | Location |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ _Last updated: 2026-11-02_
 
 ## 2. Cross-folder decisions
 
-See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S6). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
+See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S7). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
 
 ## 3. Open items
 
@@ -37,6 +37,15 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-11-04 | **CMS Phase 5 prepared** (`backend/`): `backend/scripts/copy-case-studies.mjs` copies the published case studies from the dev backend to any admin address (dev run: all skipped as present; not yet run on the VPS). Watch out if dev and the VPS share one R2 public bucket. The three source PNGs in `frontend/public/images/Case Study/` are no longer used by any code and can be removed after the VPS copy. Detail in `backend/MEMORY.md`. |
+| 2026-11-04 | **Case study publish / unpublish fixed to show on the website at once** (`backend/`, `frontend/`; `admin/` checked, no change). The admin screens and API were correct (the whole CRUD was driven in a real browser: create, image upload and replace, edit, publish, unpublish, reorder, delete); the problem was the website serving the old page once after a change. New optional backend `WEBSITE_URL` and a keyed `POST /api/revalidate` on the website. Backend tests: 303 pass against a scratch PostgreSQL; frontend `tsc`, lint, build pass. **VPS:** `WEBSITE_URL=http://127.0.0.1:3010` in `backend/.env`. Detail in each folder's `MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS Phase 4 built** (`frontend/`, decision S7): Home, the Case Studies page, the campaign "Relevant work", the case study pages and the sitemap now read the published studies from the backend instead of the hard-coded list; new `ASSETS_URL` in `frontend/.env`. `tsc`, lint and build pass; the cards match the old ones exactly; unpublishing a study took it off the site within a minute and republishing brought it back; the backend-down case shows empty states instead of crashing. **Not done:** a browser look at 1440 / 1024 / 390, the VPS (`ASSETS_URL`, backend up when the site builds), Phase 5 cleanup. Detail in `frontend/MEMORY.md`. |
+| 2026-11-04 | **Case studies seeded on the dev database** (`backend/`): migration `0004` applied to the dev database, then the 3 existing studies (Royal Safari Tours, Power Bank Bangladesh, New York Clean Team) created through the real API as the seeded admin, with their images uploaded to `awtomatig-public` (`case-study/<slug>/image1.png`) and published; the public list returns all three. Done with a one-off script outside the repo (not committed). Same step is still needed on the VPS. Detail in `backend/MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS Phase 3 code written** (`admin/`): Website → Case Studies list, new and edit form with image upload, Publish / Unpublish / Delete dialogs, move up / down. New required `ASSETS_URL` in `admin/.env` (the public bucket origin, for the CSP). `typecheck`, `lint` and `build` pass. **Not done:** the browser run of the full flow (needs migration `0004` on the dev database and writes to the real bucket), `ASSETS_URL` on the VPS. Detail in `admin/MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS Phase 2 built** (`backend/`): the showcase image upload and replace (type and size read from the file itself, never-overwritten files with an immutable cache header in `awtomatig-public`), delete now removes the image folder, and public read endpoints for the website (`/cms/public/case-studies`). Lint, typecheck, build and 299 tests pass against a throwaway PostgreSQL, and the whole image flow was checked against the real public bucket (test folder left clean). Not done: admin screens (Phase 3), website (Phase 4), a custom domain for the public bucket. Detail in `backend/MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS Phase 1 built** (`backend/`): new `cms` module with case study create, list, edit, publish, unpublish, order and delete (drafts only), migration `0004`, decision B16 (custom CMS, public images). Lint, typecheck, build and 264 tests pass against a throwaway PostgreSQL (22 new unit and 19 new e2e tests). Not done: image upload and public endpoints (Phase 2), the real-bucket `storage:check`, and the migration is not on the dev database. Detail in `backend/MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS Phase 0 built** (`backend/`): the storage service now handles the public bucket `awtomatig-public` (upload that never overwrites, delete, list, delete a folder, public URL), `R2_PUBLIC_BUCKET` and `R2_PUBLIC_BASE_URL` are required, and `npm run storage:check` covers both buckets. Lint, typecheck, build and 131 tests pass; the real-database suites were skipped and **`storage:check` has not yet been run against the real public bucket**. Needs the two new variables in the VPS `backend/.env` before deploy. Detail in `backend/MEMORY.md`. |
+| 2026-11-04 | **Case Study CMS planned** (`backend/`, `admin/`, `frontend/`; nothing built yet): wrote [CASE_STUDY_PLAN.md](CASE_STUDY_PLAN.md) with decisions, assumptions, data model, API, six phases and the VPS checklist. One image per study in the public R2 bucket (`case-study/<slug>/image<N>.<ext>`), used on Home and the Case Studies page; admin gets Edit, Publish / Unpublish and Delete (drafts only). Three open questions in the plan (backend-down behaviour, custom image domain, detail page). No folder memory changed: no work done in a folder yet. |
 | 2026-11-03 | **`frontend/`:** campaign page "How we work" auto-advance no longer stops on phones with reduced motion on, and a touch pauses it for 3s instead of 8s. Detail in `frontend/MEMORY.md`. |
 | 2026-11-03 | **`frontend/`:** campaign page "How we work": the last step title is no longer cut off and every step description is four lines. Detail in `frontend/MEMORY.md`. |
 | 2026-11-03 | **`frontend/`:** campaign page "How we work": step descriptions re-broken so they no longer touch the next column, and the circle no longer flashes black when a step changes. Detail in `frontend/MEMORY.md`. |

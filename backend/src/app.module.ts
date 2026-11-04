@@ -4,6 +4,7 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
 
 import { AuditModule } from "./shared/audit/audit.module";
 import { AuthModule } from "./shared/auth/auth.module";
+import { CmsModule } from "./modules/cms/cms.module";
 import { CrmModule } from "./modules/crm/crm.module";
 import { RecruitmentModule } from "./modules/recruitment/recruitment.module";
 import { ConfigModule } from "./shared/config/app-config";
@@ -30,6 +31,7 @@ import { StorageModule } from "./shared/storage/storage.module";
     HealthModule,
     CrmModule,
     RecruitmentModule,
+    CmsModule,
   ],
   providers: [
     { provide: APP_PIPE, useClass: ZodValidationPipe },

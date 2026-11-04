@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SERVICES, type ServiceId } from "@/lib/services";
 import StackingCards from "../../home/services/StackingCards";
-import { CASE_STUDIES } from "../../shared/case-studies/caseStudies";
+import type { CaseStudy } from "../../shared/case-studies/caseStudies";
 import CaseStudyRow from "./CaseStudyRow";
 
 type Filter = "all" | ServiceId;
@@ -14,9 +14,9 @@ const FILTERS: { id: Filter; label: string }[] = [
 ];
 
 // Toggle buttons (one pressed at a time) above the list; the list re-renders in place
-export default function CaseStudyFilter() {
+export default function CaseStudyFilter({ studies: all }: { studies: CaseStudy[] }) {
   const [filter, setFilter] = useState<Filter>("all");
-  const studies = filter === "all" ? CASE_STUDIES : CASE_STUDIES.filter((study) => study.category === filter);
+  const studies = filter === "all" ? all : all.filter((study) => study.category === filter);
   const filterLabel = FILTERS.find((item) => item.id === filter)?.label ?? filter;
 
   return (
@@ -51,7 +51,9 @@ export default function CaseStudyFilter() {
           </StackingCards>
         ) : (
           <p className="type-body-16 text-fg-muted site-container py-60 text-center lg:py-120">
-            No {filterLabel} case studies yet. Start a conversation to talk about yours.
+            {all.length === 0
+              ? "Our case studies will appear here soon. Start a conversation to talk about yours."
+              : `No ${filterLabel} case studies yet. Start a conversation to talk about yours.`}
           </p>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { Briefcase, Inbox, LayoutDashboard, type LucideIcon } from "lucide-react";
+import { Briefcase, Images, Inbox, LayoutDashboard, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -19,6 +19,7 @@ export const NAV: readonly NavGroup[] = [
   { label: "Overview", items: [{ label: "Dashboard", href: "/", icon: LayoutDashboard }] },
   { label: "CRM", items: [{ label: "Contact Inquiries", href: "/crm/leads", icon: Inbox }] },
   { label: "Recruitment", items: [{ label: "Job Openings", href: "/recruitment/jobs", icon: Briefcase }] },
+  { label: "Website", items: [{ label: "Case Studies", href: "/cms/case-studies", icon: Images }] },
 ];
 
 /** Finds the nav item for a path: the longest matching href wins, so `/crm/leads` matches `/crm/leads` before `/crm`. */

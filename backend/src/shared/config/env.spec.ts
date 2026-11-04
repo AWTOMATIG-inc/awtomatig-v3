@@ -10,6 +10,8 @@ describe("parseEnv", () => {
     R2_ACCESS_KEY_ID: "key",
     R2_SECRET_ACCESS_KEY: "secret",
     R2_PRIVATE_BUCKET: "bucket",
+    R2_PUBLIC_BUCKET: "public-bucket",
+    R2_PUBLIC_BASE_URL: "https://public.test",
   };
 
   it("applies defaults", () => {
@@ -22,11 +24,12 @@ describe("parseEnv", () => {
       RATE_LIMIT_MAX: 120,
     });
     expect(env.CORS_ORIGINS).toEqual([]);
-    expect(env.R2_PUBLIC_BUCKET).toBeUndefined();
   });
 
-  it("requires the R2 storage settings but not the public bucket", () => {
+  it("requires both R2 buckets and a valid public base URL", () => {
     expect(() => parseEnv({ ...valid, R2_PRIVATE_BUCKET: undefined })).toThrow(/R2_PRIVATE_BUCKET/);
+    expect(() => parseEnv({ ...valid, R2_PUBLIC_BUCKET: undefined })).toThrow(/R2_PUBLIC_BUCKET/);
+    expect(() => parseEnv({ ...valid, R2_PUBLIC_BASE_URL: undefined })).toThrow(/R2_PUBLIC_BASE_URL/);
     expect(() => parseEnv({ ...valid, R2_PUBLIC_BASE_URL: "nope" })).toThrow(/R2_PUBLIC_BASE_URL/);
   });
 

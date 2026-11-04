@@ -11,7 +11,9 @@ export default function CaseStudyRow({ study }: { study: CaseStudy }) {
       className="grid gap-32 md:grid-cols-2 md:gap-x-40 xl:grid-cols-[336fr_551fr_336fr] xl:items-center xl:gap-x-50"
     >
       <Image
-        src={study.image}
+        src={study.image.src}
+        width={study.image.width}
+        height={study.image.height}
         alt={study.imageAlt}
         sizes="(min-width: 1024px) 551px, 100vw"
         className={`-order-1 h-auto w-full max-w-551 ${CASE_STUDY_IMAGE_RADIUS} md:col-span-2 xl:order-none xl:col-span-1 xl:col-start-2 xl:row-start-1`}

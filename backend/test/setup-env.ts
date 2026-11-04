@@ -10,3 +10,5 @@ process.env.R2_ACCOUNT_ID = "test-account";
 process.env.R2_ACCESS_KEY_ID = "test-access-key";
 process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
 process.env.R2_PRIVATE_BUCKET = "test-private-bucket";
+process.env.R2_PUBLIC_BUCKET = "test-public-bucket";
+process.env.R2_PUBLIC_BASE_URL = "https://public.test";

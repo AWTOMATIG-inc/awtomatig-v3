@@ -27,6 +27,17 @@ const CSP =
       ].join("; ")
     : undefined;
 
+const ASSETS_URL = process.env.ASSETS_URL;
+const ASSETS_PATTERNS: NonNullable<NextConfig["images"]>["remotePatterns"] = ASSETS_URL
+  ? [
+      {
+        protocol: new URL(ASSETS_URL).protocol === "http:" ? "http" : "https",
+        hostname: new URL(ASSETS_URL).hostname,
+        pathname: "/case-study/**",
+      },
+    ]
+  : [];
+
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -40,9 +51,10 @@ const nextConfig: NextConfig = {
   // Server Actions default to 1 MB. The careers application form posts a resume (5 MB cap) plus its fields, so allow 6 MB.
   // Nginx must allow the same (client_max_body_size 6m). This applies to every Server Action, the contact form included.
   experimental: { serverActions: { bodySizeLimit: "6mb" } },
-  // No remote image patterns: every image is a local asset under public/images, imported and optimized by
-  // next/image at build time. Add a pattern here only when a real external image host is needed (e.g. a CMS).
-  images: { formats: ["image/avif", "image/webp"] },
+  // Local images are imported from public/images. The one remote host is the public bucket that holds the case study images
+  // (ASSETS_URL, the backend's R2_PUBLIC_BASE_URL), limited to its case-study/ folder. next/image fetches and optimizes them on
+  // the server, so the browser only loads /_next/image and the CSP img-src needs no extra host. Read at build time.
+  images: { formats: ["image/avif", "image/webp"], remotePatterns: ASSETS_PATTERNS },
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },

@@ -364,6 +364,7 @@ lib/                                  # non-UI code: see AGENTS.md "Structure"
 ├── services.ts                       # SERVICES: the one list of services (id, name, short label)
 ├── metadata.ts                       # pageMetadata(): per-page title / canonical / Open Graph / Twitter
 ├── jobPosting.ts                     # buildJobPosting(): schema.org JobPosting for an open job (Google for Jobs)
+├── caseStudies.ts                    # server-side fetcher for the backend's public case study endpoint (published studies in order, revalidate 60, last good list kept if the backend is down); needs CRM_API_URL and ASSETS_URL
 ├── careers.ts                        # server-side fetchers for the backend's public careers endpoints (open jobs, one job) and their types
 ├── mailer.ts                         # getMailer(): the Gmail SMTP transport (careers; the contact form has its own copy)
 ├── emailLayout.ts                    # shared email building blocks: token colours as values (the one place), document shell, detail card, button, steps
@@ -495,7 +496,7 @@ app/
         │   ├── case-studies/
         │   │   ├── CaseStudiesSection.tsx  # sticky intro + scrolling case study cards + "View all" (props: id, eyebrow, title, optional description); Home "Selected work" and the campaign page's "Proven in practice"
         │   │   ├── CaseStudyCard.tsx      # one card layout: image + shared details
-        │   │   ├── caseStudies.ts   # CASE_STUDIES, used by Home and Case Studies; category / service are lib/services.ts ServiceIds; optional seoTitle / seoDescription feed the detail page's meta
+        │   │   ├── caseStudies.ts   # the CaseStudy type and CASE_STUDY_IMAGE_RADIUS only; the studies come from the CMS through lib/caseStudies.ts (category / service are lib/services.ts ServiceIds; optional seoTitle / seoDescription feed the detail page's meta)
         │   │   └── CaseStudyDetails.tsx  # the details column of every case study card
         │   ├── feature-grid/
         │   │   └── FeatureGrid.tsx # white card with a 2×2 grid of numbered features (Services ecosystem, About how we think)

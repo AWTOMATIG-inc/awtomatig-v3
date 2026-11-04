@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PRIVACY_POLICY, TERMS } from "@/app/components/sections/shared/legal/legal";
-import { CASE_STUDIES } from "@/app/components/sections/shared/case-studies/caseStudies";
 import { getOpenJobs } from "@/lib/careers";
+import { getCaseStudies } from "@/lib/caseStudies";
 import { SERVICES } from "@/lib/services";
 import { ROUTES, SITE } from "@/lib/site";
 
@@ -14,17 +14,24 @@ const CONTENT_UPDATED = "2026-10-27";
 const LAST_MODIFIED: Record<string, string> = { "/privacy": PRIVACY_POLICY.updated, "/terms": TERMS.updated };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const paths = [
-    ...ROUTES,
-    ...SERVICES.map((service) => `/services/${service.id}`),
-    ...CASE_STUDIES.map((study) => `/case-studies/${study.id}`),
-  ];
+  const paths = [...ROUTES, ...SERVICES.map((service) => `/services/${service.id}`)];
   const pages: MetadataRoute.Sitemap = paths.map((path) => ({
     url: new URL(path, SITE.url).toString(),
     lastModified: LAST_MODIFIED[path] ?? CONTENT_UPDATED,
     changeFrequency: "monthly",
     priority: path === "/" ? 1 : 0.8,
   }));
+
+  // Published case studies only. If the backend cannot be reached they are left out this time: the sitemap is still valid.
+  const studies = await getCaseStudies();
+  const caseStudies: MetadataRoute.Sitemap = studies.ok
+    ? studies.studies.map((study) => ({
+        url: new URL(`/case-studies/${study.id}`, SITE.url).toString(),
+        lastModified: CONTENT_UPDATED,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+      }))
+    : [];
 
   // Open positions only. If the backend cannot be reached the sitemap simply has no job URLs this time: it is still valid.
   const jobs = await getOpenJobs();
@@ -39,5 +46,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }))
     : [];
 
-  return [...pages, ...openings];
+  return [...pages, ...caseStudies, ...openings];
 }

@@ -308,6 +308,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cms/case-studies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CaseStudiesController_list"];
+        put?: never;
+        post: operations["CaseStudiesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/case-studies/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["CaseStudiesController_setOrder"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/case-studies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CaseStudiesController_get"];
+        put?: never;
+        post?: never;
+        delete: operations["CaseStudiesController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["CaseStudiesController_update"];
+        trace?: never;
+    };
+    "/api/v1/cms/case-studies/{id}/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["CaseStudiesController_setImage"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/case-studies/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CaseStudiesController_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/case-studies/{id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CaseStudiesController_unpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/public/case-studies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicCaseStudiesController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/public/case-studies/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicCaseStudiesController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -709,6 +837,176 @@ export interface components {
             url: string;
             /** Format: date-time */
             expiresAt: string;
+        };
+        CaseStudyListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                title: string;
+                client: string;
+                /** @enum {string} */
+                service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                /** @enum {string} */
+                category: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                /** @enum {string} */
+                status: "draft" | "published";
+                sortOrder: number;
+                /** Format: date-time */
+                publishedAt: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                image: {
+                    /** Format: uri */
+                    url: string;
+                    alt: string;
+                    width: number;
+                    height: number;
+                } | null;
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        CreateCaseStudyDto: {
+            title: string;
+            summary: string;
+            client: string;
+            /** @enum {string} */
+            service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @enum {string} */
+            category: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            description: string;
+            challenge: string;
+            /** @default [] */
+            tags: string[];
+            /** @default [] */
+            stats: {
+                value: string;
+                label: string;
+            }[];
+            /** @default  */
+            seoTitle: string;
+            /** @default  */
+            seoDescription: string;
+            slug?: string;
+        };
+        CaseStudyDto: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            title: string;
+            client: string;
+            /** @enum {string} */
+            service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @enum {string} */
+            category: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @enum {string} */
+            status: "draft" | "published";
+            sortOrder: number;
+            /** Format: date-time */
+            publishedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            image: {
+                /** Format: uri */
+                url: string;
+                alt: string;
+                width: number;
+                height: number;
+            } | null;
+            summary: string;
+            description: string;
+            challenge: string;
+            tags: string[];
+            stats: {
+                value: string;
+                label: string;
+            }[];
+            seoTitle: string;
+            seoDescription: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ReorderCaseStudiesDto: {
+            ids: string[];
+        };
+        UpdateCaseStudyDto: {
+            title?: string;
+            summary?: string;
+            client?: string;
+            /** @enum {string} */
+            service?: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @enum {string} */
+            category?: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            description?: string;
+            challenge?: string;
+            tags?: string[];
+            stats?: {
+                value: string;
+                label: string;
+            }[];
+            seoTitle?: string;
+            seoDescription?: string;
+            imageAlt?: string;
+        };
+        PublicCaseStudyListDto: {
+            items: {
+                slug: string;
+                title: string;
+                summary: string;
+                client: string;
+                /** @enum {string} */
+                service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                /** @enum {string} */
+                category: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                description: string;
+                challenge: string;
+                tags: string[];
+                stats: {
+                    value: string;
+                    label: string;
+                }[];
+                seoTitle: string;
+                seoDescription: string;
+                /** Format: date-time */
+                publishedAt: string | null;
+                image: {
+                    /** Format: uri */
+                    url: string;
+                    alt: string;
+                    width: number;
+                    height: number;
+                };
+            }[];
+        };
+        PublicCaseStudyDto: {
+            slug: string;
+            title: string;
+            summary: string;
+            client: string;
+            /** @enum {string} */
+            service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @enum {string} */
+            category: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            description: string;
+            challenge: string;
+            tags: string[];
+            stats: {
+                value: string;
+                label: string;
+            }[];
+            seoTitle: string;
+            seoDescription: string;
+            /** Format: date-time */
+            publishedAt: string | null;
+            image: {
+                /** Format: uri */
+                url: string;
+                alt: string;
+                width: number;
+                height: number;
+            };
         };
     };
     responses: never;
@@ -1413,6 +1711,338 @@ export interface operations {
                 };
             };
             /** @description No such application, or its file is missing */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "draft" | "published";
+                q?: string;
+                sort?: "sortOrder" | "createdAt" | "title";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyListDto"];
+                };
+            };
+        };
+    };
+    CaseStudiesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCaseStudyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description A case study with this address already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_setOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderCaseStudiesDto"];
+            };
+        };
+        responses: {
+            /** @description The list in its new order */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyListDto"];
+                };
+            };
+        };
+    };
+    CaseStudiesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The case study is published; unpublish it first */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCaseStudyDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_setImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description Describes the image for screen readers, 1 to 200 characters */
+                    alt: string;
+                    /**
+                     * Format: binary
+                     * @description A PNG, JPEG or WebP image, 5 MB at most
+                     */
+                    image: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The case study is not a draft */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CaseStudiesController_unpublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseStudyDto"];
+                };
+            };
+            /** @description No such case study */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The case study is not published */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicCaseStudiesController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published case studies in display order */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicCaseStudyListDto"];
+                };
+            };
+        };
+    };
+    PublicCaseStudiesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicCaseStudyDto"];
+                };
+            };
+            /** @description No such case study, or it is not published */
             404: {
                 headers: {
                     [name: string]: unknown;
