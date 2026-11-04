@@ -173,7 +173,7 @@ Done when: `tsc`, lint and build pass, and the three pages plus a detail page re
 
 ### Phase 5: seed and release
 
-- [x] (dev database done 2026-11-04; the reusable `backend/scripts/copy-case-studies.mjs` copies dev to the VPS, not yet run there) One-off seed script loads the three existing studies (Royal Safari Tours, Power Bank Bangladesh, New York Clean Team) from `caseStudies.ts` and uploads their images from `frontend/public/images/Case Study/` to `case-study/<slug>/image1.png`. Needs the owner's go-ahead because it writes to the real bucket.
+- [x] (dev database done 2026-11-04; for the VPS run `npm run seed:case-studies` in `backend/` after the deploy: it inserts the rows from `backend/seed/case-studies.sql`, the images are already in the bucket) One-off seed script loads the three existing studies (Royal Safari Tours, Power Bank Bangladesh, New York Clean Team) from `caseStudies.ts` and uploads their images from `frontend/public/images/Case Study/` to `case-study/<slug>/image1.png`. Needs the owner's go-ahead because it writes to the real bucket.
 - [ ] Compare Home and the Case Studies page before and after: same text, same order, same images.
 - [ ] Remove the hard-coded list and the `public/images/Case Study/` imports from the frontend.
 - [ ] VPS checklist (section 9) done and one real publish verified.
@@ -192,7 +192,7 @@ Done when: `tsc`, lint and build pass, and the three pages plus a detail page re
 - [ ] The public bucket's public access or custom domain is set (Q2); if `r2.dev` is used, note it as a launch item.
 - [ ] `WEBSITE_URL=http://127.0.0.1:3010` in the VPS `backend/.env` (instant refresh of the website after a publish; without it the site catches up within a minute).
 - [ ] `images.remotePatterns` host matches the real public URL. The admin **and the website** need `ASSETS_URL` (same value as `R2_PUBLIC_BASE_URL`) in their VPS `.env` before their next build. The backend must be up, migrated and seeded when the website builds.
-- [ ] `node backend/scripts/copy-case-studies.mjs` run once against `https://admin.awtomatig.com`; Home and Case Studies checked on the live site. Decide first whether the VPS shares the dev R2 public bucket (see backend MEMORY, 2026-11-04).
+- [ ] `npm run seed:case-studies` run once in `backend/` on the VPS; Home and Case Studies checked on the live site. It assumes the VPS uses the same R2 public bucket as dev (the image keys are in the SQL).
 - [ ] Publish, unpublish and delete tried once on a test study, then the test study removed.
 
 ## 10. Docs to update
