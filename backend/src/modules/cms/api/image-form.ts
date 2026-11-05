@@ -13,11 +13,12 @@ const LIMIT_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Reads the admin's `multipart/form-data` request: an `alt` text field and one `image` file. The size is capped while the file
- * streams, so an oversized upload is never held in memory. HTTP only: checking that it really is an image is the service's job.
+ * Reads a `multipart/form-data` request holding one file in the field `fileField`, plus an optional `alt` text field. The size is
+ * capped while the file streams, so an oversized upload is never held in memory. HTTP only: checking that it really is an image
+ * is the service's job.
  */
-export async function readImageForm(request: FastifyRequest): Promise<ImageUpload> {
-  if (!request.isMultipart()) throw new ValidationError("Send the image as multipart/form-data");
+async function readForm(request: FastifyRequest, fileField: string): Promise<{ buffer: Buffer; alt: string | null }> {
+  if (!request.isMultipart()) throw new ValidationError(`Send the ${fileField} as multipart/form-data`);
 
   let alt: string | null = null;
   let buffer: Buffer | null = null;
@@ -25,7 +26,7 @@ export async function readImageForm(request: FastifyRequest): Promise<ImageUploa
     for await (const part of request.parts()) {
       if (part.type === "file") {
         const bytes = await part.toBuffer();
-        if (part.fieldname !== "image") throw new ValidationError("Only an `image` file is accepted");
+        if (part.fieldname !== fileField) throw new ValidationError(`Only a \`${fileField}\` file is accepted`);
         if (buffer) throw new ValidationError("Send exactly one image file");
         buffer = bytes;
       } else if (part.fieldname === "alt" && typeof part.value === "string") {
@@ -36,11 +37,23 @@ export async function readImageForm(request: FastifyRequest): Promise<ImageUploa
     if (error instanceof ValidationError) throw error;
     const code = (error as { code?: unknown }).code;
     const message = typeof code === "string" ? LIMIT_MESSAGES[code] : undefined;
-    if (message) throw new ValidationError(message, { image: message });
+    if (message) throw new ValidationError(message, { [fileField]: message });
     throw error;
   }
 
-  if (buffer === null) throw new ValidationError("The form is missing its `image` file", { image: "Choose an image" });
+  if (buffer === null)
+    throw new ValidationError(`The form is missing its \`${fileField}\` file`, { [fileField]: "Choose an image" });
+  return { buffer, alt };
+}
+
+/** The case study admin's request: an `alt` text field and one `image` file. */
+export async function readImageForm(request: FastifyRequest): Promise<ImageUpload> {
+  const { buffer, alt } = await readForm(request, "image");
   if (alt === null) throw new ValidationError("The form is missing its `alt` field", { alt: "Describe the image" });
   return { buffer, alt };
+}
+
+/** The testimonial admin's request: one `logo` file. The alt text is the company name, so there is no field for it. */
+export async function readLogoForm(request: FastifyRequest): Promise<Buffer> {
+  return (await readForm(request, "logo")).buffer;
 }

@@ -1,5 +1,5 @@
 import { jpeg, png, webp, webpLossless, webpLossy } from "../../../../test/support/images";
-import { buildImageKey, detectImage, MAX_IMAGE_DIMENSION, nextImageNumber } from "./image";
+import { buildFileKey, buildImageKey, detectImage, MAX_IMAGE_DIMENSION, nextFileNumber, nextImageNumber } from "./image";
 
 describe("detectImage", () => {
   it("reads a PNG's type and size", () => {
@@ -87,5 +87,18 @@ describe("nextImageNumber", () => {
   it("counts orphans from a failed cleanup, in any extension, and ignores other files", () => {
     expect(nextImageNumber(["case-study/a/image7.png", "case-study/a/image2.jpg"])).toBe(8);
     expect(nextImageNumber(["case-study/a/notes.txt", "case-study/a/image.png", "case-study/a/image-2.png"])).toBe(1);
+  });
+});
+
+describe("buildFileKey and nextFileNumber", () => {
+  it("build and number files of any name in any folder", () => {
+    expect(buildFileKey("testimonial/abc/", "logo", 1, "png")).toBe("testimonial/abc/logo1.png");
+    expect(nextFileNumber([], "logo")).toBe(1);
+    expect(nextFileNumber(["testimonial/abc/logo1.png", "testimonial/abc/logo4.webp"], "logo")).toBe(5);
+  });
+
+  it("count only files with the asked-for name", () => {
+    expect(nextFileNumber(["testimonial/abc/image9.png"], "logo")).toBe(1);
+    expect(nextFileNumber(["case-study/a/logo9.png"], "image")).toBe(1);
   });
 });

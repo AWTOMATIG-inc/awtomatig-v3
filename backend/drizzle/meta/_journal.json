@@ -36,6 +36,13 @@
       "when": 1793774993085,
       "tag": "0004_cms_case_studies",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793861695004,
+      "tag": "0005_cms_testimonials",
+      "breakpoints": true
     }
   ]
 }

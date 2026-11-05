@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { type Path, useForm, useWatch } from "react-hook-form";
 
+import { ImagePicker } from "@/components/cms/ImagePicker";
 import { Button, Card, CardHeader, Field, Input, Select, Textarea } from "@/components/ui";
 import { api } from "@/lib/api/client";
 import { apiFieldErrors, apiMessage } from "@/lib/api/errors";
@@ -20,8 +21,6 @@ import {
   toUpdateBody,
 } from "@/lib/cms/case-study-form";
 import { ALT_MAX_LENGTH, altProblem, uploadCaseStudyImage } from "@/lib/cms/image";
-
-import { ImagePicker } from "./ImagePicker";
 
 const describe = (id: string, hasError: boolean) => (hasError ? `${id}-error` : undefined);
 
@@ -343,7 +342,12 @@ export function CaseStudyForm({ study, canSubmit }: { study?: CaseStudy; canSubm
               subtitle="Uploaded once and used on both the Home page and the Case Studies page. Needed to publish."
             />
             <div className="grid gap-20 p-20 md:grid-cols-[320px_1fr]">
-              <ImagePicker onFile={setFile} disabled={!canSubmit || isSubmitting} error={imageError} />
+              <ImagePicker
+                onFile={setFile}
+                disabled={!canSubmit || isSubmitting}
+                error={imageError}
+                hint="PNG, JPEG or WebP, up to 5 MB. About 551 × 525 px works best; the website rounds the corners."
+              />
               <div className="max-w-520">
                 <Field
                   id="imageAlt"

@@ -5,8 +5,11 @@ import type { Env } from "../../../shared/config/env";
 
 const TIMEOUT_MS = 3000;
 
+/** The website's cached lists the backend can ask it to drop. Must match the allow-list in the website's app/api/revalidate. */
+export type WebsiteTag = "case-studies" | "testimonials";
+
 /**
- * Tells the website to drop its cached case studies right after a change that affects the live site, so a publish or unpublish
+ * Tells the website to drop its cached case studies or testimonials right after a change that affects the live site, so a publish or unpublish
  * shows on the next visit instead of up to a minute later. Server to server with the same shared key the website uses to send
  * inquiries (LEAD_INGEST_KEY). Best effort: the change is already saved, and the website refreshes by itself within a minute
  * anyway, so a failure is logged and never reaches the employee. With WEBSITE_URL unset it does nothing.
@@ -23,10 +26,22 @@ export class WebsiteRevalidator {
     this.key = config.env.LEAD_INGEST_KEY;
   }
 
-  async caseStudiesChanged(): Promise<void> {
+  /**
+   * Case studies are the website's default: the request carries no tag, so a website that does not know about tags yet (or a
+   * backend deployed before it) keeps working.
+   */
+  caseStudiesChanged(): Promise<void> {
+    return this.changed();
+  }
+
+  testimonialsChanged(): Promise<void> {
+    return this.changed("testimonials");
+  }
+
+  private async changed(tag?: WebsiteTag): Promise<void> {
     if (!this.endpoint) return;
     try {
-      const response = await fetch(this.endpoint, {
+      const response = await fetch(tag ? `${this.endpoint}?tag=${tag}` : this.endpoint, {
         method: "POST",
         headers: { "x-ingest-key": this.key },
         signal: AbortSignal.timeout(TIMEOUT_MS),

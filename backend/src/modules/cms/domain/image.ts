@@ -102,22 +102,31 @@ function readWebp(buffer: Buffer): DetectedImage | null {
   }
 }
 
-const IMAGE_KEY = /image(\d+)\.[a-z0-9]+$/;
+/** The key of file `n` in a folder, for example `case-study/royal-safari-tours/image2.png` (`name` is `image`) or `testimonial/<id>/logo1.png`. */
+export function buildFileKey(folder: string, name: string, n: number, extension: string): string {
+  return `${folder}${name}${n}.${extension}`;
+}
 
 /** The key of image number `n` of a study, for example `case-study/royal-safari-tours/image2.png`. */
 export function buildImageKey(slug: string, n: number, extension: string): string {
-  return `${imageFolder(slug)}image${n}.${extension}`;
+  return buildFileKey(imageFolder(slug), "image", n, extension);
 }
 
 /**
  * The number the next upload takes: one more than the highest already in the folder (orphans from a failed cleanup included).
  * Never the lowest free number: a deleted `image1` must not come back, or a cache could show the old picture at that address.
+ * `name` is the file name before the number (`image`, `logo`).
  */
-export function nextImageNumber(keys: string[]): number {
+export function nextFileNumber(keys: string[], name: string): number {
+  const pattern = new RegExp(`${name}(\\d+)\\.[a-z0-9]+$`);
   let highest = 0;
   for (const key of keys) {
-    const match = IMAGE_KEY.exec(key);
+    const match = pattern.exec(key);
     if (match) highest = Math.max(highest, Number(match[1]));
   }
   return highest + 1;
+}
+
+export function nextImageNumber(keys: string[]): number {
+  return nextFileNumber(keys, "image");
 }

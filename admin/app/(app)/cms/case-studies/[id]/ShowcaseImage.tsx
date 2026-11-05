@@ -3,13 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { ImagePicker } from "@/components/cms/ImagePicker";
 import { Button, Card, CardHeader, Field, Input } from "@/components/ui";
 import { api } from "@/lib/api/client";
 import { apiMessage } from "@/lib/api/errors";
 import type { CaseStudy } from "@/lib/cms/case-studies";
 import { ALT_MAX_LENGTH, altProblem, uploadCaseStudyImage } from "@/lib/cms/image";
-
-import { ImagePicker } from "../ImagePicker";
 
 /**
  * The showcase image of a saved case study: the current picture, a file to replace it with, and its description. Uploading a
@@ -75,7 +74,14 @@ export function ShowcaseImage({ study, canUpdate }: { study: CaseStudy; canUpdat
         subtitle="Used on both the Home page and the Case Studies page. A new image replaces the old one."
       />
       <div className="grid gap-20 p-20 md:grid-cols-[320px_1fr]">
-        <ImagePicker key={pickerKey} current={image} onFile={setFile} disabled={pending} readOnly={!canUpdate} />
+        <ImagePicker
+          key={pickerKey}
+          current={image}
+          onFile={setFile}
+          disabled={pending}
+          readOnly={!canUpdate}
+          hint="PNG, JPEG or WebP, up to 5 MB. About 551 × 525 px works best; the website rounds the corners."
+        />
         <div className="max-w-520">
           <Field
             id="showcaseAlt"

@@ -436,6 +436,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cms/testimonials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TestimonialsController_list"];
+        put?: never;
+        post: operations["TestimonialsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/testimonials/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["TestimonialsController_setOrder"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/testimonials/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TestimonialsController_get"];
+        put?: never;
+        post?: never;
+        delete: operations["TestimonialsController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["TestimonialsController_update"];
+        trace?: never;
+    };
+    "/api/v1/cms/testimonials/{id}/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["TestimonialsController_setLogo"];
+        post?: never;
+        delete: operations["TestimonialsController_removeLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/testimonials/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TestimonialsController_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/testimonials/{id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TestimonialsController_unpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/public/testimonials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicTestimonialsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1007,6 +1119,107 @@ export interface components {
                 width: number;
                 height: number;
             };
+        };
+        TestimonialListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                status: "draft" | "published";
+                sortOrder: number;
+                /** Format: date-time */
+                publishedAt: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                quote: string;
+                name: string;
+                role: string;
+                company: string;
+                /** @enum {string} */
+                service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                consentConfirmed: boolean;
+                logoInBlack: boolean;
+                logo: {
+                    /** Format: uri */
+                    url: string;
+                    width: number;
+                    height: number;
+                } | null;
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        CreateTestimonialDto: {
+            quote: string;
+            name: string;
+            role: string;
+            company: string;
+            /** @enum {string} */
+            service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            /** @default false */
+            consentConfirmed: boolean;
+            /** @default false */
+            logoInBlack: boolean;
+        };
+        TestimonialDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "draft" | "published";
+            sortOrder: number;
+            /** Format: date-time */
+            publishedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            quote: string;
+            name: string;
+            role: string;
+            company: string;
+            /** @enum {string} */
+            service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            consentConfirmed: boolean;
+            logoInBlack: boolean;
+            logo: {
+                /** Format: uri */
+                url: string;
+                width: number;
+                height: number;
+            } | null;
+        };
+        ReorderTestimonialsDto: {
+            ids: string[];
+        };
+        UpdateTestimonialDto: {
+            quote?: string;
+            name?: string;
+            role?: string;
+            company?: string;
+            /** @enum {string} */
+            service?: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+            consentConfirmed?: boolean;
+            logoInBlack?: boolean;
+        };
+        PublicTestimonialListDto: {
+            items: {
+                quote: string;
+                name: string;
+                role: string;
+                company: string;
+                /** @enum {string} */
+                service: "website-infrastructure" | "back-office-operations" | "erp-business-systems" | "ad-tech";
+                logoInBlack: boolean;
+                logo: {
+                    /** Format: uri */
+                    url: string;
+                    width: number;
+                    height: number;
+                } | null;
+            }[];
         };
     };
     responses: never;
@@ -2048,6 +2261,336 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    TestimonialsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "draft" | "published";
+                q?: string;
+                sort?: "sortOrder" | "createdAt" | "name" | "company";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialListDto"];
+                };
+            };
+        };
+    };
+    TestimonialsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTestimonialDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+        };
+    };
+    TestimonialsController_setOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderTestimonialsDto"];
+            };
+        };
+        responses: {
+            /** @description The list in its new order */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialListDto"];
+                };
+            };
+        };
+    };
+    TestimonialsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The testimonial is published; unpublish it first */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTestimonialDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The client's agreement cannot be withdrawn while the testimonial is published */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_setLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description A PNG, JPEG or WebP image, 5 MB at most
+                     */
+                    logo: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_removeLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The testimonial is not a draft */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TestimonialsController_unpublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialDto"];
+                };
+            };
+            /** @description No such testimonial */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The testimonial is not published */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicTestimonialsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published testimonials in display order, at most 50 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicTestimonialListDto"];
+                };
             };
         };
     };
