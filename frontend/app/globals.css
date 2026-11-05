@@ -197,6 +197,17 @@
     transparent 100%
   );
 
+  /* ---------- Effects: Service detail "Overview" growth card (the rising-bars card), sampled from the design; the bg-growth-card utility.
+     A cyan glow from the bottom-right corner behind the tallest bars (ellipse 80% × 75%, alpha 0.5 → 0) on charcoal. ---------- */
+  --gradient-growth-card: radial-gradient(
+    ellipse 80% 75% at 100% 92%,
+    rgb(2 213 232 / 0.5) 0,
+    rgb(2 213 232 / 0.38) 25%,
+    rgb(2 213 232 / 0.22) 50%,
+    rgb(2 213 232 / 0.08) 78%,
+    transparent 100%
+  );
+
   /* ---------- Effects: Display text gradient (white → pale cyan) — the `text-gradient-display` utility ---------- */
   --gradient-display: linear-gradient(52deg, var(--color-white) 49%, #bdf4f9 88%, #aef1f7 100%);
 }
@@ -608,6 +619,11 @@
 /* Home "Trusted operations": the stats card's top-right glow (see the --gradient-trusted-* tokens) */
 @utility bg-trusted-card {
   background: var(--gradient-trusted-card), var(--color-charcoal);
+}
+
+/* Service detail "Overview" growth card: the bottom-right glow on charcoal (see --gradient-growth-card) */
+@utility bg-growth-card {
+  background: var(--gradient-growth-card), var(--color-charcoal);
 }
 
 /* Soft diagonal streaks in the current color, strongest in the top-right corner (the glow of the Trusted operations card):

@@ -1,15 +1,5 @@
-import type { StaticImageData } from "next/image";
+import type { Capability } from "../../shared/capability-list/CapabilityList";
 import showcase from "@/public/images/landing_page/web.png";
-
-type Capability = {
-  title: string;
-  /** Shown under the title when the item is open */
-  description: string;
-  /** Shown beside the list while this item is open (4:3, cropped to fit) */
-  image: StaticImageData;
-  /** Describes the image; update it with the image */
-  imageAlt: string;
-};
 
 // Every item shows the same showcase for now. To give an item its own picture, import it above and set `image` and `imageAlt`.
 const PLACEHOLDER_ALT = "Example website pages: a homepage, a footer and statistics blocks, shown as a visual placeholder";

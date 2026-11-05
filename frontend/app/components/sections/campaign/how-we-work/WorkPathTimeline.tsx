@@ -20,10 +20,10 @@ const NODES = {
   active: "border-6 border-transparent bg-action-primary/20",
 };
 
-/** The six-step timeline. The active step advances by itself every half second and loops (paused for a few seconds after a touch
+/** The step timeline (six steps on the campaign page; `columns` is the grid-template-columns class for another count). The active step advances by itself every half second and loops (paused for a few seconds after a touch
  *  and while off screen; it ignores the reduced-motion setting, which only makes the sideways scroll instant). Mouse clicks, hover and dragging do nothing; on touch screens the row scrolls
  *  sideways by swipe when it is wider than the screen. */
-export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
+export default function WorkPathTimeline({ steps, columns = COLUMNS }: { steps: WorkStep[]; columns?: string }) {
   const [active, setActive] = useState(0);
   const [held, setHeld] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -97,7 +97,7 @@ export default function WorkPathTimeline({ steps }: { steps: WorkStep[] }) {
           className="fade-end-x bg-action-primary ease-out-quint absolute top-15.5 left-20 h-9 rounded-full transition-[width] duration-300 [--fade-length:190px] motion-reduce:transition-none"
         />
 
-        <ol ref={track} className={`relative grid ${COLUMNS}`}>
+        <ol ref={track} className={`relative grid ${columns}`}>
           {steps.map((step, i) => {
             const state = i === active ? "active" : i < active ? "reached" : "idle";
             const on = state === "active";

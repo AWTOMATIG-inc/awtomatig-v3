@@ -1,19 +1,28 @@
 "use client";
 
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { useState } from "react";
-import { CAPABILITIES } from "./capabilities";
+
+export type Capability = {
+  title: string;
+  /** Shown under the title when the item is open */
+  description: string;
+  /** Shown beside the list while this item is open (4:3, cropped to fit) */
+  image: StaticImageData;
+  /** Describes the image; update it with the image */
+  imageAlt: string;
+};
 
 // The eight areas as tabs beside their pictures: one is open at a time (the first at the start) and shows its description and
 // its image, the rest are dimmed. Every description stays in the page HTML (a closed one is only collapsed and inert), and the
 // images are stacked so the open one fades in over the others.
-export default function CapabilityList() {
+export default function CapabilityList({ items }: { items: Capability[] }) {
   const [open, setOpen] = useState(0);
 
   return (
     <div className="mt-40 grid gap-40 lg:mt-76 lg:grid-cols-[542fr_778fr] lg:gap-0">
       <ol>
-        {CAPABILITIES.map(({ title, description }, i) => {
+        {items.map(({ title, description }, i) => {
           const isOpen = open === i;
           const number = String(i + 1).padStart(2, "0");
           return (
@@ -51,7 +60,7 @@ export default function CapabilityList() {
       </ol>
 
       <div className="rounded-20 relative aspect-4/3 w-full overflow-hidden">
-        {CAPABILITIES.map(({ title, image, imageAlt }, i) => (
+        {items.map(({ title, image, imageAlt }, i) => (
           <Image
             key={title}
             src={image}
