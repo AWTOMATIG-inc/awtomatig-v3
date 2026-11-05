@@ -12,12 +12,7 @@ export default function JobCard({ job }: { job: JobSummary }) {
   return (
     <li className="rounded-16 bg-surface flex flex-col gap-24 p-20 lg:flex-row lg:items-center lg:justify-between lg:gap-40 lg:p-28">
       <div className="min-w-0 lg:flex-1">
-        <div className="flex flex-wrap items-center gap-x-12 gap-y-8">
-          <h3 className="type-heading-28">{job.title}</h3>
-          {!job.acceptingApplications && (
-            <span className="type-label-14 bg-surface-inverse text-fg-inverse rounded-60 px-12 py-6 uppercase">Closed</span>
-          )}
-        </div>
+        <h3 className="type-heading-28">{job.title}</h3>
         <ul className="mt-16 flex flex-wrap gap-8" aria-label="Job summary">
           <JobTag>{JOB_TYPE_LABEL[job.jobType]}</JobTag>
           <JobTag>{WORK_MODE_LABEL[job.workMode]}</JobTag>
@@ -31,7 +26,7 @@ export default function JobCard({ job }: { job: JobSummary }) {
           <dd className="type-body-16 mt-4 font-medium">{formatSalary(job)}</dd>
         </div>
         <div>
-          <dt className="type-caption-12 text-fg-muted uppercase">{job.acceptingApplications ? "Apply by" : "Deadline"}</dt>
+          <dt className="type-caption-12 text-fg-muted uppercase">Apply by</dt>
           <dd className="type-body-16 mt-4 font-medium">{formatDate(job.deadlineOn)}</dd>
         </div>
       </dl>

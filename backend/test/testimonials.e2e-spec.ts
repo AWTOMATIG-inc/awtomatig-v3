@@ -8,7 +8,7 @@ import { Pool } from "pg";
 import { createApp } from "../src/bootstrap";
 import { users } from "../src/shared/auth/auth.schema";
 import { AuditService } from "../src/shared/audit/audit.service";
-import { WebsiteRevalidator } from "../src/modules/cms/service/website-revalidator";
+import { WebsiteRevalidator } from "../src/shared/website/website-revalidator";
 import { rolePermissions, roles, userRoles } from "../src/shared/rbac/rbac.schema";
 import { StorageUnavailableError } from "../src/shared/storage/storage.errors";
 import { StorageService } from "../src/shared/storage/storage.service";

@@ -21,6 +21,7 @@ import {
   type UpdateJobInput,
   type WorkMode,
 } from "../domain/job";
+import { WebsiteRevalidator } from "../../../shared/website/website-revalidator";
 import { ApplicationsRepo } from "../repo/applications.repo";
 import { type JobPatch, JobsRepo } from "../repo/jobs.repo";
 
@@ -151,6 +152,7 @@ export class JobsService {
     private readonly repo: JobsRepo,
     private readonly applications: ApplicationsRepo,
     private readonly audit: AuditService,
+    private readonly website: WebsiteRevalidator,
   ) {}
 
   async create(input: CreateJobInput, actorId: string) {
@@ -158,7 +160,7 @@ export class JobsService {
     const problem = deadlineProblem(input.deadlineOn, now);
     if (problem) throw new ValidationError(problem, { deadlineOn: problem });
 
-    return this.database.transaction(async (tx) => {
+    const job = await this.database.transaction(async (tx) => {
       const status: JobStatus = input.publish ? "open" : "draft";
       let id: string | null = null;
       for (let attempt = 0; attempt < SLUG_ATTEMPTS && id === null; attempt++) {
@@ -202,6 +204,8 @@ export class JobsService {
       );
       return this.load(tx, id, now);
     });
+    await this.refreshSite(job);
+    return job;
   }
 
   async list(query: ListJobsQuery) {
@@ -232,7 +236,7 @@ export class JobsService {
 
   async update(id: string, input: UpdateJobInput, actorId: string) {
     const now = new Date();
-    return this.database.transaction(async (tx) => {
+    const job = await this.database.transaction(async (tx) => {
       const row = await this.repo.findForUpdate(tx, id);
       if (!row) throw new NotFoundError("Job not found");
 
@@ -265,12 +269,14 @@ export class JobsService {
       );
       return this.load(tx, id, now);
     });
+    await this.refreshSite(job);
+    return job;
   }
 
   /** A draft becomes visible to candidates. */
   async publish(id: string, actorId: string) {
     const now = new Date();
-    return this.database.transaction(async (tx) => {
+    const job = await this.database.transaction(async (tx) => {
       const row = await this.repo.findForUpdate(tx, id);
       if (!row) throw new NotFoundError("Job not found");
       if (row.status !== "draft") throw new ConflictError("Only a draft can be published");
@@ -281,12 +287,14 @@ export class JobsService {
       await this.recordStatus(tx, "published", id, actorId);
       return this.load(tx, id, now);
     });
+    await this.refreshSite(job);
+    return job;
   }
 
   /** Stops accepting applications at once. Existing applications are untouched. */
   async close(id: string, actorId: string) {
     const now = new Date();
-    return this.database.transaction(async (tx) => {
+    const job = await this.database.transaction(async (tx) => {
       const row = await this.repo.findForUpdate(tx, id);
       if (!row) throw new NotFoundError("Job not found");
       if (row.status !== "open") throw new ConflictError("Only an open job can be closed");
@@ -295,12 +303,14 @@ export class JobsService {
       await this.recordStatus(tx, "closed", id, actorId);
       return this.load(tx, id, now);
     });
+    await this.refreshSite(job);
+    return job;
   }
 
   /** A closed job takes applications again. Its deadline must be today or later, so pass a new one if the old one has passed. */
   async reopen(id: string, input: ReopenJobInput, actorId: string) {
     const now = new Date();
-    return this.database.transaction(async (tx) => {
+    const job = await this.database.transaction(async (tx) => {
       const row = await this.repo.findForUpdate(tx, id);
       if (!row) throw new NotFoundError("Job not found");
       if (row.status !== "closed") throw new ConflictError("Only a closed job can be reopened");
@@ -313,6 +323,8 @@ export class JobsService {
       await this.recordStatus(tx, "reopened", id, actorId);
       return this.load(tx, id, now);
     });
+    await this.refreshSite(job);
+    return job;
   }
 
   private async load(tx: Tx, id: string, now: Date) {
@@ -352,6 +364,11 @@ export class JobsService {
       benefits: row.benefits,
       questions: questionList(questions),
     };
+  }
+
+  /** Anything a candidate can see (not a draft) changed: have the website drop its cached careers pages at once. Best effort. */
+  private refreshSite(job: { status: string }) {
+    return job.status === "draft" ? Promise.resolve() : this.website.careersChanged();
   }
 
   private recordStatus(tx: Tx, change: "published" | "closed" | "reopened", id: string, actorId: string) {

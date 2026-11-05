@@ -31,8 +31,11 @@ export type Job = JobSummary & {
   questions: JobQuestion[];
 };
 
-/** A new opening can take up to this long to show on the site; a closed one stops accepting at once anyway. */
-export const CAREERS_REVALIDATE_SECONDS = 60;
+/** Safety net only (it also lets a lapsed deadline drop off the list): the backend asks the site to drop the `careers` tag the moment a job changes. */
+export const CAREERS_REVALIDATE_SECONDS = 30;
+
+/** The cache tag on the job list and every job. The backend drops it through app/api/revalidate after a job is published, edited, closed or reopened. */
+export const CAREERS_TAG = "careers";
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/;
 
@@ -49,7 +52,7 @@ export function jobsEndpoint(path = ""): string | null {
 
 export type JobsResult = { ok: true; jobs: JobSummary[] } | { ok: false };
 
-/** Open jobs, soonest deadline first. `ok: false` means the backend could not be reached, which is not the same as "no jobs". */
+/** Jobs taking applications, soonest deadline first (a closed or lapsed job is not listed, though its own page still opens). `ok: false` means the backend could not be reached, which is not the same as "no jobs". */
 export async function getOpenJobs(): Promise<JobsResult> {
   const url = jobsEndpoint();
   if (!url) {
@@ -58,7 +61,7 @@ export async function getOpenJobs(): Promise<JobsResult> {
   }
   try {
     const response = await fetch(url, {
-      next: { revalidate: CAREERS_REVALIDATE_SECONDS },
+      next: { revalidate: CAREERS_REVALIDATE_SECONDS, tags: [CAREERS_TAG] },
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) {
@@ -68,7 +71,7 @@ export async function getOpenJobs(): Promise<JobsResult> {
     const body: unknown = await response.json();
     const items = (body as { items?: unknown }).items;
     if (!Array.isArray(items)) return { ok: false };
-    return { ok: true, jobs: items as JobSummary[] };
+    return { ok: true, jobs: (items as JobSummary[]).filter((job) => job.acceptingApplications) };
   } catch (err) {
     console.error("[careers] could not load the job list:", err instanceof Error ? err.message : err);
     return { ok: false };
@@ -90,7 +93,7 @@ export async function getJob(slug: string, { fresh = false }: { fresh?: boolean 
   }
   try {
     const response = await fetch(url, {
-      ...(fresh ? { cache: "no-store" as const } : { next: { revalidate: CAREERS_REVALIDATE_SECONDS } }),
+      ...(fresh ? { cache: "no-store" as const } : { next: { revalidate: CAREERS_REVALIDATE_SECONDS, tags: [CAREERS_TAG] } }),
       signal: AbortSignal.timeout(8000),
     });
     if (response.status === 404) return { status: "not-found" };

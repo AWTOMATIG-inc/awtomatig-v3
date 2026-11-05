@@ -13,7 +13,7 @@ import { MAILTO, SITE } from "@/lib/site";
 // Job pages are built on the first visit and then rebuilt in the background at most once a minute. None are known at build
 // time, so a new opening needs no deploy. (The backend decides whether a job takes applications, so a closed job stops accepting
 // at once even while its page is cached.)
-export const revalidate = 60;
+export const revalidate = 30; // must be a literal; keep equal to CAREERS_REVALIDATE_SECONDS in lib/careers.ts
 
 // Meta titles are up to 60 characters with " | AWTOMATIG" (12), descriptions up to 160; job text is free-form, so cut it to fit.
 const fit = (text: string, max: number) => (text.length <= max ? text : `${text.slice(0, max - 1).trimEnd()}…`);

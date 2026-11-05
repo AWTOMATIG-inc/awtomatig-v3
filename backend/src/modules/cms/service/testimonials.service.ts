@@ -17,7 +17,7 @@ import {
 } from "../domain/testimonial";
 import { type TestimonialPatch, TestimonialsRepo } from "../repo/testimonials.repo";
 import { PublicImageStore } from "./public-image-store";
-import { WebsiteRevalidator } from "./website-revalidator";
+import { WebsiteRevalidator } from "../../../shared/website/website-revalidator";
 
 /** An uploaded logo as the HTTP layer hands it over. Nothing here is trusted yet. */
 export interface LogoUpload {

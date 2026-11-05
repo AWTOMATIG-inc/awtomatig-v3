@@ -7,11 +7,10 @@ import { TestimonialsRepo } from "./repo/testimonials.repo";
 import { CaseStudiesService } from "./service/case-studies.service";
 import { PublicImageStore } from "./service/public-image-store";
 import { TestimonialsService } from "./service/testimonials.service";
-import { WebsiteRevalidator } from "./service/website-revalidator";
 
 /** The website's managed content: case studies (each with one showcase image) and client testimonials (each with an optional logo). */
 @Module({
   controllers: [CaseStudiesController, PublicCaseStudiesController, TestimonialsController, PublicTestimonialsController],
-  providers: [CaseStudiesService, CaseStudiesRepo, TestimonialsService, TestimonialsRepo, PublicImageStore, WebsiteRevalidator],
+  providers: [CaseStudiesService, CaseStudiesRepo, TestimonialsService, TestimonialsRepo, PublicImageStore],
 })
 export class CmsModule {}
