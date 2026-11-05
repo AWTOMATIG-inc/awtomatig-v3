@@ -12,7 +12,7 @@ export default function FaqList({ items = FAQS }: { items?: FaqItem[] }) {
       {items.map((item, i) => {
         const isOpen = open === i;
         return (
-          <li key={item.question} className="border-border border-b last:border-b-0">
+          <li key={`${i}-${item.question}`} className="border-border border-b last:border-b-0">
             <h3>
               <button
                 type="button"

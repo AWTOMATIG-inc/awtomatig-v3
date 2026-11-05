@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
 import { ChatBubbleIcon } from "@/app/components/icons";
 import { Button, Eyebrow } from "@/app/components/ui";
+import { getFaqs } from "@/lib/faqs";
 import FaqList from "./FaqList";
 import type { FaqItem } from "./faq";
 
 type FaqSectionProps = {
-  /** Questions and answers (default: the shared list) */
+  /**
+   * Questions and answers fixed in code (the cleaning landing page). Leave it out to show the shared list that the team edits in
+   * the admin app (Website → FAQs): it is loaded from the backend, and the section is left out when none is published.
+   */
   items?: FaqItem[];
   eyebrow?: string;
   title?: ReactNode;
@@ -16,9 +20,9 @@ type FaqSectionProps = {
 };
 
 // Heading row, then a dark "still have questions" card beside the accordion (both start on the first hairline).
-// Contact and the campaign pages share it; the campaign pages pass their own copy.
-export default function FaqSection({
-  items,
+// Contact and the campaign pages share it; the campaign pages pass their own copy. A page that passes `items` never touches the CMS.
+export default async function FaqSection({
+  items: fixedItems,
   eyebrow = "FAQs",
   title = "Before we get started.",
   paddingClassName = "py-60 lg:pt-100 lg:pb-100",
@@ -34,6 +38,10 @@ export default function FaqSection({
     href: "/contact#inquiry",
   },
 }: FaqSectionProps) {
+  const items = fixedItems ?? (await getFaqs());
+  // The team published nothing: an empty accordion beside a "still have questions" card would look broken, so the section is left out.
+  if (items.length === 0) return null;
+
   return (
     <section id="faqs" aria-labelledby="faq-title" className="bg-surface-subtle text-fg-strong">
       <div className={`site-container ${paddingClassName}`}>

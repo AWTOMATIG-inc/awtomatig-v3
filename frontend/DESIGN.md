@@ -366,6 +366,7 @@ lib/                                  # non-UI code: see AGENTS.md "Structure"
 ├── jobPosting.ts                     # buildJobPosting(): schema.org JobPosting for an open job (Google for Jobs)
 ├── caseStudies.ts                    # server-side fetcher for the backend's public case study endpoint (published studies in order, revalidate 60, last good list kept if the backend is down); needs CRM_API_URL and ASSETS_URL
 ├── testimonials.ts                   # server-side fetcher for the backend's public testimonial endpoint (published, in order, revalidate 60 + tag `testimonials`, last good list kept); the Testimonial type; a logo outside ASSETS_URL /testimonial/ is dropped, not the testimonial
+├── faqs.ts                           # server-side fetcher for the backend's public FAQ endpoint (published, in order, revalidate 60 + tag `faqs`, last good list kept, built-in list as the fallback)
 ├── careers.ts                        # server-side fetchers for the backend's public careers endpoints (open jobs, one job) and their types
 ├── mailer.ts                         # getMailer(): the Gmail SMTP transport (careers; the contact form has its own copy)
 ├── emailLayout.ts                    # shared email building blocks: token colours as values (the one place), document shell, detail card, button, steps
@@ -478,9 +479,9 @@ app/
         │   │   ├── sendInquiry.ts    # Server Action: CRM + team email + visitor confirmation (Contact page and campaign pages)
         │   │   └── inquiryEmail.ts   # the two inquiry emails on one template: renderInquiryConfirmation (visitor), renderInquiryNotification (team)
         │   ├── faq/
-        │   │   ├── FaqSection.tsx     # "FAQs": heading, dark "still have questions" card and the accordion (Contact page, campaign pages)
+        │   │   ├── FaqSection.tsx     # "FAQs": heading, dark "still have questions" card and the accordion (async server component). With no `items` it shows the shared list from the CMS (Contact, and any page that places it); a page that passes `items` (the cleaning landing page) uses them and never calls the backend. Left out when nothing is published.
         │   │   ├── FaqList.tsx        # client: one answer open at a time, grid-rows animation
-        │   │   └── faq.ts             # FAQS content (only the first answer is from the design; the rest are drafts)
+        │   │   └── faq.ts             # FaqItem type and the built-in FAQS (the fallback while the backend has never answered; also the seed for the CMS list; only the first answer is from the design, the rest are drafts)
         │   ├── outcome-card/
         │   │   └── OutcomeCard.tsx    # dark "Business outcome" card: cyan corner glow, gradient Heading / 40 title, paragraph (campaign "What changes", "Built for B2B")
         │   ├── stack-card/

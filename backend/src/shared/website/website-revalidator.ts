@@ -6,7 +6,7 @@ import type { Env } from "../config/env";
 const TIMEOUT_MS = 3000;
 
 /** The website's cached lists the backend can ask it to drop. Must match the allow-list in the website's app/api/revalidate. */
-export type WebsiteTag = "case-studies" | "testimonials" | "careers" | "site-metrics";
+export type WebsiteTag = "case-studies" | "testimonials" | "careers" | "site-metrics" | "faqs";
 
 /**
  * Tells the website to drop its cached case studies or testimonials right after a change that affects the live site, so a publish or unpublish
@@ -41,6 +41,11 @@ export class WebsiteRevalidator {
   /** A trust number was edited (Home, Contact and the cleaning landing page show them). */
   siteMetricsChanged(): Promise<void> {
     return this.changed("site-metrics");
+  }
+
+  /** The shared FAQ list changed (every page that shows the shared FAQ section reads it). */
+  faqsChanged(): Promise<void> {
+    return this.changed("faqs");
   }
 
   /** The careers list and job pages (a job was published, edited, closed or reopened). */

@@ -1,4 +1,4 @@
-import { BarChart3, Briefcase, Gauge, Images, Inbox, LayoutDashboard, type LucideIcon, Quote } from "lucide-react";
+import { BarChart3, Briefcase, CircleHelp, Gauge, Images, Inbox, LayoutDashboard, type LucideIcon, Quote } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -24,6 +24,7 @@ export const NAV: readonly NavGroup[] = [
     items: [
       { label: "Case Studies", href: "/cms/case-studies", icon: Images },
       { label: "Testimonials", href: "/cms/testimonials", icon: Quote },
+      { label: "FAQs", href: "/cms/faqs", icon: CircleHelp },
       { label: "Site Metrics", href: "/cms/site-metrics", icon: Gauge },
     ],
   },
