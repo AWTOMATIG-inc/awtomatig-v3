@@ -1,4 +1,4 @@
-import { Briefcase, Gauge, Images, Inbox, LayoutDashboard, type LucideIcon, Quote } from "lucide-react";
+import { BarChart3, Briefcase, Gauge, Images, Inbox, LayoutDashboard, type LucideIcon, Quote } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -27,6 +27,7 @@ export const NAV: readonly NavGroup[] = [
       { label: "Site Metrics", href: "/cms/site-metrics", icon: Gauge },
     ],
   },
+  { label: "Analytics", items: [{ label: "Google Analytics", href: "/analytics/google", icon: BarChart3 }] },
 ];
 
 /** Finds the nav item for a path: the longest matching href wins, so `/crm/leads` matches `/crm/leads` before `/crm`. */
