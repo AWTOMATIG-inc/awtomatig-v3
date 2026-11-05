@@ -63,3 +63,24 @@ export async function moveTestimonial(id: string, direction: -1 | 1): Promise<Mo
   if (!saved.response.ok) return failed(saved.response.status === 403 ? "No permission" : "Not saved");
   return done;
 }
+
+/** Moves one FAQ a place up or down in the website's order, the same way. */
+export async function moveFaq(id: string, direction: -1 | 1): Promise<MoveOutcome> {
+  const current = await api.GET("/api/v1/cms/faqs", {
+    params: { query: { pageSize: MAX_REORDERABLE, sort: "sortOrder", order: "asc" } },
+  });
+  if (current.response.status === 401) return { kind: "login" };
+  if (!current.data) return failed(apiMessage(current.error, "Not saved"));
+  if (current.data.total > current.data.items.length) return failed("Too many to reorder here");
+
+  const ids = swapWithNeighbour(
+    current.data.items.map((item) => item.id),
+    id,
+    direction,
+  );
+  if (!ids) return done;
+  const saved = await api.PUT("/api/v1/cms/faqs/order", { body: { ids } });
+  if (saved.response.status === 401) return { kind: "login" };
+  if (!saved.response.ok) return failed(saved.response.status === 403 ? "No permission" : "Not saved");
+  return done;
+}

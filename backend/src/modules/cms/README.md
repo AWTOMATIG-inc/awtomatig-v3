@@ -12,7 +12,7 @@ api/       case-studies.controller.ts    CaseStudiesController (employees) and P
            image-form.ts                 reads the multipart upload (HTTP only)
 service/   case-studies.service.ts       use cases: create, list, get, update, publish, unpublish, order, set image, delete, public reads
            public-image-store.ts         checks an uploaded image and stores it under the next unused number in the public bucket (shared by every cms content type with images)
-           website-revalidator.ts        tells the website to drop its cached case studies (no tag) or testimonials (`?tag=testimonials`)
+           faqs.service.ts               use cases for the shared FAQ list (see "FAQs" below)
 domain/    case-study.ts                 service ids, statuses, zod schemas, slug, image folder, publish rule (no framework, no database)
            image.ts                      detects PNG / JPEG / WebP and their size from the file bytes, builds image and file keys (no image library)
 repo/      case-studies.repo.ts          the only code that touches the table
@@ -140,3 +140,15 @@ The website's trust numbers (years of experience, businesses supported, retentio
 - **Formats.** A stat is whole digits plus an optional `+`, `%`, `k` or `M` (up to 5 digits); a rating is 0 to 5 with at most one decimal. The website's count-up cannot animate anything else.
 - **Endpoints:** `GET /api/v1/cms/site-metrics` (`cms.metric.read`; each item has `title`, `kind`, `hint`, `placements`, `value`, `defaultValue`, `updatedAt`), `PATCH /api/v1/cms/site-metrics/:key` (`cms.metric.update`, body `{ value }`; live at once, no draft; the website refresh and the audit entry happen only when the value changed), and the public `GET /api/v1/cms/public/site-metrics` returning `{ values: { key: value } }`.
 - **Audit:** `cms.site_metric.updated` with `key`, `from` and `to`.
+
+## FAQs
+
+The website's one shared FAQ list, shown on every page that has the shared FAQ section (Contact today). The cleaning landing page keeps its own questions in code and does not use this. Plan: [../../../../FAQ_PLAN.md](../../../../FAQ_PLAN.md). Table `cms.faqs` (migration `0007_cms_faqs`), decision B19.
+
+- **Fields:** `question` (1 to 200 characters) and `answer` (1 to 1000, plain text, line breaks kept), `status` (`draft` / `published`) and `sort_order`. No page column: every page shows the whole published list. Lengths are checked by zod and again by database checks.
+- **Employee endpoints** under `/api/v1/cms/faqs`: list (status, search on question or answer with `%` and `_` literal, sort, page), create (a draft at the last position), get, patch (question and answer only; status and position cannot be changed this way), `POST /:id/publish`, `POST /:id/unpublish`, `PUT /order` (must hold every FAQ exactly once; declared before the `:id` routes) and `DELETE /:id` (**any state**, unlike case studies and testimonials, because no consent or file is behind an FAQ).
+- **Public endpoint** `GET /api/v1/cms/public/faqs` (no key): `{ faqs: [{ question, answer }] }`, published only, in order, at most 100. Nothing else about the row.
+- **Cap:** at most 100 published FAQs; a 101st publish is a 409. Two simultaneous publishes of the *same* FAQ give one 200 and one 409 (row lock); two different ones racing at 99 could land one over, and the public list still returns at most 100.
+- **Website refresh** (`?tag=faqs`) after a publish, unpublish, reorder, an edit of a published FAQ and a delete of a published FAQ; not after a draft edit, create or delete of a draft.
+- **Permissions** `cms.faq.read` / `.create` / `.update` / `.delete`. **Audit** `cms.faq.created`, `.updated` (field names only), `.published`, `.unpublished`, `.reordered`, `.deleted` (whether it was live); never the question or answer text.
+- **Seed:** `npm run seed:faqs` loads `seed/faqs.sql` (the six Contact questions, published, fixed ids). Safe to repeat; never overwrites an edit. Run it once after the deploy that applies `0007`.

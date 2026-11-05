@@ -121,6 +121,31 @@ export const testimonials = cmsSchema.table(
 );
 
 /**
+ * A question and answer in the website's shared FAQ list. One list for every page that shows the FAQ section, so there is no page
+ * column; the cleaning landing page keeps its own questions in code. Plain text only (the accordion renders the answer as one
+ * paragraph). Lengths are checked by zod in the domain and again here as the backstop.
+ */
+export const faqs = cmsSchema.table(
+  "faqs",
+  {
+    ...baseColumns,
+    ...authorColumns,
+    status: text("status").notNull().default("draft"),
+    /** Position on the website, lowest first. */
+    sortOrder: integer("sort_order").notNull(),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    question: text("question").notNull(),
+    answer: text("answer").notNull(),
+  },
+  (table) => [
+    index("faqs_status_sort_order_idx").on(table.status, table.sortOrder),
+    check("faqs_status_check", sql`${table.status} in ('draft', 'published')`),
+    check("faqs_question_check", sql`char_length(${table.question}) between 1 and 200`),
+    check("faqs_answer_check", sql`char_length(${table.answer}) between 1 and 1000`),
+  ],
+);
+
+/**
  * A trust number shown on the website ("50+ businesses supported", a 4.8 rating). The set of keys is fixed by the catalog in
  * `domain/site-metric.ts` (each key is wired to a place in the website code), so there is no id, no status and no sort order:
  * a row holds only the current value. The format of the value depends on the key kind and is checked by zod in the domain.

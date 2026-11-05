@@ -23,6 +23,7 @@
     "seed:case-studies": "nest build && node dist/seed-case-studies.js",
     "seed:testimonials": "nest build && node dist/seed-testimonials.js",
     "seed:site-metrics": "nest build && node dist/seed-site-metrics.js",
+    "seed:faqs": "nest build && node dist/seed-faqs.js",
     "storage:check": "nest build && node dist/storage-check.js",
     "openapi:export": "nest build && node dist/openapi-export.js"
   },
