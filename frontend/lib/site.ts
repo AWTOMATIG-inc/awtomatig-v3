@@ -54,7 +54,7 @@ export const SITE = {
     { href: "/terms", label: "Terms & Conditions" },
   ],
   /** Routes that use the light navbar (white / off-white pages), and everything below them (/careers/<job>); every other route gets the dark one */
-  lightRoutes: ["/contact", "/privacy", "/terms", "/careers"] as string[],
+  lightRoutes: ["/contact", "/privacy", "/terms", "/careers", "/services/website-infrastructure"] as string[],
 };
 
 const CAREERS = { href: "/careers", label: "Careers" };

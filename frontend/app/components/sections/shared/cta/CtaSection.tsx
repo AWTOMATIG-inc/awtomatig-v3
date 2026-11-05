@@ -12,10 +12,22 @@ type CtaNote = { title: string; description: ReactNode };
 
 // Desktop composition per page, measured from each screenshot. Services lines the title up with the other
 // Services sections (x ≈ 420 at 1440) and uses 250px buttons.
-const LAYOUTS = {
+const LAYOUTS: Record<
+  string,
+  { section: string; eyebrow: string; actions: string; button: string; note: string; wide?: boolean }
+> = {
   home: { section: "lg:pt-100 lg:pb-92", eyebrow: "lg:w-359", actions: "lg:mt-40", button: "lg:w-256", note: "lg:mt-78" },
   services: { section: "lg:pt-104 lg:pb-92", eyebrow: "lg:w-372", actions: "lg:mt-36", button: "lg:w-250", note: "lg:mt-78" },
   process: { section: "lg:pt-100 lg:pb-68", eyebrow: "lg:w-367", actions: "lg:mt-36", button: "lg:w-250", note: "lg:mt-78" },
+  // Service detail pages: title at x ≈ 347 at 1440, 256px buttons and the note strip
+  detail: {
+    section: "lg:pt-90 lg:pb-90",
+    eyebrow: "lg:w-287",
+    actions: "lg:mt-36",
+    button: "lg:w-256",
+    note: "lg:mt-78",
+    wide: true,
+  },
   about: { section: "lg:pt-104 lg:pb-68", eyebrow: "lg:w-330", actions: "lg:mt-36", button: "lg:w-256", note: "lg:mt-105" },
 };
 
@@ -33,7 +45,7 @@ type CtaSectionProps = {
   tags?: string[];
   /** Brand mark + short note in the strip under the buttons, replacing the tags (Services and About pages) */
   note?: CtaNote;
-  layout?: keyof typeof LAYOUTS;
+  layout?: "home" | "services" | "process" | "detail" | "about";
 };
 
 /** "Let's talk" call to action on the animated lines background, shared by every page (DESIGN.md §10.4). */
@@ -67,7 +79,7 @@ export default function CtaSection({
 
           <div>
             <h2 className="type-heading-60 text-fg-inverse">{title}</h2>
-            <p className="type-body-16 text-fg-inverse mt-16 max-w-560">{description}</p>
+            <p className={`type-body-16 text-fg-inverse mt-16 ${l.wide ? "max-w-760" : "max-w-560"}`}>{description}</p>
 
             <div className={`mt-32 flex flex-col gap-12 sm:flex-row ${l.actions}`}>
               <Button variant="primary" size="xl" href={primary.href} className={`w-full sm:flex-1 lg:flex-none ${l.button}`}>

@@ -1,5 +1,6 @@
 import { Eyebrow, LinesBackground } from "@/app/components/ui";
-import CapabilityList from "./CapabilityList";
+import CapabilityList from "../../shared/capability-list/CapabilityList";
+import { CAPABILITIES } from "./capabilities";
 import { CAPABILITIES_LINES } from "./capabilitiesLines";
 
 // Campaign page: "Solutions for cleaning companies", the eight areas (tabs) beside the open area's image.
@@ -22,7 +23,7 @@ export default function CapabilitiesSection() {
           </p>
         </div>
 
-        <CapabilityList />
+        <CapabilityList items={CAPABILITIES} />
       </div>
     </LinesBackground>
   );

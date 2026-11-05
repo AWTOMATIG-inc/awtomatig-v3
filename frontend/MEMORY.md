@@ -254,6 +254,7 @@ Confirm these against Figma, then update `globals.css`, DESIGN.md and this file:
 ## 5. Change log
 
 Newest first. Add one line per meaningful change.
+| 2026-11-05 | **Service detail page started: `/services/website-infrastructure` hero.** New `ServiceDetailHero` (`sections/services/detail/`): the light hero (Contact's `CONTACT_LINES`, light navbar) with the title top-left, intro and a cyan `Start a Conversation` + white `Explore Capabilities` button pair on the right (554px column), and the collage `public/images/services/web.png` full-bleed and flush with the bottom edge (190% wide and centred on phones, so the cards stay readable). New static route `app/(site)/services/website-infrastructure/page.tsx` wins over the "Coming soon" `[slug]` page, which no longer pre-renders that slug; the route is in `SITE.lightRoutes`; the sitemap already listed it. The design's paragraph ends mid-sentence ("from corporate"), so it was completed with "websites to the platforms behind them." (one extra line): **confirm the copy**. `Explore Capabilities` points to `#capabilities`, which does not exist until the next section is built. `tsc`, lint (0 errors) and `next build` pass; checked in headless Chrome at 1440, 1024 and 500 against the design (the live navbar order is About then Contact, the design shows Contact then About: navbar untouched). The remaining sections of the page are not built; other three services still show "Coming soon". |
 
 | Date | Change |
 | --- | --- |

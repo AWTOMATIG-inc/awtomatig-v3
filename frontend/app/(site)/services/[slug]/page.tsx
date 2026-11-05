@@ -5,7 +5,8 @@ import { SERVICES } from "@/lib/services";
 import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
-  return SERVICES.map((service) => ({ slug: service.id }));
+  // website-infrastructure has its own static page (services/website-infrastructure)
+  return SERVICES.filter((service) => service.id !== "website-infrastructure").map((service) => ({ slug: service.id }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {

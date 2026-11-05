@@ -1,18 +1,10 @@
-import type { StaticImageData } from "next/image";
+import type { GridStep } from "../../shared/step-grid/StepGridSection";
 import BroaderCapabilities from "@/public/images/about/broader_capabilities.jpg";
 import ConnectedWorkflow from "@/public/images/about/connected_workflow.jpg";
 import IndividualProblems from "@/public/images/about/individual_problems.jpg";
 import KeepGrowing from "@/public/images/about/keep_growing.jpg";
 
-export type GrowthStep = {
-  title: string;
-  description: string;
-  image: StaticImageData;
-  /** On desktop the photo comes before its text card (first row) or after it (second row) */
-  imageFirst: boolean;
-};
-
-export const GROWTH_STEPS: GrowthStep[] = [
+export const GROWTH_STEPS: GridStep[] = [
   {
     title: "Individual problems",
     description: "Started by solving focused problems where businesses needed practical support.",

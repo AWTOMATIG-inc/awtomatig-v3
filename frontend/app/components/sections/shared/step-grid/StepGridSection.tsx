@@ -47,15 +47,27 @@ type StepGridSectionProps = {
   /** Optional muted paragraph at the right end of the heading row (bottom-aligned with the title) */
   lead?: ReactNode;
   steps: GridStep[];
+  /** Section padding (the two designs measure differently) */
+  paddingClassName?: string;
+  /** Margin above the grid */
+  gridClassName?: string;
 };
 
 // Four steps as a checkerboard of photos and numbered text cards (two rows of four on desktop); About "Growing with the work"
 // and the service detail "What changes".
 // On phones every step is one row (photo narrow, card wide), alternating sides: 1 and 3 photo-left, 2 and 4 photo-right.
-export default function StepGridSection({ id, eyebrow, title, lead, steps }: StepGridSectionProps) {
+export default function StepGridSection({
+  id,
+  eyebrow,
+  title,
+  lead,
+  steps,
+  paddingClassName = "pt-60 pb-60 lg:pt-116 lg:pb-119",
+  gridClassName = "mt-50 lg:mt-65",
+}: StepGridSectionProps) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="bg-surface text-fg-strong">
-      <div className="site-container pt-60 pb-60 lg:pt-116 lg:pb-119">
+      <div className={`site-container ${paddingClassName}`}>
         <div className={`grid gap-20 lg:gap-0 ${lead ? "lg:grid-cols-[317fr_668fr_335fr]" : "lg:grid-cols-[317fr_1014fr]"}`}>
           <Eyebrow className="self-start lg:mt-8">{eyebrow}</Eyebrow>
           <h2 id={`${id}-title`} className="type-heading-60">
@@ -65,7 +77,7 @@ export default function StepGridSection({ id, eyebrow, title, lead, steps }: Ste
         </div>
 
         {/* Desktop: each li is two grid cells, in DOM order (photo first in row 1, card first in row 2) */}
-        <ol className="mt-50 grid gap-20 md:gap-40 lg:mt-65 lg:grid-cols-4 lg:gap-20">
+        <ol className={`grid gap-20 md:gap-40 lg:grid-cols-4 lg:gap-20 ${gridClassName}`}>
           {steps.map((step, i) => {
             const photoLeftOnPhone = i % 2 === 0;
             const photo = <Photo step={step} className={photoLeftOnPhone ? "max-md:order-1" : "max-md:order-2"} />;
