@@ -1,16 +1,18 @@
 import { CountUp } from "@/app/components/ui";
+import { getSiteMetrics } from "@/lib/siteMetrics";
 import WorldMap from "./WorldMap";
 import { ECOSYSTEM_ICONS } from "./trustedOperations";
 
 // Dark card: the headline figure on the left, four ecosystem tiles top right, a dotted world map along the bottom
-export default function ClientSystemsCard() {
+export default async function ClientSystemsCard() {
+  const metrics = await getSiteMetrics();
   return (
     <div className="bg-trusted-card rounded-16 text-fg-inverse relative isolate overflow-hidden p-24 lg:min-h-415 lg:p-36">
       <span aria-hidden="true" className="diag-ribs absolute inset-0 -z-10 text-white/6" />
       <WorldMap className="absolute -bottom-69 left-1/2 -z-10 -ml-20 max-w-none -translate-x-1/2 text-white/20" />
 
       <p className="type-display-80 font-normal">
-        <CountUp value="35+" />
+        <CountUp value={metrics.client_systems_supported} />
       </p>
       <p className="type-heading-20 mt-12">Client systems supported</p>
       <p className="type-body-14 mt-12 max-w-240 text-white/60">Across regions and operational environments</p>

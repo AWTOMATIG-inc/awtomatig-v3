@@ -130,3 +130,13 @@ The quote, name, role and company are personal data once a client is named. Audi
 ## Not here yet
 
 A cleanup job for orphan files (a failed delete leaves one, which is logged), more than one image per study, a detail page write-up, previews of drafts, and a version history are later.
+
+## Site metrics
+
+The website's trust numbers (years of experience, businesses supported, retention, systems delivered, projects completed, client systems supported, and the Google / Clutch / Fiverr ratings). Plan: [../../../../SITE_METRICS_PLAN.md](../../../../SITE_METRICS_PLAN.md). Table `cms.site_metrics` (migration `0006_cms_site_metrics`), decision B18.
+
+- **A fixed set of nine slots.** The catalog in `domain/site-metric.ts` lists each key, its field title, its kind (`stat` or `rating`), its default value and every page and section that shows it. Adding a slot, or showing a figure in a new place, means editing the catalog and the website in the same change.
+- **A slot with no row shows its default**, so the website works before the seed is run. `npm run seed:site-metrics` loads `seed/site-metrics.sql` (never overwrites an edit).
+- **Formats.** A stat is whole digits plus an optional `+`, `%`, `k` or `M` (up to 5 digits); a rating is 0 to 5 with at most one decimal. The website's count-up cannot animate anything else.
+- **Endpoints:** `GET /api/v1/cms/site-metrics` (`cms.metric.read`; each item has `title`, `kind`, `hint`, `placements`, `value`, `defaultValue`, `updatedAt`), `PATCH /api/v1/cms/site-metrics/:key` (`cms.metric.update`, body `{ value }`; live at once, no draft; the website refresh and the audit entry happen only when the value changed), and the public `GET /api/v1/cms/public/site-metrics` returning `{ values: { key: value } }`.
+- **Audit:** `cms.site_metric.updated` with `key`, `from` and `to`.

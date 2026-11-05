@@ -12,7 +12,11 @@ export default tseslint.config(
     languageOptions: {
       globals: { ...globals.node, ...globals.jest },
       parserOptions: {
-        projectService: { allowDefaultProject: ["*.config.ts", "test/*.ts"] },
+        projectService: {
+          allowDefaultProject: ["*.config.ts", "test/*.ts"],
+          // One e2e suite per feature; the default limit of 8 was reached with the tenth file in test/.
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 20,
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },

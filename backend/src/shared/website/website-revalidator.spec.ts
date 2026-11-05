@@ -31,6 +31,12 @@ describe("WebsiteRevalidator", () => {
     expect((init?.headers as Record<string, string>)["x-ingest-key"]).toBe(KEY);
   });
 
+  it("asks for the site metrics when a trust number changes", async () => {
+    const fetchMock = jest.spyOn(global, "fetch").mockResolvedValue(new Response("{}", { status: 200 }));
+    await make("http://127.0.0.1:3010").siteMetricsChanged();
+    expect(fetchMock.mock.calls[0]![0]).toBe("http://127.0.0.1:3010/api/revalidate?tag=site-metrics");
+  });
+
   it("does nothing for testimonials while WEBSITE_URL is not set", async () => {
     const fetchMock = jest.spyOn(global, "fetch");
     await make().testimonialsChanged();

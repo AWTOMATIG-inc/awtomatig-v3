@@ -43,6 +43,13 @@
       "when": 1793861695004,
       "tag": "0005_cms_testimonials",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793865347317,
+      "tag": "0006_cms_site_metrics",
+      "breakpoints": true
     }
   ]
 }

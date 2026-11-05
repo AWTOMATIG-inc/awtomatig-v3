@@ -1,27 +1,28 @@
 import type { FaqItem } from "../shared/faq/faq";
 import type { ProvenStat } from "../shared/proven/proven";
 
-// Cleaning-sector landing page copy that several sections share. The figures are the site's existing, owner-verified ones.
+// Cleaning-sector landing page copy that several sections share. The wording is this page's own; the figures are the site's
+// shared ones, edited in the admin (Website → Site Metrics).
 export const CLEANING_STATS: ProvenStat[] = [
   {
     label: "Years of experience",
     description: "Experience across website development, business systems, and operational support.",
-    value: "5+",
+    metric: "years_experience",
   },
   {
     label: "Businesses supported",
     description: "Helping business teams improve the tools and processes behind their work.",
-    value: "50+",
+    metric: "businesses_supported",
   },
   {
     label: "Client retention rate",
     description: "Ongoing relationships supported by consistent delivery and communication.",
-    value: "95+",
+    metric: "client_retention",
   },
   {
     label: "Systems delivered",
     description: "Websites, integrations, and internal tools delivered for real business needs.",
-    value: "25+",
+    metric: "systems_delivered",
   },
 ];
 
