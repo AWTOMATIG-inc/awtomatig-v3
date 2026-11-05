@@ -19,7 +19,7 @@ import {
 import { ALT_MAX_LENGTH } from "../domain/image";
 import { type CaseStudyPatch, CaseStudiesRepo } from "../repo/case-studies.repo";
 import { PublicImageStore } from "./public-image-store";
-import { WebsiteRevalidator } from "./website-revalidator";
+import { WebsiteRevalidator } from "../../../shared/website/website-revalidator";
 
 /** An uploaded image as the HTTP layer hands it over: the bytes and the alt text. Nothing here is trusted yet. */
 export interface ImageUpload {

@@ -1,12 +1,12 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 
-import { AppConfig } from "../../../shared/config/app-config";
-import type { Env } from "../../../shared/config/env";
+import { AppConfig } from "../config/app-config";
+import type { Env } from "../config/env";
 
 const TIMEOUT_MS = 3000;
 
 /** The website's cached lists the backend can ask it to drop. Must match the allow-list in the website's app/api/revalidate. */
-export type WebsiteTag = "case-studies" | "testimonials";
+export type WebsiteTag = "case-studies" | "testimonials" | "careers";
 
 /**
  * Tells the website to drop its cached case studies or testimonials right after a change that affects the live site, so a publish or unpublish
@@ -36,6 +36,11 @@ export class WebsiteRevalidator {
 
   testimonialsChanged(): Promise<void> {
     return this.changed("testimonials");
+  }
+
+  /** The careers list and job pages (a job was published, edited, closed or reopened). */
+  careersChanged(): Promise<void> {
+    return this.changed("careers");
   }
 
   private async changed(tag?: WebsiteTag): Promise<void> {

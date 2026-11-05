@@ -14,6 +14,7 @@ import { HealthModule } from "./shared/health/health.module";
 import { LoggingModule } from "./shared/logging/logging.module";
 import { RbacModule } from "./shared/rbac/rbac.module";
 import { StorageModule } from "./shared/storage/storage.module";
+import { WebsiteModule } from "./shared/website/website.module";
 
 /**
  * Composition root. Cross-cutting infrastructure comes from shared/; business modules (cms, crm, inventory, …) are added
@@ -27,6 +28,7 @@ import { StorageModule } from "./shared/storage/storage.module";
     AuditModule,
     RbacModule,
     StorageModule,
+    WebsiteModule,
     AuthModule,
     HealthModule,
     CrmModule,

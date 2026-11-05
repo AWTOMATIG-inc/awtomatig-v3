@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
 import { DataTable, SortHeader, StatusBadge } from "@/components/ui";
+import { JobLinkActions } from "./JobLinkActions";
 import { formatDate, formatNumber, formatPlainDate } from "@/lib/format";
 import {
   JOB_STATE_LABEL,
@@ -77,6 +78,11 @@ export function JobsTable({ jobs, params }: { jobs: readonly JobSummary[]; param
           )}
         </span>
       ),
+    },
+    {
+      id: "links",
+      header: "Public page",
+      cell: ({ row }) => <JobLinkActions slug={row.original.slug} draft={row.original.status === "draft"} />,
     },
     {
       accessorKey: "createdAt",

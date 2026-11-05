@@ -1,4 +1,4 @@
-import type { Env } from "../../../shared/config/env";
+import type { Env } from "../config/env";
 import { WebsiteRevalidator } from "./website-revalidator";
 
 const KEY = "test-ingest-key-test-ingest-key-0123456789";

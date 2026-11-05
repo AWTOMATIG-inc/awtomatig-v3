@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
 
 // Static, rebuilt in the background at most once a minute, so a newly published opening shows up without a deploy. The
 // backend decides whether a job takes applications, so a closed one stops accepting at once even while this page is cached.
-export const revalidate = 60;
+export const revalidate = 30; // must be a literal; keep equal to CAREERS_REVALIDATE_SECONDS in lib/careers.ts
 
 export default async function CareersPage() {
   const result = await getOpenJobs();

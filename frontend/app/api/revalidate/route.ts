@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
+import { CAREERS_TAG } from "@/lib/careers";
 import { CASE_STUDIES_TAG } from "@/lib/caseStudies";
 import { TESTIMONIALS_TAG } from "@/lib/testimonials";
 
@@ -7,6 +8,7 @@ import { TESTIMONIALS_TAG } from "@/lib/testimonials";
 const TAGS: Record<string, string> = {
   "case-studies": CASE_STUDIES_TAG,
   testimonials: TESTIMONIALS_TAG,
+  careers: CAREERS_TAG,
 };
 
 // Called by the backend (server to server) right after a case study or testimonial is published, unpublished, edited, reordered or

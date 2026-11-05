@@ -6,7 +6,7 @@ import { SERVICES } from "@/lib/services";
 import { ROUTES, SITE } from "@/lib/site";
 
 // Rebuilt at most once a minute (not frozen at build time) so a newly published opening reaches the sitemap without a deploy.
-export const revalidate = 60;
+export const revalidate = 30; // must be a literal; keep equal to CAREERS_REVALIDATE_SECONDS in lib/careers.ts
 
 // Last meaningful content change per route. Update the date when a page's content changes (Google reads lastmod,
 // not changefreq or priority). Legal pages use their own "Last updated" date.
