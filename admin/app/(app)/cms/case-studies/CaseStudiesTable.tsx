@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
 
+import { MoveButtons } from "@/components/cms/MoveButtons";
 import { DataTable, SortHeader, StatusBadge } from "@/components/ui";
 import {
   caseStudiesHref,
@@ -15,10 +16,10 @@ import {
   type CaseStudySummary,
   SERVICE_LABEL,
 } from "@/lib/cms/case-studies";
+import { moveCaseStudy } from "@/lib/cms/reorder";
 import { formatDate } from "@/lib/format";
 
 import { CaseStudyActions } from "./CaseStudyActions";
-import { MoveButtons } from "./MoveButtons";
 
 /** Where a click on a column title leads: that column sorted, or the opposite direction when it already is. */
 function sortHref(params: CaseStudyListParams, field: CaseStudySort): string {
@@ -61,8 +62,8 @@ export function CaseStudiesTable({
             header: () => <Header label="Order" field="sortOrder" params={params} />,
             cell: ({ row }) => (
               <MoveButtons
-                id={row.original.id}
-                title={row.original.title}
+                label={row.original.title}
+                move={(direction) => moveCaseStudy(row.original.id, direction)}
                 canMoveUp={firstPosition + row.index > 0}
                 canMoveDown={firstPosition + row.index < total - 1}
               />

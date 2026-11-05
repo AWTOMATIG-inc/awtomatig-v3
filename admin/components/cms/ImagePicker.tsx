@@ -4,20 +4,25 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui";
-import { formatFileSize } from "@/lib/format";
+import { cn } from "@/lib/cn";
 import { IMAGE_ACCEPT, imageFileProblem } from "@/lib/cms/image";
+import { formatFileSize } from "@/lib/format";
 
 interface CurrentImage {
   url: string;
-  alt: string;
+  /** The saved description, when the image has one (a logo does not: the company name serves). */
+  alt?: string;
   width: number;
   height: number;
 }
 
 /**
- * Shows the showcase image (the saved one, or the file just chosen) and lets the person pick a file. It only chooses: the
- * parent decides when to upload. The file is checked here for feedback (type, size); the backend checks the real bytes again.
- * To clear the choice from outside, change the `key`.
+ * Shows an image (the saved one, or the file just chosen) and lets the person pick a file. It only chooses: the parent decides
+ * when to upload. The file is checked here for feedback (type, size); the backend checks the real bytes again. To clear the
+ * choice from outside, change the `key`.
+ *
+ * `variant="photo"` is a showcase picture on a soft 4:3 frame. `variant="logo"` previews a logo the way the website draws it,
+ * on a white card with room around it; `blackLogo` draws it in black like the website does for a white or very light logo.
  */
 export function ImagePicker({
   current,
@@ -25,6 +30,10 @@ export function ImagePicker({
   disabled,
   readOnly,
   error,
+  variant = "photo",
+  blackLogo,
+  noun = "image",
+  hint,
 }: {
   current?: CurrentImage | null;
   onFile: (file: File | null) => void;
@@ -33,6 +42,12 @@ export function ImagePicker({
   readOnly?: boolean;
   /** A message from the parent (for example a failed upload), shown with the picker's own checks. */
   error?: string | null;
+  variant?: "photo" | "logo";
+  blackLogo?: boolean;
+  /** What the picture is called in the buttons and the empty frame: "image" or "logo". */
+  noun?: string;
+  /** The line under the buttons: accepted types and the size that works best. */
+  hint?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [chosen, setChosen] = useState<{ file: File; url: string } | null>(null);
@@ -68,21 +83,34 @@ export function ImagePicker({
   }
 
   const shown = chosen
-    ? { url: chosen.url, alt: "Preview of the chosen image" }
+    ? { url: chosen.url, alt: `Preview of the chosen ${noun}` }
     : current
-      ? { url: current.url, alt: current.alt }
+      ? { url: current.url, alt: current.alt ?? `Saved ${noun}` }
       : null;
   const message = problem ?? error;
+  const logo = variant === "logo";
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="rounded-8 border-border bg-surface-subtle relative aspect-4/3 w-full max-w-320 overflow-hidden border">
+      <div
+        className={cn(
+          "rounded-8 border-border relative w-full max-w-320 overflow-hidden border",
+          logo ? "bg-surface aspect-16/7" : "bg-surface-subtle aspect-4/3",
+        )}
+      >
         {shown ? (
           // `unoptimized`: the image is already on the public bucket (or in this browser), so there is nothing to resize or proxy.
-          <Image src={shown.url} alt={shown.alt} fill unoptimized sizes="320px" className="object-contain" />
+          <Image
+            src={shown.url}
+            alt={shown.alt}
+            fill
+            unoptimized
+            sizes="320px"
+            className={cn("object-contain", logo && "p-24", logo && blackLogo && "brightness-0")}
+          />
         ) : (
           <p className="type-body-14 text-fg-muted absolute inset-0 flex items-center justify-center px-16 text-center">
-            No image yet
+            No {noun} yet
           </p>
         )}
       </div>
@@ -90,7 +118,7 @@ export function ImagePicker({
       {readOnly ? (
         current && (
           <p className="type-body-14 text-fg-muted">
-            Saved image: {current.width} × {current.height} px.
+            Saved {noun}: {current.width} × {current.height} px.
           </p>
         )
       ) : (
@@ -107,7 +135,7 @@ export function ImagePicker({
           />
           <div className="flex flex-wrap items-center gap-12">
             <Button variant="outline" disabled={disabled} onClick={() => input.current?.click()}>
-              {chosen ? "Choose another" : current ? "Choose a new image" : "Choose image"}
+              {chosen ? "Choose another" : current ? `Choose a new ${noun}` : `Choose ${noun}`}
             </Button>
             {chosen && (
               <Button variant="outline" disabled={disabled} onClick={clear}>
@@ -124,14 +152,10 @@ export function ImagePicker({
         </p>
       ) : current ? (
         <p className="type-body-14 text-fg-muted">
-          Saved image: {current.width} × {current.height} px.
+          Saved {noun}: {current.width} × {current.height} px.
         </p>
       ) : null}
-      {!readOnly && (
-        <p className="type-body-14 text-fg-muted">
-          PNG, JPEG or WebP, up to 5 MB. About 551 × 525 px works best; the website rounds the corners.
-        </p>
-      )}
+      {!readOnly && hint && <p className="type-body-14 text-fg-muted">{hint}</p>}
       {message && (
         <p role="alert" className="type-body-14 text-fg-primary flex items-start gap-8">
           <span aria-hidden="true" className="bg-status-error mt-8 size-6 shrink-0 rounded-full" />

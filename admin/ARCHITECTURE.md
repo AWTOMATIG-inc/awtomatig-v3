@@ -35,14 +35,17 @@ admin/
     (app)/           # the signed-in shell (layout.tsx), dashboard (page.tsx)
       crm/leads/     # Leads: list (page.tsx, LeadsTable.tsx) and detail ([id]/page.tsx, LeadEditor.tsx)
       recruitment/jobs/  # Job Openings: list, new/, JobForm.tsx (create and edit), [id]/ (tabs, JobActions, applications table), [id]/applications/[applicationId]/ (applicant page)
+      cms/case-studies/, cms/testimonials/  # Website content: list, new/, the form, [id]/ (details, image or logo panel, actions)
       <module>/      # one folder per backend module, when its screens exist
   components/
     ui/              # primitives: Button, Card, DataTable, Field, PageHeader, …
     layout/          # Sidebar, MobileNav, Topbar, Breadcrumb
+    cms/             # ImagePicker (photo or logo preview) and MoveButtons, shared by case studies and testimonials
     charts/  dashboard/
   lib/
     api/             # typed client (browser), serverApi() (server), generated schema
     crm/             # lead statuses, labels and the list's URL helpers
+    cms/             # case-studies.ts, testimonials.ts (types, labels, URL helpers), *-form.ts (checks and request bodies), image.ts (uploads), reorder.ts (move up / down)
     recruitment/     # jobs.ts, applications.ts (types, labels, URL helpers), job-form.ts (form checks and request bodies)
     auth/            # session.ts (server: getSession / requireSession / can), client.ts (browser: sign-in, sign-out)
     dashboard/       # types, data, demo (development only)
@@ -100,3 +103,4 @@ Newest last. Supersede, never rewrite.
 | AD9 | 2026-10-29 | The first module screens are the CRM Leads list and detail, and the dashboard is fed by `GET /crm/leads/stats` | It is the first real data. Server Components fetch with `serverApi()`; only the status and notes form is a client component and uses the typed browser client. Filters, sorting and paging are in the URL. `Select` and `Textarea` joined the form primitives. |
 | AD10 | 2026-11-02 | The recruitment screens follow the CRM pattern (Server Components fetch with `serverApi()`; client components only for mutations through the typed browser client), with three additions: React Hook Form + zod for the long opening form, a native `<dialog>` `Dialog` primitive for confirmations, and shared `SortHeader` and `Pagination` primitives that the CRM list now uses too | The form has repeating question rows and many fields, which is what React Hook Form is for; native `<dialog>` gives focus trapping, Esc and focus return without a dependency; a third copy of the sort header and the paging footer would have been the moment to share them. Filters, sort, paging and the opening's tab are in the URL. Client checks are feedback only; the backend's field messages are shown next to their fields through `lib/api/errors.ts`. No new dependency. |
 | AD11 | 2026-11-04 | The Case Studies screens (Website → Case Studies) follow the AD10 pattern, and the image is shown straight from the public bucket: `ASSETS_URL` (the backend's `R2_PUBLIC_BASE_URL`) is required to build and start for production and is the one third-party origin added to the CSP `img-src` | Case study images are public files on `awtomatig-public`, so the browser loads them directly; without the origin in the CSP every preview would be blocked, which looks like a bug in the screen. Like `API_URL` it is read at build time and has no default. `next dev` and `typegen` do not need it. No new dependency. |
+| AD12 | 2026-11-05 | The Testimonials screens (Website → Testimonials) follow AD10 and AD11. `ImagePicker` and `MoveButtons` moved to `components/cms/` and became generic: the picker has a `logo` variant (white card, padding, optional black preview) and takes its hint and noun; move buttons take a `move` function from `lib/cms/reorder.ts` instead of calling one endpoint. A testimonial's logo has its own card on the edit page (replace, remove, "show in black"), and the client's agreement is a checkbox on the form | The second use of the same image and reorder code is the moment to share it instead of copying a primitive into a feature (RULES.md section 3). The logo preview must look like the website's white card, or a white logo would look missing. The agreement sentence is recorded exactly as the plan words it, and a live testimonial shows it as text, because the backend refuses to withdraw it while published. No new dependency, no new environment variable (logos come from the same `ASSETS_URL` origin). |

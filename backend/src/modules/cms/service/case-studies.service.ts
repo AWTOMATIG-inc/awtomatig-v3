@@ -16,15 +16,9 @@ import {
   slugify,
   type UpdateCaseStudyInput,
 } from "../domain/case-study";
-import {
-  ALT_MAX_LENGTH,
-  buildImageKey,
-  detectImage,
-  IMAGE_CACHE_CONTROL,
-  MAX_IMAGE_BYTES,
-  nextImageNumber,
-} from "../domain/image";
+import { ALT_MAX_LENGTH } from "../domain/image";
 import { type CaseStudyPatch, CaseStudiesRepo } from "../repo/case-studies.repo";
+import { PublicImageStore } from "./public-image-store";
 import { WebsiteRevalidator } from "./website-revalidator";
 
 /** An uploaded image as the HTTP layer hands it over: the bytes and the alt text. Nothing here is trusted yet. */
@@ -32,9 +26,6 @@ export interface ImageUpload {
   buffer: Buffer;
   alt: string;
 }
-
-/** How many neighbouring numbers an upload tries if a simultaneous upload took the one it picked. */
-const IMAGE_KEY_ATTEMPTS = 5;
 
 interface ImageColumns {
   imageKey: string | null;
@@ -84,6 +75,7 @@ export class CaseStudiesService {
     private readonly repo: CaseStudiesRepo,
     private readonly audit: AuditService,
     private readonly storage: StorageService,
+    private readonly images: PublicImageStore,
     private readonly website: WebsiteRevalidator,
   ) {}
 
@@ -217,19 +209,12 @@ export class CaseStudiesService {
     const alt = upload.alt.trim();
     if (alt.length === 0 || alt.length > ALT_MAX_LENGTH)
       throw new ValidationError(`Describe the image in 1 to ${ALT_MAX_LENGTH} characters`, { alt: "Describe the image" });
-    if (upload.buffer.length === 0) throw new ValidationError("The image file is empty", { image: "The image file is empty" });
-    if (upload.buffer.length > MAX_IMAGE_BYTES)
-      throw new ValidationError("The image must be 5 MB or smaller", { image: "The image must be 5 MB or smaller" });
-    const detected = detectImage(upload.buffer);
-    if (!detected) {
-      const message = "Use a PNG, JPEG or WebP image";
-      throw new ValidationError(message, { image: message });
-    }
+    const detected = this.images.check(upload.buffer, "image");
 
     const study = await this.repo.findById(this.database.db, id);
     if (!study) throw new NotFoundError("Case study not found");
 
-    const newKey = await this.storeNewImage(study.slug, upload.buffer, detected);
+    const newKey = await this.images.store(imageFolder(study.slug), "image", upload.buffer, detected);
     let previousKey: string | null;
     try {
       previousKey = await this.database.transaction(async (tx) => {
@@ -261,10 +246,10 @@ export class CaseStudiesService {
         return row.imageKey;
       });
     } catch (error) {
-      await this.discard(newKey, id);
+      await this.images.discard(newKey, "case study", id);
       throw error;
     }
-    if (previousKey && previousKey !== newKey) await this.discard(previousKey, id);
+    if (previousKey && previousKey !== newKey) await this.images.discard(previousKey, "case study", id);
     const saved = await this.get(id);
     if (saved.status === "published") await this.website.caseStudiesChanged();
     return saved;
@@ -328,25 +313,6 @@ export class CaseStudiesService {
         image,
       },
     ];
-  }
-
-  /** Finds the next unused image number in the study's folder and uploads there, never replacing a file. */
-  private async storeNewImage(slug: string, buffer: Buffer, image: { contentType: string; extension: string }): Promise<string> {
-    let number = nextImageNumber(await this.storage.listPublic(imageFolder(slug)));
-    for (let attempt = 0; attempt < IMAGE_KEY_ATTEMPTS; attempt++, number++) {
-      const key = buildImageKey(slug, number, image.extension);
-      if (await this.storage.putPublicIfAbsent(key, buffer, image.contentType, IMAGE_CACHE_CONTROL)) return key;
-    }
-    throw new ConflictError("Could not store the image. Try again.");
-  }
-
-  /** Best effort: a file that cannot be deleted is an orphan. Logged by study id, never by key, which names the study. */
-  private async discard(key: string, studyId: string) {
-    try {
-      await this.storage.deletePublic(key);
-    } catch {
-      this.logger.error(`Could not delete an unused image file of case study ${studyId}; remove it by hand`);
-    }
   }
 
   private async load(tx: Tx, id: string) {

@@ -23,6 +23,20 @@ describe("WebsiteRevalidator", () => {
     expect((init?.headers as Record<string, string>)["x-ingest-key"]).toBe(KEY);
   });
 
+  it("asks for the testimonials list when testimonials change", async () => {
+    const fetchMock = jest.spyOn(global, "fetch").mockResolvedValue(new Response("{}", { status: 200 }));
+    await make("http://127.0.0.1:3010").testimonialsChanged();
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("http://127.0.0.1:3010/api/revalidate?tag=testimonials");
+    expect((init?.headers as Record<string, string>)["x-ingest-key"]).toBe(KEY);
+  });
+
+  it("does nothing for testimonials while WEBSITE_URL is not set", async () => {
+    const fetchMock = jest.spyOn(global, "fetch");
+    await make().testimonialsChanged();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("never throws when the website is down", async () => {
     jest.spyOn(global, "fetch").mockRejectedValue(new Error("connect ECONNREFUSED"));
     await expect(make("http://127.0.0.1:3010").caseStudiesChanged()).resolves.toBeUndefined();

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type PointerEvent, type WheelEvent } from "react";
 import { PauseIcon, PlayIcon } from "@/app/components/icons";
 import { getService, type ServiceId } from "@/lib/services";
-import type { Testimonial } from "./testimonials";
+import type { Testimonial } from "@/lib/testimonials";
 
 // Chip background per service; everything else falls back to the neutral off-white chip
 const TAG_THEMES: Partial<Record<ServiceId, string>> = {
@@ -23,6 +23,8 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
   const scrubRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
+  // With only a card or two the row does not overflow: there is nothing to scrub or pause, so those controls are hidden.
+  const [scrollable, setScrollable] = useState(true);
 
   const draggingTrack = useRef(false);
   const draggingScrub = useRef(false);
@@ -42,14 +44,22 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
     if (!el) return;
     const max = el.scrollWidth - el.clientWidth;
     setProgress(max > 0 ? el.scrollLeft / max : 0);
+    setScrollable(max > 0);
   }, []);
 
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
     el.addEventListener("scroll", updateProgress, { passive: true });
+    // The width of the row or of its cards changes with the window and with the fonts, so measure again then.
+    const observer = new ResizeObserver(updateProgress);
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
     updateProgress();
-    return () => el.removeEventListener("scroll", updateProgress);
+    return () => {
+      el.removeEventListener("scroll", updateProgress);
+      observer.disconnect();
+    };
   }, [updateProgress]);
 
   useEffect(() => {
@@ -148,9 +158,9 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
         className="scrollbar-hide cursor-grab touch-pan-x overflow-x-auto pb-4 select-none active:cursor-grabbing"
       >
         <ul className="flex w-max gap-20">
-          {testimonials.map((testimonial) => (
+          {testimonials.map((testimonial, index) => (
             <li
-              key={testimonial.id}
+              key={`${index}-${testimonial.company}`}
               className="bg-surface rounded-16 flex w-290 shrink-0 flex-col p-24 sm:w-360 sm:p-28 lg:w-404 lg:p-32"
             >
               <span
@@ -164,11 +174,18 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
               <p className="type-body-20 text-fg-strong mt-20 lg:mt-28">&ldquo;{testimonial.quote}&rdquo;</p>
 
               <div className="mt-auto pt-28 lg:pt-40">
-                <Image
-                  src={testimonial.logo}
-                  alt={testimonial.company}
-                  className={`h-36 w-auto max-w-160 object-contain object-left ${testimonial.logoOnWhite ? "opacity-80 brightness-0" : ""}`}
-                />
+                {testimonial.logo ? (
+                  <Image
+                    src={testimonial.logo.src}
+                    width={testimonial.logo.width}
+                    height={testimonial.logo.height}
+                    alt={testimonial.company}
+                    className={`h-36 w-auto max-w-160 object-contain object-left ${testimonial.logoInBlack ? "opacity-80 brightness-0" : ""}`}
+                  />
+                ) : (
+                  // No logo: the company name takes its place, in the same 36px-tall slot so the cards still line up.
+                  <p className="type-heading-20 text-fg-strong flex h-36 items-center">{testimonial.company}</p>
+                )}
                 <p className="type-body-16 text-fg-strong mt-16 font-medium">{testimonial.name}</p>
                 <p className="type-body-14 text-fg-muted">
                   {testimonial.role} · {testimonial.company}
@@ -179,7 +196,7 @@ export default function TestimonialsTrack({ testimonials }: { testimonials: Test
         </ul>
       </div>
 
-      <div className="mt-32 lg:mt-50">
+      <div className={`mt-32 lg:mt-50 ${scrollable ? "" : "hidden"}`}>
         <div
           ref={scrubRef}
           onPointerDown={onScrubPointerDown}
