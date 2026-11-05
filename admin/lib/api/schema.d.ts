@@ -548,6 +548,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cms/site-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SiteMetricsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cms/site-metrics/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["SiteMetricsController_update"];
+        trace?: never;
+    };
+    "/api/v1/cms/public/site-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicSiteMetricsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1220,6 +1268,54 @@ export interface components {
                     height: number;
                 } | null;
             }[];
+        };
+        SiteMetricListDto: {
+            items: {
+                /** @enum {string} */
+                key: "years_experience" | "businesses_supported" | "client_retention" | "systems_delivered" | "projects_completed" | "client_systems_supported" | "google_rating" | "clutch_rating" | "fiverr_rating";
+                title: string;
+                /** @enum {string} */
+                kind: "stat" | "rating";
+                hint: string;
+                placements: {
+                    page: string;
+                    route: string;
+                    section: string;
+                }[];
+                value: string;
+                defaultValue: string;
+                /** Format: date-time */
+                updatedAt: string | null;
+                /** Format: uuid */
+                updatedBy: string | null;
+            }[];
+        };
+        UpdateSiteMetricDto: {
+            value: string;
+        };
+        SiteMetricDto: {
+            /** @enum {string} */
+            key: "years_experience" | "businesses_supported" | "client_retention" | "systems_delivered" | "projects_completed" | "client_systems_supported" | "google_rating" | "clutch_rating" | "fiverr_rating";
+            title: string;
+            /** @enum {string} */
+            kind: "stat" | "rating";
+            hint: string;
+            placements: {
+                page: string;
+                route: string;
+                section: string;
+            }[];
+            value: string;
+            defaultValue: string;
+            /** Format: date-time */
+            updatedAt: string | null;
+            /** Format: uuid */
+            updatedBy: string | null;
+        };
+        PublicSiteMetricsDto: {
+            values: {
+                [key: string]: string;
+            };
         };
     };
     responses: never;
@@ -2590,6 +2686,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PublicTestimonialListDto"];
+                };
+            };
+        };
+    };
+    SiteMetricsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteMetricListDto"];
+                };
+            };
+        };
+    };
+    SiteMetricsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: "years_experience" | "businesses_supported" | "client_retention" | "systems_delivered" | "projects_completed" | "client_systems_supported" | "google_rating" | "clutch_rating" | "fiverr_rating";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSiteMetricDto"];
+            };
+        };
+        responses: {
+            /** @description The figure with its new value; it is live on the website at once */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteMetricDto"];
+                };
+            };
+            /** @description No such figure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicSiteMetricsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every figure's current value, keyed by its key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSiteMetricsDto"];
                 };
             };
         };

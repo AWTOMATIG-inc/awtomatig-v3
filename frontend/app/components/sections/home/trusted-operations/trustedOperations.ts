@@ -1,3 +1,4 @@
+import type { SiteMetricKey } from "@/lib/siteMetrics";
 import { PARTNER_LOGOS } from "../../shared/partners/partners";
 import type { ComponentType, SVGProps } from "react";
 import {
@@ -12,11 +13,11 @@ import {
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-// Figures copied from the Figma mockup; confirm them with the owner before launch (MEMORY.md §4)
-export const RESULTS: { value: string; label: string; icon: Icon }[] = [
-  { value: "50+", label: "Businesses Supported", icon: BriefcaseIcon },
-  { value: "120+", label: "Systems & Workflows delivered", icon: BadgeCheckIcon },
-  { value: "75+", label: "Projects Completed", icon: CardsIcon },
+// The figures are edited in the admin (Website → Site Metrics); only the label and icon of each row live here
+export const RESULTS: { metric: SiteMetricKey; label: string; icon: Icon }[] = [
+  { metric: "businesses_supported", label: "Businesses Supported", icon: BriefcaseIcon },
+  { metric: "systems_delivered", label: "Systems & Workflows delivered", icon: BadgeCheckIcon },
+  { metric: "projects_completed", label: "Projects Completed", icon: CardsIcon },
 ];
 
 // The four ecosystem tiles above the map (decorative)

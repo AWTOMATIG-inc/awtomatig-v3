@@ -1950,6 +1950,102 @@
           "cms"
         ]
       }
+    },
+    "/api/v1/cms/site-metrics": {
+      "get": {
+        "operationId": "SiteMetricsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteMetricListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "cms"
+        ]
+      }
+    },
+    "/api/v1/cms/site-metrics/{key}": {
+      "patch": {
+        "operationId": "SiteMetricsController_update",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "years_experience",
+                "businesses_supported",
+                "client_retention",
+                "systems_delivered",
+                "projects_completed",
+                "client_systems_supported",
+                "google_rating",
+                "clutch_rating",
+                "fiverr_rating"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSiteMetricDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The figure with its new value; it is live on the website at once",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteMetricDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such figure"
+          }
+        },
+        "tags": [
+          "cms"
+        ]
+      }
+    },
+    "/api/v1/cms/public/site-metrics": {
+      "get": {
+        "operationId": "PublicSiteMetricsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Every figure's current value, keyed by its key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSiteMetricsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "cms"
+        ]
+      }
     }
   },
   "info": {
@@ -4761,6 +4857,210 @@
         },
         "required": [
           "items"
+        ]
+      },
+      "SiteMetricListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": [
+                    "years_experience",
+                    "businesses_supported",
+                    "client_retention",
+                    "systems_delivered",
+                    "projects_completed",
+                    "client_systems_supported",
+                    "google_rating",
+                    "clutch_rating",
+                    "fiverr_rating"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "stat",
+                    "rating"
+                  ]
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "placements": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "page": {
+                        "type": "string"
+                      },
+                      "route": {
+                        "type": "string"
+                      },
+                      "section": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "page",
+                      "route",
+                      "section"
+                    ]
+                  }
+                },
+                "value": {
+                  "type": "string"
+                },
+                "defaultValue": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "nullable": true
+                },
+                "updatedBy": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "key",
+                "title",
+                "kind",
+                "hint",
+                "placements",
+                "value",
+                "defaultValue",
+                "updatedAt",
+                "updatedBy"
+              ]
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UpdateSiteMetricDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "SiteMetricDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "years_experience",
+              "businesses_supported",
+              "client_retention",
+              "systems_delivered",
+              "projects_completed",
+              "client_systems_supported",
+              "google_rating",
+              "clutch_rating",
+              "fiverr_rating"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "stat",
+              "rating"
+            ]
+          },
+          "hint": {
+            "type": "string"
+          },
+          "placements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "string"
+                },
+                "route": {
+                  "type": "string"
+                },
+                "section": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "page",
+                "route",
+                "section"
+              ]
+            }
+          },
+          "value": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "nullable": true
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "nullable": true
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "kind",
+          "hint",
+          "placements",
+          "value",
+          "defaultValue",
+          "updatedAt",
+          "updatedBy"
+        ]
+      },
+      "PublicSiteMetricsDto": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "values"
         ]
       }
     }

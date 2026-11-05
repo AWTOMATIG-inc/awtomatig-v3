@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, index, integer, jsonb, pgSchema, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { boolean, check, index, integer, jsonb, pgSchema, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { authorColumns, baseColumns } from "../../shared/db/columns";
 
@@ -118,4 +118,23 @@ export const testimonials = cmsSchema.table(
     // The database backstop for the publish rule: nothing goes live without the client's agreement.
     check("testimonials_published_consent_check", sql`${table.status} <> 'published' or ${table.consentConfirmed}`),
   ],
+);
+
+/**
+ * A trust number shown on the website ("50+ businesses supported", a 4.8 rating). The set of keys is fixed by the catalog in
+ * `domain/site-metric.ts` (each key is wired to a place in the website code), so there is no id, no status and no sort order:
+ * a row holds only the current value. The format of the value depends on the key kind and is checked by zod in the domain.
+ */
+export const siteMetrics = cmsSchema.table(
+  "site_metrics",
+  {
+    key: text("key").primaryKey(),
+    value: text("value").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    updatedBy: uuid("updated_by"),
+  },
+  (table) => [check("site_metrics_value_check", sql`char_length(${table.value}) between 1 and 12`)],
 );

@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { CAREERS_TAG } from "@/lib/careers";
 import { CASE_STUDIES_TAG } from "@/lib/caseStudies";
+import { SITE_METRICS_TAG } from "@/lib/siteMetrics";
 import { TESTIMONIALS_TAG } from "@/lib/testimonials";
 
 // The cached lists the backend may ask us to drop. The query value is the backend's name for the list; unknown names are refused.
@@ -9,6 +10,7 @@ const TAGS: Record<string, string> = {
   "case-studies": CASE_STUDIES_TAG,
   testimonials: TESTIMONIALS_TAG,
   careers: CAREERS_TAG,
+  "site-metrics": SITE_METRICS_TAG,
 };
 
 // Called by the backend (server to server) right after a case study or testimonial is published, unpublished, edited, reordered or

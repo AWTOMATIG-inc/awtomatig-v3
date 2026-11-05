@@ -2,7 +2,7 @@
 
 The overview of the whole system: one status row per folder, decisions and open items that affect more than one folder, and a short change log saying **which folder changed and what**. It holds no implementation detail: that lives in the folder's own memory (`frontend/MEMORY.md`, `backend/MEMORY.md`, `admin/MEMORY.md`), which is the detailed record of the work done there. Read this and the folder's memory before starting work. After any change, add a one-line entry here and the full detail in the folder's memory, in the same change (see [RULES.md](RULES.md) section 1).
 
-- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S8)
+- **System design:** [ARCHITECTURE.md](ARCHITECTURE.md) (decisions S1 to S9)
 - **Rules:** [RULES.md](RULES.md)
 
 ---
@@ -22,13 +22,14 @@ _Last updated: 2026-11-04_
 
 ## 2. Cross-folder decisions
 
-See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S8). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
+See the decision log in [ARCHITECTURE.md](ARCHITECTURE.md) (S1 to S9). Short form: internal-only single tenant, three folders, OpenAPI as the contract, common docs at the root and folder docs in each folder.
 
 ## 3. Open items
 
 - [x] Commit the move of the website into `frontend/` (`5dc0e0e`).
 - [ ] Update `frontend/README.md` and CI/deploy scripts for the new paths if they reference the old root.
 - [ ] **Release the recruitment system** (checklist in [RECRUITMENT_PLAN.md](RECRUITMENT_PLAN.md) section 9). Beyond the server steps it needs two owner decisions: 2FA (backend B10) before real candidate data, and a read-through (ideally legal review) of the Privacy Policy, which now covers applications and resumes.
+- [ ] **Release site metrics:** deploy (migration `0006` runs), then `npm run seed:site-metrics` once on the VPS (see [SITE_METRICS_PLAN.md](SITE_METRICS_PLAN.md) section 8).
 - [ ] System-level open items are listed in ARCHITECTURE.md section 5.
 
 ## 4. Change log
@@ -37,6 +38,9 @@ Newest first.
 
 | Date | Change |
 | --- | --- |
+| 2026-11-05 | **Site metrics: "Last updated" fix** (`backend/`, `admin/`): figures that only came from the seed now show "Not edited yet" instead of the seed date. Detail in each folder's `MEMORY.md`. |
+| 2026-11-05 | **Site metrics (trust numbers) built** (`backend/`, `admin/`, `frontend/`; decision S9): nine figures are now editable in the admin under Website → Site Metrics, each showing its field title and the pages where it appears, and Home, Contact and the cleaning landing page read them (an edit shows on all of them within seconds). Owner answers applied: **Systems delivered is 25+ everywhere** (Home said 120+), **retention is 95%** (was "95+"), the three ratings are 4.8 each, and the stat cards are never hidden (built-in defaults if the backend is down). Migration `0006` and the seed applied to the **dev database**. 428 backend tests pass, `typecheck`, `lint` and `build` pass in all three folders, and an edit through the real API was seen on Home, Contact and the landing page. **VPS not done:** the deploy runs migration `0006`; then run `npm run seed:site-metrics` once (the website shows the same figures before that). A browser look at the admin screen was not done. Detail in each folder's `MEMORY.md`. |
+| 2026-11-05 | **Site metrics (trust numbers) CMS planned** (`backend/`, `admin/`, `frontend/`; nothing built yet): wrote [SITE_METRICS_PLAN.md](SITE_METRICS_PLAN.md). Mapped every trust figure on the website (10 slots: 4 stats on Contact and the cleaning landing page, 3 results plus "35+" on Home, 3 ratings in the Home and landing heroes) and found the same claim with different numbers on different pages (Systems delivered 25+ vs 120+) and a retention figure with no unit ("95+"). Plan: fixed editable slots in the `cms` module, admin screen showing each field's title and the pages where it appears, website reads them like testimonials. Four owner questions in the plan. No folder memory changed: no work done in a folder yet. |
 | 2026-11-05 | **Recruitment: closed jobs hidden from `/careers`, Open / Share link buttons, instant refresh** (`frontend/`, `admin/`, `backend/`): the careers list shows only jobs taking applications (the Closed badge is gone); the admin Job Openings table has a Public page column with Open and Share link (copy) buttons; publishing, editing, closing or reopening a job now makes the backend tell the website to refresh the careers pages at once (tag `careers`), with the safety-net refresh cut from 60 to 30 seconds. Typecheck and lint pass in all three; backend unit tests pass, database-backed tests and a browser run were not done. Detail in each folder's `MEMORY.md`. |
 | 2026-11-05 | **Testimonials CMS Phase 4 and the seed done** (`frontend/`, `backend/`; decision S8): Home and About now show the published testimonials from the backend instead of the hard-coded list (same cards, order, text, services and black logos; the logos are files on the public bucket); a change in the admin reaches the site at once; with nothing to show the section hides itself; the scroller's scrub bar is hidden when there is nothing to scroll. The six current testimonials were uploaded (logos) and seeded as published on the dev database, and `npm run seed:testimonials` loads them from `backend/seed/testimonials.sql` (safe to repeat) for the VPS. `tsc`, lint and build pass; checked on a production server against the local backend: HTML compared card by card, unpublish and republish within one request, backend down (list kept, then section hidden), a look at 1440 and 390. **Not done:** the VPS release (checklist in `TESTIMONIALS_PLAN.md` section 9), the admin browser run (Phase 3), the Privacy Policy line. Detail in each folder's `MEMORY.md`. |
 | 2026-11-05 | **Testimonials CMS Phase 3 code written** (`admin/`; `backend/` and `frontend/` unchanged): Website → Testimonials with the list, new and edit form, logo upload and removal, Publish / Unpublish / Delete dialogs and move up / down; the image picker and move buttons are now shared with Case Studies. `typecheck`, `lint` and `build` pass. **Not done:** the browser run of the whole flow (skipped at your request), so Phase 3 is not marked done. Phase 4 (the website reads from the CMS) is next. Detail in `admin/MEMORY.md`. |

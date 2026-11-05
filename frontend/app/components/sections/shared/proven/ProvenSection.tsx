@@ -4,6 +4,7 @@ import Decor from "@/public/images/awtomatig-mark-decor.png";
 import { CountUp, Eyebrow } from "@/app/components/ui";
 import BackgroundVideo from "./BackgroundVideo";
 import MarqueeTrack from "../partners/MarqueeTrack";
+import { getSiteMetrics } from "@/lib/siteMetrics";
 import { PARTNERS, PROVEN_STATS, type ProvenStat } from "./proven";
 
 type ProvenSectionProps = {
@@ -17,7 +18,7 @@ type ProvenSectionProps = {
   topPadding?: string;
   /** Desktop bottom padding of the content (default lg:pb-116) */
   bottomPadding?: string;
-  /** The four stat cards (default: the shared figures); a card is shown only once it has a real figure */
+  /** The four stat cards (default: the shared ones); each takes its figure from the admin's Site Metrics */
   stats?: ProvenStat[];
   /** Heading above the logo slider */
   logoCaption?: string;
@@ -29,7 +30,7 @@ type ProvenSectionProps = {
 const LIGHT_LOGO = "brightness-0 invert opacity-70 hover:opacity-100";
 
 // Proof block: four stat cards and a row of client logos (Contact "Why AWTOMATIG", campaign pages "Trust / Proof")
-export default function ProvenSection({
+export default async function ProvenSection({
   id = "proven",
   eyebrow = "Why AWTOMATIG",
   title = (
@@ -47,7 +48,8 @@ export default function ProvenSection({
   videoSrc,
 }: ProvenSectionProps) {
   const titleId = `${id}-title`;
-  const shown = stats.filter((stat) => stat.value);
+  const metrics = await getSiteMetrics();
+  const shown = stats.map((stat) => ({ ...stat, value: metrics[stat.metric] })).filter((stat) => stat.value);
   const partners = videoSrc ? PARTNERS.map((partner) => ({ ...partner, tone: LIGHT_LOGO })) : PARTNERS;
 
   return (
@@ -90,7 +92,7 @@ export default function ProvenSection({
                 <h3 className="type-label-14 uppercase">{stat.label}</h3>
                 <div className="mt-40 lg:mt-auto">
                   <p className="type-heading-50 font-normal">
-                    <CountUp value={stat.value!} />
+                    <CountUp value={stat.value} />
                   </p>
                   <p className="type-body-14 text-fg-primary mt-12 max-w-240">{stat.description}</p>
                 </div>
