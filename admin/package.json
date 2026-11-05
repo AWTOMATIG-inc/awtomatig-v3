@@ -17,6 +17,7 @@
     "api:generate": "openapi-typescript ../backend/openapi.json -o lib/api/schema.d.ts"
   },
   "dependencies": {
+    "@google-analytics/data": "^5.2.2",
     "@hookform/resolvers": "^6.0.2",
     "@tanstack/react-query": "^5.105.0",
     "@tanstack/react-table": "^8.21.3",
