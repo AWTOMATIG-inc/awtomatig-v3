@@ -35,10 +35,29 @@ export type LinesPreset = {
 
 type Stripe = { dist: number; width: number; isLaser: boolean; alpha: number; fadeLength?: number };
 
+type Line = {
+  stripe: Stripe;
+  alphaBreath: number;
+  influence: number;
+  baseX: number;
+  baseY: number;
+  curP1x: number;
+  curP1y: number;
+  curP2x: number;
+  curP2y: number;
+};
+
 // The designs are drawn on a 1440px wide frame
 const DESIGN_WIDTH = 1440;
 const BAND_COLOR: RGB = [255, 255, 255];
+const BAND_RGBA = `rgba(${BAND_COLOR[0]}, ${BAND_COLOR[1]}, ${BAND_COLOR[2]}, `;
+const BAND_CLEAR = `${BAND_RGBA}0)`;
 const CYAN = "#02d5e8";
+
+// One frame at 60Hz: the motion constants below were tuned per 60Hz frame, so the loop scales them by the real frame time
+const FRAME_MS = 1000 / 60;
+// After a stall (tab switch, heavy scroll) catch up by at most three frames instead of jumping
+const MAX_STEP_MS = 50;
 
 // Colour along a laser, from the frame edge (0) to the end of its fade (1): near-white -> light cyan -> cyan -> gone
 const LASER_STOPS: [offset: number, color: RGB, alpha: number][] = [
@@ -105,6 +124,8 @@ export default function LinesBackground({
     let normY = 0;
     let bandOrigin = 0;
     let laserStripes: Stripe[] = [];
+    // The band-strength mask never changes for a preset, so its gradient is built once, not every frame
+    let maskGrad: CanvasGradient | null = null;
     const applyPreset = () => {
       cfg = compact && !wide.matches ? compact : preset;
       const rad = (cfg.angleDeg * Math.PI) / 180;
@@ -114,6 +135,11 @@ export default function LinesBackground({
       normY = Math.cos(rad);
       bandOrigin = cfg.lasers[0]?.dist ?? 0;
       laserStripes = cfg.lasers.map((l) => ({ ...l, isLaser: true }));
+      // Gradients are defined in user space and take the transform in force when they are filled, so this one is reusable
+      maskGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+      for (const [radius, strength] of cfg.mask.stops) {
+        maskGrad.addColorStop(radius, `rgba(0, 0, 0, ${strength})`);
+      }
     };
     applyPreset();
 
@@ -122,7 +148,12 @@ export default function LinesBackground({
     let dpr = 1;
     let time = 0;
     let frameId = 0;
+    let lastTs = 0;
     let stripes: Stripe[] = laserStripes;
+    // Per-stripe scratch values, refilled each frame in place so the loop allocates nothing
+    let lines: Line[] = [];
+    let glowX = 0;
+    let glowY = 0;
     // The loop runs only while the section is on screen and motion is allowed; otherwise one still frame is drawn
     let isVisible = false;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -137,12 +168,19 @@ export default function LinesBackground({
 
     const onResize = () => {
       applyPreset();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = section.clientWidth;
-      height = section.clientHeight;
+      const nextDpr = Math.min(window.devicePixelRatio || 1, 2);
+      const nextWidth = section.clientWidth;
+      const nextHeight = section.clientHeight;
 
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      // Assigning canvas.width reallocates and clears the bitmap even for the same value, which stutters on phones
+      // (the observer also fires for no-op changes), so only do it when the size really changed
+      if (nextWidth !== width || nextHeight !== height || nextDpr !== dpr) {
+        dpr = nextDpr;
+        width = nextWidth;
+        height = nextHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+      }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       if (!pointer.isHovered) resetPointerTarget();
@@ -169,16 +207,39 @@ export default function LinesBackground({
             }))
           : [];
       stripes = [...bands, ...laserStripes];
+      lines = stripes.map((stripe) => ({
+        stripe,
+        alphaBreath: 1,
+        influence: 0,
+        baseX: 0,
+        baseY: 0,
+        curP1x: 0,
+        curP1y: 0,
+        curP2x: 0,
+        curP2y: 0,
+      }));
 
       // Resizing clears the canvas: repaint at once when the loop isn't running
       if (!frameId) drawStill();
     };
 
+    // Pointer events only note where the finger or mouse is; the frame loop converts it to section coordinates once per
+    // frame. Reading getBoundingClientRect inside every touchmove forced a layout while the page was scrolling.
+    let pendingX = 0;
+    let pendingY = 0;
+    let hasPending = false;
     const setPointerPos = (cx: number, cy: number) => {
-      const rect = section.getBoundingClientRect();
-      pointer.targetX = cx - rect.left;
-      pointer.targetY = cy - rect.top;
+      pendingX = cx;
+      pendingY = cy;
+      hasPending = true;
       pointer.isHovered = true;
+    };
+    const applyPending = () => {
+      if (!hasPending) return;
+      hasPending = false;
+      const rect = section.getBoundingClientRect();
+      pointer.targetX = pendingX - rect.left;
+      pointer.targetY = pendingY - rect.top;
     };
 
     const onPointerMove = (e: PointerEvent) => setPointerPos(e.clientX, e.clientY);
@@ -186,6 +247,7 @@ export default function LinesBackground({
       if (e.touches[0]) setPointerPos(e.touches[0].clientX, e.touches[0].clientY);
     };
     const onPointerLeave = () => {
+      hasPending = false;
       pointer.isHovered = false;
       resetPointerTarget();
     };
@@ -194,9 +256,15 @@ export default function LinesBackground({
 
     // Paints one frame for the current `time` and pointer position
     const draw = () => {
-      // Parallax drift for the background ambient glow
-      glow.style.setProperty("--glow-x", `${(pointer.x / width - 0.5) * 40}px`);
-      glow.style.setProperty("--glow-y", `${(pointer.y / height - 0.5) * 40}px`);
+      // Parallax drift for the background ambient glow. Written straight to the layer's transform (no custom property, so no
+      // style recalculation) and only when it moved by a visible amount.
+      const nextGlowX = (pointer.x / width - 0.5) * 40;
+      const nextGlowY = (pointer.y / height - 0.5) * 40;
+      if (Math.abs(nextGlowX - glowX) > 0.05 || Math.abs(nextGlowY - glowY) > 0.05) {
+        glowX = nextGlowX;
+        glowY = nextGlowY;
+        glow.style.transform = `translate3d(${glowX.toFixed(2)}px, ${glowY.toFixed(2)}px, 0)`;
+      }
 
       ctx.clearRect(0, 0, width, height);
 
@@ -208,7 +276,8 @@ export default function LinesBackground({
       const originY = 0;
       const span = Math.hypot(width, height) * 1.6;
 
-      const lines = stripes.map((stripe) => {
+      for (const line of lines) {
+        const stripe = line.stripe;
         // Phase comes from the position, so a laser sways with its band and the bands stay evenly spaced
         const phase = stripe.dist / cfg.bandPeriod;
 
@@ -245,18 +314,15 @@ export default function LinesBackground({
         const influence = Math.max(0, 1 - dist / interactionRadius);
         const pushAmount = Math.sin(t * Math.PI) * influence * (stripe.isLaser ? 16 : 8);
 
-        return {
-          stripe,
-          alphaBreath,
-          influence,
-          baseX: lineBaseX + normX * pushAmount,
-          baseY: lineBaseY + normY * pushAmount,
-          curP1x: p1x + normX * pushAmount,
-          curP1y: p1y + normY * pushAmount,
-          curP2x: p2x + normX * pushAmount,
-          curP2y: p2y + normY * pushAmount,
-        };
-      });
+        line.alphaBreath = alphaBreath;
+        line.influence = influence;
+        line.baseX = lineBaseX + normX * pushAmount;
+        line.baseY = lineBaseY + normY * pushAmount;
+        line.curP1x = p1x + normX * pushAmount;
+        line.curP1y = p1y + normY * pushAmount;
+        line.curP2x = p2x + normX * pushAmount;
+        line.curP2y = p2y + normY * pushAmount;
+      }
 
       // 1. Translucent sawtooth bands: crisp edge on the corner side, even fade across one period
       for (const { stripe, alphaBreath, influence, curP1x, curP1y, curP2x, curP2y } of lines) {
@@ -273,9 +339,9 @@ export default function LinesBackground({
         ctx.closePath();
 
         const grad = ctx.createLinearGradient(curP1x, curP1y, curP1x + normX * bw, curP1y + normY * bw);
-        const [r, g, b] = BAND_COLOR;
-        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${bAlpha})`);
-        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        // fixed decimals keep the string short without changing a single pixel
+        grad.addColorStop(0, `${BAND_RGBA}${bAlpha.toFixed(7)})`);
+        grad.addColorStop(1, BAND_CLEAR);
         ctx.fillStyle = grad;
         ctx.fill();
       }
@@ -286,12 +352,10 @@ export default function LinesBackground({
       const { mask } = cfg;
       const [maskX, maskY] = mask.origin ?? [1, 0];
       ctx.setTransform(dpr * width * mask.rx, 0, 0, dpr * height * mask.ry, dpr * width * maskX, dpr * height * maskY);
-      const maskGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
-      for (const [radius, strength] of mask.stops) {
-        maskGrad.addColorStop(radius, `rgba(0, 0, 0, ${strength})`);
+      if (maskGrad) {
+        ctx.fillStyle = maskGrad;
+        ctx.fillRect(-2, -2, 4, 4);
       }
-      ctx.fillStyle = maskGrad;
-      ctx.fillRect(-2, -2, 4, 4);
       ctx.restore();
 
       // 2. Crisp lasers, brightest at the frame edge and fading away from it
@@ -312,34 +376,44 @@ export default function LinesBackground({
         // Linear gradient along the laser: near-white at the frame edge, through cyan, fading out
         const laserGrad = ctx.createLinearGradient(exitX, exitY, exitX - dirX * fade, exitY - dirY * fade);
         for (const [offset, [r, g, b], a] of cfg.laserStops ?? LASER_STOPS) {
-          laserGrad.addColorStop(offset, `rgba(${r}, ${g}, ${b}, ${a * laserAlpha})`);
+          laserGrad.addColorStop(offset, `rgba(${r}, ${g}, ${b}, ${(a * laserAlpha).toFixed(7)})`);
         }
 
-        // Crisp line at rest; a soft cyan glow only appears while the pointer is near
+        // Crisp line at rest; a soft cyan glow only appears while the pointer is near. The shadow stays off otherwise:
+        // canvas shadows are costly, and a zero-blur shadow still takes a slower path in some browsers.
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(curP1x, curP1y);
         ctx.lineTo(curP2x, curP2y);
         ctx.strokeStyle = laserGrad;
         ctx.lineWidth = stripe.width * scale + influence * 1.2;
-        ctx.shadowColor = CYAN;
-        ctx.shadowBlur = influence * 14;
+        if (influence > 0) {
+          ctx.shadowColor = CYAN;
+          ctx.shadowBlur = influence * 14;
+        }
         ctx.stroke();
         ctx.restore();
       }
     };
 
-    const tick = () => {
-      time += 0.016;
-      // Smooth pointer lerp
-      pointer.x += (pointer.targetX - pointer.x) * 0.05;
-      pointer.y += (pointer.targetY - pointer.y) * 0.05;
+    const tick = (now: number) => {
+      // Motion advances by real elapsed time, so it runs at the same speed on 60, 90 and 120Hz screens and doesn't slow
+      // down or jump when a phone drops frames. One 60Hz frame (steps = 1) is exactly the old per-frame step.
+      const steps = (lastTs ? Math.min(now - lastTs, MAX_STEP_MS) : FRAME_MS) / FRAME_MS;
+      lastTs = now;
+      time += 0.016 * steps;
+      applyPending();
+      // Smooth pointer lerp (0.05 per 60Hz frame)
+      const ease = 1 - Math.pow(0.95, steps);
+      pointer.x += (pointer.targetX - pointer.x) * ease;
+      pointer.y += (pointer.targetY - pointer.y) * ease;
       draw();
       frameId = requestAnimationFrame(tick);
     };
 
     // One frame with the pointer settled on its target (the rest point unless hovered): reduced motion, and repaints while paused
     function drawStill() {
+      applyPending();
       pointer.x = pointer.targetX;
       pointer.y = pointer.targetY;
       draw();
@@ -348,6 +422,7 @@ export default function LinesBackground({
     const stop = () => {
       cancelAnimationFrame(frameId);
       frameId = 0;
+      lastTs = 0;
     };
 
     // Starts or stops the loop to match visibility and the motion preference

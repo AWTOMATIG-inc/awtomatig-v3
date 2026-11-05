@@ -14,7 +14,9 @@
     }
   }
 
-  /* Soft cyan bloom in the top-right corner; JS sets --glow-x / --glow-y as it drifts with the pointer */
+  /* Soft cyan bloom in the top-right corner; JS sets its transform as it drifts with the pointer. It is its own compositor
+     layer (will-change), so the 75px blur is rasterised once and the drift only moves the finished bitmap. The old
+     0.2s transition restarted on every frame's update and is gone: the pointer lerp already smooths the drift. */
   .lines-bg-glow {
     position: absolute;
     top: -22%;
@@ -25,8 +27,7 @@
     filter: blur(75px);
     pointer-events: none;
     z-index: 1;
-    transform: translate3d(var(--glow-x, 0px), var(--glow-y, 0px), 0);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
   }
 
   /* Subtle film grain texture for tactile depth */
