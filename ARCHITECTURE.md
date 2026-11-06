@@ -18,8 +18,8 @@ Put a document at the root only if it applies to more than one folder. Anything 
 | Part | Folder | Audience | State |
 | --- | --- | --- | --- |
 | Marketing website | `frontend/` | Public | Built (Next.js 16) |
-| Backend API (CMS + ERP modules) | `backend/` | The admin app, plus the website's contact form and careers pages | Live: auth, `crm`, `recruitment`; no CMS or ERP module yet |
-| Internal admin / ERP UI | `admin/` | Employees only | Live: sign-in, dashboard, Contact Inquiries, Recruitment |
+| Backend API (CMS + ERP modules) | `backend/` | The admin app, plus the website's contact form and careers pages | Live: auth, `crm`, `recruitment`, `cms`; `hr` built (employees, career timeline, documents), not yet released |
+| Internal admin / ERP UI | `admin/` | Employees only | Live: sign-in, dashboard, Contact Inquiries, Recruitment, Website content; HR screens written, not yet released |
 
 The ERP is **internal only**: used by the company and its employees, not sold to clients. That means a **single tenant** (no `tenant_id` columns) and a known, small user base.
 

@@ -6,6 +6,7 @@ import { AuditModule } from "./shared/audit/audit.module";
 import { AuthModule } from "./shared/auth/auth.module";
 import { CmsModule } from "./modules/cms/cms.module";
 import { CrmModule } from "./modules/crm/crm.module";
+import { HrModule } from "./modules/hr/hr.module";
 import { RecruitmentModule } from "./modules/recruitment/recruitment.module";
 import { ConfigModule } from "./shared/config/app-config";
 import { DbModule } from "./shared/db/db.module";
@@ -34,6 +35,7 @@ import { WebsiteModule } from "./shared/website/website.module";
     CrmModule,
     RecruitmentModule,
     CmsModule,
+    HrModule,
   ],
   providers: [
     { provide: APP_PIPE, useClass: ZodValidationPipe },

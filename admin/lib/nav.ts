@@ -1,4 +1,16 @@
-import { BarChart3, Briefcase, CircleHelp, Gauge, Images, Inbox, LayoutDashboard, type LucideIcon, Quote } from "lucide-react";
+import {
+  BarChart3,
+  Briefcase,
+  Building2,
+  CircleHelp,
+  Gauge,
+  Images,
+  Inbox,
+  LayoutDashboard,
+  type LucideIcon,
+  Quote,
+  Users,
+} from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -18,6 +30,13 @@ export interface NavGroup {
 export const NAV: readonly NavGroup[] = [
   { label: "Overview", items: [{ label: "Dashboard", href: "/", icon: LayoutDashboard }] },
   { label: "CRM", items: [{ label: "Contact Inquiries", href: "/crm/leads", icon: Inbox }] },
+  {
+    label: "HR",
+    items: [
+      { label: "Employees", href: "/hr/employees", icon: Users },
+      { label: "Departments", href: "/hr/departments", icon: Building2 },
+    ],
+  },
   { label: "Recruitment", items: [{ label: "Job Openings", href: "/recruitment/jobs", icon: Briefcase }] },
   {
     label: "Website",
