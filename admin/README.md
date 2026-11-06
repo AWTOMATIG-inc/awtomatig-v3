@@ -33,15 +33,17 @@ app/
   (app)/                 the signed-in shell: layout.tsx (sidebar, topbar), page.tsx (dashboard), loading, error
     crm/leads/           Leads list and lead detail (CRM)
     recruitment/jobs/    Job openings: list, new, edit (tabs), applicant pages (Recruitment)
+    hr/employees/        Employees: list, new, edit, profile with career timeline and documents (HR)
+    hr/departments/      Departments list and dialog (HR)
 components/
-  ui/                    Button, IconButton, Card, DataTable, SortHeader, Pagination, Dialog, Field/Input/Select/Textarea/Checkbox, PageHeader, SegmentedLinks, StatusBadge, EmptyState, Skeleton
+  ui/                    Button, IconButton, Card, DataTable, SortHeader, Pagination, Dialog, ConfirmDialog, InlineError, Field/Input/Select/Textarea/Checkbox, PageHeader, SegmentedLinks, StatusBadge, EmptyState, Skeleton
   layout/                Sidebar, MobileNav (drawer), Topbar, Breadcrumb
   charts/                BarChart (Recharts, themed), ChartCard
   dashboard/             KpiCard, AttentionCard, ActivityTable
 lib/
   api/                   typed client (browser) and serverApi() (server), generated schema
   auth/                  session.ts (getSession / requireSession / can) and client.ts (sign-in, sign-out)
-  crm/  recruitment/     per-module types, labels, URL helpers and form checks
+  crm/  recruitment/  hr/  per-module types, labels, URL helpers and form checks
   dashboard/             types, data (real; empty until modules exist), demo (development only)
   nav.ts  format.ts  config.ts  cn.ts
 scripts/check-tokens-sync.mjs   fails when a shared token differs from the website

@@ -692,6 +692,246 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hr/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EmployeesController_list"];
+        put?: never;
+        post: operations["EmployeesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EmployeesController_get"];
+        put?: never;
+        post?: never;
+        delete: operations["EmployeesController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["EmployeesController_update"];
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/employment-changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EmployeesController_changeEmployment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/employment-changes/{recordId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["EmployeesController_removeEmployment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EmployeesController_leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/reinstate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EmployeesController_reinstate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/designations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DesignationsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DepartmentsController_list"];
+        put?: never;
+        post: operations["DepartmentsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/departments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DepartmentsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["DepartmentsController_update"];
+        trace?: never;
+    };
+    "/api/v1/hr/departments/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DepartmentsController_activate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/departments/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DepartmentsController_deactivate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DocumentsController_list"];
+        put?: never;
+        post: operations["DocumentsController_add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/documents/{docId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DocumentsController_link"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/employees/{id}/documents/{docId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DocumentsController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["DocumentsController_update"];
+        trace?: never;
+    };
+    "/api/v1/hr/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HrStatsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1463,6 +1703,319 @@ export interface components {
             faqs: {
                 question: string;
                 answer: string;
+            }[];
+        };
+        EmployeeListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                employeeNo: number;
+                employeeId: string;
+                fullName: string;
+                email: string;
+                phone: string;
+                /** @enum {string} */
+                status: "active" | "leaving" | "left" | "upcoming";
+                /** Format: date */
+                joinedOn: string;
+                /** Format: date */
+                leftOn: string | null;
+                designation: string;
+                /** @enum {string} */
+                employmentType: "full_time" | "part_time" | "contractual" | "internship";
+                /** @enum {string} */
+                workMode: "onsite" | "hybrid" | "remote";
+                department: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                } | null;
+                manager: {
+                    /** Format: uuid */
+                    id: string;
+                    employeeId: string;
+                    fullName: string;
+                } | null;
+                period: {
+                    years: number;
+                    months: number;
+                    days: number;
+                    totalDays: number;
+                };
+            }[];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        CreateEmployeeDto: {
+            fullName: string;
+            email: string;
+            phone: string;
+            address: string;
+            nid: string;
+            /** Format: date */
+            joinedOn: string;
+            designation: string;
+            /** @enum {string} */
+            employmentType: "full_time" | "part_time" | "contractual" | "internship";
+            /** @enum {string} */
+            workMode: "onsite" | "hybrid" | "remote";
+            /** @default null */
+            salary: string | null;
+            /**
+             * Format: uuid
+             * @default null
+             */
+            departmentId: string | null;
+            /**
+             * Format: uuid
+             * @default null
+             */
+            managerId: string | null;
+            note?: string;
+        };
+        EmployeeDto: {
+            /** Format: uuid */
+            id: string;
+            employeeNo: number;
+            employeeId: string;
+            fullName: string;
+            email: string;
+            phone: string;
+            /** @enum {string} */
+            status: "active" | "leaving" | "left" | "upcoming";
+            /** Format: date */
+            joinedOn: string;
+            /** Format: date */
+            leftOn: string | null;
+            designation: string;
+            /** @enum {string} */
+            employmentType: "full_time" | "part_time" | "contractual" | "internship";
+            /** @enum {string} */
+            workMode: "onsite" | "hybrid" | "remote";
+            department: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            } | null;
+            manager: {
+                /** Format: uuid */
+                id: string;
+                employeeId: string;
+                fullName: string;
+            } | null;
+            period: {
+                years: number;
+                months: number;
+                days: number;
+                totalDays: number;
+            };
+            address: string;
+            nid: string;
+            nidMasked: boolean;
+            salary?: string | null;
+            /** @enum {string|null} */
+            exitType: "resigned" | "terminated" | "contract_ended" | "internship_ended" | "retired" | "other" | null;
+            exitNote: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            directReports: {
+                /** Format: uuid */
+                id: string;
+                employeeId: string;
+                fullName: string;
+                designation: string;
+            }[];
+            timeline: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date */
+                effectiveFrom: string;
+                /** Format: date */
+                endsOn: string | null;
+                /** @enum {string} */
+                status: "past" | "current" | "scheduled";
+                /** @enum {string} */
+                reason: "joined" | "promotion" | "role_type_change" | "salary_revision" | "designation_change" | "department_transfer" | "manager_change" | "work_mode_change" | "correction";
+                note: string | null;
+                period: {
+                    years: number;
+                    months: number;
+                    days: number;
+                    totalDays: number;
+                } | null;
+                designation: string;
+                /** @enum {string} */
+                employmentType: "full_time" | "part_time" | "contractual" | "internship";
+                /** @enum {string} */
+                workMode: "onsite" | "hybrid" | "remote";
+                salary?: string | null;
+                department: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                } | null;
+                manager: {
+                    /** Format: uuid */
+                    id: string;
+                    employeeId: string;
+                    fullName: string;
+                } | null;
+                changes: {
+                    /** @enum {string} */
+                    field: "designation" | "employmentType" | "workMode" | "salary" | "departmentId" | "managerId";
+                    from: string | null;
+                    to: string | null;
+                }[];
+                recordedBy: string | null;
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+        };
+        UpdateEmployeeDto: {
+            fullName?: string;
+            email?: string;
+            phone?: string;
+            address?: string;
+            nid?: string;
+            /** Format: date */
+            joinedOn?: string;
+        };
+        EmploymentChangeDto: {
+            /** Format: date */
+            effectiveFrom: string;
+            /** @enum {string} */
+            reason?: "promotion" | "role_type_change" | "salary_revision" | "designation_change" | "department_transfer" | "manager_change" | "work_mode_change" | "correction";
+            note?: string;
+            designation?: string;
+            /** @enum {string} */
+            employmentType?: "full_time" | "part_time" | "contractual" | "internship";
+            /** @enum {string} */
+            workMode?: "onsite" | "hybrid" | "remote";
+            salary?: string;
+            /** Format: uuid */
+            departmentId?: string | null;
+            /** Format: uuid */
+            managerId?: string | null;
+        };
+        LeaveDto: {
+            /** Format: date */
+            leftOn: string;
+            /** @enum {string} */
+            exitType: "resigned" | "terminated" | "contract_ended" | "internship_ended" | "retired" | "other";
+            exitNote?: string;
+            /** Format: uuid */
+            reassignReportsTo?: string | null;
+        };
+        DesignationListDto: {
+            designations: string[];
+        };
+        DepartmentListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                description: string;
+                active: boolean;
+                employeeCount: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+        };
+        CreateDepartmentDto: {
+            name: string;
+            /** @default  */
+            description: string;
+        };
+        DepartmentDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description: string;
+            active: boolean;
+            employeeCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateDepartmentDto: {
+            name?: string;
+            description?: string;
+        };
+        DocumentListDto: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                docType: "nid" | "passport" | "contract" | "certificate" | "cv" | "other";
+                title: string;
+                fileName: string;
+                contentType: string;
+                sizeBytes: number;
+                /** Format: date */
+                expiresOn: string | null;
+                note: string;
+                uploadedBy: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+        };
+        DocumentDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            docType: "nid" | "passport" | "contract" | "certificate" | "cv" | "other";
+            title: string;
+            fileName: string;
+            contentType: string;
+            sizeBytes: number;
+            /** Format: date */
+            expiresOn: string | null;
+            note: string;
+            uploadedBy: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        DocumentLinkDto: {
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        UpdateDocumentDto: {
+            title?: string;
+            /** Format: date */
+            expiresOn?: string | null;
+            note?: string;
+        };
+        HrStatsDto: {
+            headcount: number;
+            joinedThisMonth: number;
+            leftThisMonth: number;
+            expiringSoonDays: number;
+            expiringDocuments: number;
+            expiredDocuments: number;
+            expiring: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                employeeId: string;
+                employeeNo: number;
+                fullName: string;
+                /** @enum {string} */
+                docType: "nid" | "passport" | "contract" | "certificate" | "cv" | "other";
+                title: string;
+                /** Format: date */
+                expiresOn: string;
             }[];
         };
     };
@@ -3156,6 +3709,729 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PublicFaqListDto"];
+                };
+            };
+        };
+    };
+    EmployeesController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                q?: string;
+                status?: "working" | "left" | "upcoming" | "all";
+                departmentId?: string;
+                managerId?: string;
+                employmentType?: "full_time" | "part_time" | "contractual" | "internship";
+                workMode?: "onsite" | "hybrid" | "remote";
+                sort?: "fullName" | "employeeNo" | "joinedOn" | "designation";
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeListDto"];
+                };
+            };
+        };
+    };
+    EmployeesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateEmployeeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description A salary was sent without the permission to set salaries */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The email or NID already belongs to an employee */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Other people's history names this employee as their manager */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateEmployeeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The email or NID already belongs to another employee */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_changeEmployment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmploymentChangeDto"];
+            };
+        };
+        responses: {
+            /** @description The updated profile */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description A salary was sent without the permission to set salaries */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description There is already an entry on that date */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_removeEmployment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                recordId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The updated profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description No such employee or timeline entry */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The Joined entry cannot be removed */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_leave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LeaveDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Already left, or people report to this employee and no new manager was chosen */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EmployeesController_reinstate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The employee has not been marked as left */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DesignationsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationListDto"];
+                };
+            };
+        };
+    };
+    DepartmentsController_list: {
+        parameters: {
+            query?: {
+                active?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentListDto"];
+                };
+            };
+        };
+    };
+    DepartmentsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDepartmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto"];
+                };
+            };
+            /** @description A department with this name already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto"];
+                };
+            };
+            /** @description No such department */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDepartmentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto"];
+                };
+            };
+            /** @description No such department */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description A department with this name already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentsController_activate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto"];
+                };
+            };
+            /** @description No such department */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Already active */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentsController_deactivate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto"];
+                };
+            };
+            /** @description No such department */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Already inactive */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The employee's documents, oldest first. No links: ask for one per file */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentListDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentsController_add: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @enum {string} */
+                    docType: "nid" | "passport" | "contract" | "certificate" | "cv" | "other";
+                    /** @description Required when docType is other */
+                    title?: string;
+                    /** Format: date */
+                    expiresOn?: string;
+                    note?: string;
+                    /**
+                     * Format: binary
+                     * @description A PDF, JPEG, PNG or WebP file, 5 MB at most
+                     */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDto"];
+                };
+            };
+            /** @description No such employee */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The employee already has the maximum number of documents */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentsController_link: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                docId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentLinkDto"];
+                };
+            };
+            /** @description No such document, or its file is missing */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                docId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed, with its file */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such document */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                docId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDocumentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDto"];
+                };
+            };
+            /** @description No such document */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    HrStatsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HrStatsDto"];
                 };
             };
         };

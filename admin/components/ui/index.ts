@@ -1,10 +1,12 @@
 export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from "./Button";
 export { Card, CardHeader } from "./Card";
+export { ConfirmDialog } from "./ConfirmDialog";
 export { DataTable } from "./DataTable";
 export { Dialog } from "./Dialog";
 export { EmptyState } from "./EmptyState";
 export { Checkbox, Field, Input, Select, Textarea } from "./Field";
 export { IconButton } from "./IconButton";
+export { InlineError } from "./InlineError";
 export { PageHeader } from "./PageHeader";
 export { Pagination } from "./Pagination";
 export { PasswordInput } from "./PasswordInput";

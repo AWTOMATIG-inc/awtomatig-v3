@@ -2,7 +2,8 @@ import "server-only";
 
 import { serverApi } from "@/lib/api/server";
 import { APP_TIMEZONE } from "@/lib/config";
-import { formatDayMonth, formatNumber } from "@/lib/format";
+import { formatDayMonth, formatNumber, formatPlainDate } from "@/lib/format";
+import { documentName } from "@/lib/hr/documents";
 
 import { demoDashboard } from "./demo";
 import { type DashboardData, type DashboardRange, RANGE_LABELS } from "./types";
@@ -29,7 +30,7 @@ function interleave<T>(lists: readonly (readonly T[])[], limit: number): T[] {
 const waitingDays = (createdAt: string) => Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / DAY_MS));
 
 /**
- * The dashboard's data. Every module contributes real figures through the backend API; the CRM and Recruitment are built. A
+ * The dashboard's data. Every module contributes real figures through the backend API; the CRM, Recruitment and HR are built. A
  * module the signed-in employee cannot read, or a backend that does not answer, adds nothing, and the page shows its empty
  * states (DESIGN.md section 8.2) instead of an error. The modules load side by side and fail independently.
  *
@@ -38,11 +39,11 @@ const waitingDays = (createdAt: string) => Math.max(1, Math.floor((Date.now() - 
 export async function getDashboard(range: DashboardRange, options: { demo: boolean }): Promise<DashboardData> {
   if (options.demo && process.env.NODE_ENV === "development") return demoDashboard(range);
 
-  const [inquiries, recruitment] = await Promise.all([loadInquiries(range), loadRecruitment()]);
+  const [inquiries, recruitment, hr] = await Promise.all([loadInquiries(range), loadRecruitment(), loadHr()]);
   return {
-    kpis: [...inquiries.kpis, ...recruitment.kpis],
+    kpis: [...inquiries.kpis, ...recruitment.kpis, ...hr.kpis],
     chart: inquiries.chart,
-    attention: interleave([inquiries.attention, recruitment.attention], ATTENTION_LIMIT),
+    attention: interleave([inquiries.attention, recruitment.attention, hr.attention], ATTENTION_LIMIT),
     activity: inquiries.activity,
   };
 }
@@ -139,4 +140,61 @@ async function loadRecruitment(): Promise<Part> {
   } catch {
     return NOTHING;
   }
+}
+
+/** Headcount, this month's joiners and leavers, and documents that expire soon or already have. Not range-bound: this is who works
+ *  here now. */
+async function loadHr(): Promise<Part> {
+  try {
+    const { data } = await (await serverApi()).GET("/api/v1/hr/stats");
+    if (!data) return NOTHING;
+    const today = todayIso();
+    return {
+      kpis: [
+        { id: "headcount", group: "HR", label: "Headcount", value: formatNumber(data.headcount), href: "/hr/employees" },
+        {
+          id: "joined-this-month",
+          group: "HR",
+          label: "Joined this month",
+          value: formatNumber(data.joinedThisMonth),
+          href: "/hr/employees",
+        },
+        {
+          id: "left-this-month",
+          group: "HR",
+          label: "Left this month",
+          value: formatNumber(data.leftThisMonth),
+          href: "/hr/employees?status=left",
+        },
+        {
+          id: "documents-expiring",
+          group: "HR",
+          label: "Documents expiring soon",
+          value: formatNumber(data.expiringDocuments),
+          context:
+            data.expiredDocuments > 0
+              ? `${formatNumber(data.expiredDocuments)} already expired`
+              : `Within ${data.expiringSoonDays} days`,
+          href: "/hr/employees",
+        },
+      ],
+      attention: data.expiring.map((item) => {
+        const expired = item.expiresOn < today;
+        return {
+          id: item.id,
+          title: `${item.fullName} · ${documentName(item)}`,
+          detail: `${expired ? "Expired" : "Expires"} on ${formatPlainDate(item.expiresOn)}`,
+          tone: expired ? ("error" as const) : ("caution" as const),
+          href: `/hr/employees/${item.employeeId}`,
+        };
+      }),
+    };
+  } catch {
+    return NOTHING;
+  }
+}
+
+/** Today's date in the app's time zone as `YYYY-MM-DD`, to compare with the plain dates the backend sends. */
+function todayIso(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: APP_TIMEZONE }).format(new Date());
 }

@@ -44,7 +44,7 @@ src/
     logging/  structured JSON logs, secrets redacted
     health/   GET /api/v1/health (details), /health/live, /health/ready
     openapi/  OpenAPI document and dev docs UI
-  modules/                               # one folder per business module (none yet)
+  modules/                               # one folder per business module (crm, recruitment, cms, hr)
 test/                                    # API tests against the real app, no database
 ```
 
