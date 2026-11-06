@@ -12,3 +12,5 @@ process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
 process.env.R2_PRIVATE_BUCKET = "test-private-bucket";
 process.env.R2_PUBLIC_BUCKET = "test-public-bucket";
 process.env.R2_PUBLIC_BASE_URL = "https://public.test";
+process.env.SMTP_USER = "mailer@test.invalid";
+process.env.SMTP_PASS = "test-app-password";

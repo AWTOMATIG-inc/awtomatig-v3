@@ -12,6 +12,8 @@ describe("parseEnv", () => {
     R2_PRIVATE_BUCKET: "bucket",
     R2_PUBLIC_BUCKET: "public-bucket",
     R2_PUBLIC_BASE_URL: "https://public.test",
+    SMTP_USER: "mailer@example.com",
+    SMTP_PASS: "app password",
   };
 
   it("applies defaults", () => {
@@ -31,6 +33,14 @@ describe("parseEnv", () => {
     expect(() => parseEnv({ ...valid, R2_PUBLIC_BUCKET: undefined })).toThrow(/R2_PUBLIC_BUCKET/);
     expect(() => parseEnv({ ...valid, R2_PUBLIC_BASE_URL: undefined })).toThrow(/R2_PUBLIC_BASE_URL/);
     expect(() => parseEnv({ ...valid, R2_PUBLIC_BASE_URL: "nope" })).toThrow(/R2_PUBLIC_BASE_URL/);
+  });
+
+  it("requires the mail login, and treats the sender line as optional", () => {
+    expect(() => parseEnv({ ...valid, SMTP_USER: undefined })).toThrow(/SMTP_USER/);
+    expect(() => parseEnv({ ...valid, SMTP_USER: "not an email" })).toThrow(/SMTP_USER/);
+    expect(() => parseEnv({ ...valid, SMTP_PASS: undefined })).toThrow(/SMTP_PASS/);
+    expect(parseEnv(valid).MAIL_FROM).toBeUndefined();
+    expect(parseEnv({ ...valid, MAIL_FROM: "AWTOMATIG <a@b.test>" }).MAIL_FROM).toBe("AWTOMATIG <a@b.test>");
   });
 
   it("coerces numbers and splits the CORS list", () => {

@@ -71,16 +71,26 @@ export function SidebarContent({ user }: { user: SidebarUser }) {
       </nav>
 
       <div className="flex items-center gap-12 border-t border-white/12 px-24 py-16">
-        <span
-          aria-hidden="true"
-          className="type-caption-12 flex size-32 shrink-0 items-center justify-center rounded-full bg-white/12 text-white"
+        <Link
+          href="/account"
+          aria-label={`Your account, ${user.name}`}
+          aria-current={pathname === "/account" ? "page" : undefined}
+          className={cn(
+            "ease-out-quint rounded-8 -m-6 flex min-w-0 flex-1 items-center gap-12 p-6 transition-colors duration-200 hover:bg-white/12 motion-reduce:transition-none",
+            pathname === "/account" && "bg-white/12",
+          )}
         >
-          {initials(user.name)}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="type-body-14 truncate text-white">{user.name}</p>
-          <p className="type-caption-12 truncate text-white/60">{user.role}</p>
-        </div>
+          <span
+            aria-hidden="true"
+            className="type-caption-12 flex size-32 shrink-0 items-center justify-center rounded-full bg-white/12 text-white"
+          >
+            {initials(user.name)}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="type-body-14 block truncate text-white">{user.name}</span>
+            <span className="type-caption-12 block truncate text-white/60">{user.role}</span>
+          </span>
+        </Link>
         <button
           type="button"
           aria-label="Sign out"

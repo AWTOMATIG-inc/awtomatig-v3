@@ -25,6 +25,7 @@
     "seed:site-metrics": "nest build && node dist/seed-site-metrics.js",
     "seed:faqs": "nest build && node dist/seed-faqs.js",
     "storage:check": "nest build && node dist/storage-check.js",
+    "mail:check": "nest build && node dist/mail-check.js",
     "openapi:export": "nest build && node dist/openapi-export.js"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "drizzle-orm": "^0.45.4",
     "nestjs-pino": "^5.3.1",
     "nestjs-zod": "^5.5.0",
+    "nodemailer": "^10.3.1",
     "pg": "^8.23.1",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
@@ -57,6 +59,7 @@
     "@nestjs/testing": "^11.2.8",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.19.2",
+    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.23.1",
     "dependency-cruiser": "^18.7.0",
     "drizzle-kit": "^0.31.11",

@@ -38,6 +38,11 @@ const envSchema = z.object({
   R2_PRIVATE_BUCKET: z.string().min(1),
   R2_PUBLIC_BUCKET: z.string().min(1),
   R2_PUBLIC_BASE_URL: z.url(),
+  // Gmail SMTP (an app password) for the account emails: password changed now, email change and password reset later. The website keeps
+  // its own copy of these for its forms. MAIL_FROM is optional and defaults to "AWTOMATIG Admin <SMTP_USER>".
+  SMTP_USER: z.email(),
+  SMTP_PASS: z.string().min(1),
+  MAIL_FROM: z.string().min(1).optional(),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
 });
 

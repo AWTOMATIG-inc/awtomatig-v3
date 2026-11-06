@@ -25,6 +25,7 @@ Requires Node 22 or newer.
 | `npm run lint` | ESLint, the module-boundary check, then Prettier. CI runs this. |
 | `npm test` | Unit and API tests (no database needed). Set `TEST_DATABASE_URL` to a migrated PostgreSQL to also run the sign-in end-to-end test (`test/auth.e2e-spec.ts`); it creates and removes its own users. |
 | `npm run seed:admin` | Create the first administrator from `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` (and `SEED_ADMIN_NAME`). Safe to repeat; add `-- --reset-password` to change an existing password. |
+| `npm run mail:check -- you@example.com` | Log in to Gmail SMTP with `SMTP_USER` / `SMTP_PASS` (a Google app password) and send one test message to that address. Prints no password or server detail. Run it once after setting the variables. |
 | `npm run storage:check` | Upload a tiny object to each R2 bucket and delete it again: the private one is read back through a signed link, the public one through its public URL (also checks that a public file is never overwritten). Prints no keys or URLs. Needs the `R2_*` values in `.env`. |
 | `npm run check:boundaries` | Fails if a module reaches into another module's `repo/`, `domain/`, `api/` or schema, or if `domain/` imports a framework. |
 | `npm run db:generate` | Create a migration from the module schemas (`src/modules/*/schema.ts`, `src/shared/**/*.schema.ts`). |
@@ -64,11 +65,11 @@ The CRM needs `LEAD_INGEST_KEY` (32+ random characters), shared with the website
 
 File storage needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` and `R2_PRIVATE_BUCKET` (Cloudflare R2; required at boot, so add them to the VPS `backend/.env` before the deploy that ships this). `R2_PUBLIC_BUCKET` and `R2_PUBLIC_BASE_URL` (the public address of that bucket, where case study images are served) are required too. Run `npm run storage:check` to confirm access.
 
-Authentication needs `BETTER_AUTH_SECRET` (32+ random characters; rotating it signs everyone out) and `BETTER_AUTH_URL` (the public origin of the admin app, because the browser calls `/api` on that origin and Next.js rewrites it here).
+Authentication needs `BETTER_AUTH_SECRET` (32+ random characters; rotating it signs everyone out) and `BETTER_AUTH_URL` (the public origin of the admin app, because the browser calls `/api` on that origin and Next.js rewrites it here). Account emails (password changed notice, email change approval/confirmation, password reset) require `SMTP_USER` and `SMTP_PASS` (a Gmail app password) with optional `MAIL_FROM`. Run `npm run mail:check -- you@example.com` to confirm sending.
 
 ## Authentication
 
-Better Auth is mounted at `/api/v1/auth/*` (sign-in, sign-out, change password); `GET /api/v1/auth/session` returns who is signed in, their roles and permissions. Sign-up is closed.
+Better Auth is mounted at `/api/v1/auth/*` (sign-in, sign-out, change password, change email, request and reset password); `GET /api/v1/auth/session` returns who is signed in, their roles and permissions. Sign-up is closed.
 
 - Every endpoint is private by default. Opt out with `@Public()` (health, the Better Auth handler); add `@RequirePermission('module.resource.action')` to declare the permission. `hasPermission` supports `*`, `crm.*` and `crm.lead.*`.
 - First setup: apply the migration (`npm run db:migrate`), then `npm run seed:admin`. Remove `SEED_ADMIN_PASSWORD` from `.env` afterwards. There is no 2FA for now (see MEMORY.md).

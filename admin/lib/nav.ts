@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   type LucideIcon,
   Quote,
+  UserRound,
   Users,
 } from "lucide-react";
 
@@ -50,9 +51,12 @@ export const NAV: readonly NavGroup[] = [
   { label: "Analytics", items: [{ label: "Google Analytics", href: "/analytics/google", icon: BarChart3 }] },
 ];
 
+/** Screens that are not in the sidebar list but still get a breadcrumb: they are opened from the user block instead. */
+const OTHER_SCREENS: readonly NavItem[] = [{ label: "Account", href: "/account", icon: UserRound }];
+
 /** Finds the nav item for a path: the longest matching href wins, so `/crm/leads` matches `/crm/leads` before `/crm`. */
 export function findNavItem(pathname: string): NavItem | undefined {
-  return NAV.flatMap((group) => group.items)
+  return [...NAV.flatMap((group) => group.items), ...OTHER_SCREENS]
     .filter((item) => (item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`)))
     .sort((a, b) => b.href.length - a.href.length)[0];
 }

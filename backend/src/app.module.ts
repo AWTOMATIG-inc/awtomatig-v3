@@ -13,6 +13,7 @@ import { DbModule } from "./shared/db/db.module";
 import { AllExceptionsFilter } from "./shared/errors/all-exceptions.filter";
 import { HealthModule } from "./shared/health/health.module";
 import { LoggingModule } from "./shared/logging/logging.module";
+import { MailModule } from "./shared/mail/mail.module";
 import { RbacModule } from "./shared/rbac/rbac.module";
 import { StorageModule } from "./shared/storage/storage.module";
 import { WebsiteModule } from "./shared/website/website.module";
@@ -29,6 +30,7 @@ import { WebsiteModule } from "./shared/website/website.module";
     AuditModule,
     RbacModule,
     StorageModule,
+    MailModule,
     WebsiteModule,
     AuthModule,
     HealthModule,
