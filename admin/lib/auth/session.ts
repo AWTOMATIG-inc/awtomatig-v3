@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { serverApi } from "@/lib/api/server";
 
 export interface Session {
-  user: { name: string; role: string };
+  user: { name: string; email: string; role: string };
   /** Permission keys of the form `module.resource.action`. The UI hides what a user may not do; the backend enforces it. */
   permissions: readonly string[];
 }
@@ -20,7 +20,7 @@ export async function getSession(): Promise<Session | null> {
     if (!data) return null;
     const role = data.roles[0] ?? "employee";
     return {
-      user: { name: data.user.name, role: role.charAt(0).toUpperCase() + role.slice(1) },
+      user: { name: data.user.name, email: data.user.email, role: role.charAt(0).toUpperCase() + role.slice(1) },
       permissions: data.permissions,
     };
   } catch {

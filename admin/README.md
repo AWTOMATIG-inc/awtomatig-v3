@@ -30,7 +30,10 @@ Start the backend first (in `backend/`: migrate, `npm run seed:admin`, `npm run 
 app/
   layout.tsx  globals.css  robots.ts  not-found.tsx
   (auth)/login/          sign-in
+  (auth)/forgot-password/  forgot password
+  (auth)/reset-password/   reset password
   (app)/                 the signed-in shell: layout.tsx (sidebar, topbar), page.tsx (dashboard), loading, error
+    account/             employee's account: details, change password, change sign-in email
     crm/leads/           Leads list and lead detail (CRM)
     recruitment/jobs/    Job openings: list, new, edit (tabs), applicant pages (Recruitment)
     hr/employees/        Employees: list, new, edit, profile with career timeline and documents (HR)

@@ -18,6 +18,8 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except the sign-in screen, the API rewrite, Next.js internals and static files.
-  matcher: ["/((?!login|api|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|robots.txt|images/).*)"],
+  // Everything except the sign-in and password recovery screens, the API rewrite, Next.js internals and static files.
+  matcher: [
+    "/((?!login|forgot-password|reset-password|api|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|robots.txt|images/).*)",
+  ],
 };
