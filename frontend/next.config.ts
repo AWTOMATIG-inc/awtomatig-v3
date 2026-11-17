@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Server Actions default to 1 MB. The careers application form posts a resume (5 MB cap) plus its fields, so allow 6 MB.
   // Nginx must allow the same (client_max_body_size 6m). This applies to every Server Action, the contact form included.
-  experimental: { serverActions: { bodySizeLimit: "6mb" } },
+  experimental: { serverActions: { bodySizeLimit: "6mb" }, agentUpgrade: "security" },
   // Local images are imported from public/images. The one remote host is the public bucket that holds the case study images and
   // the testimonial logos (ASSETS_URL, the backend's R2_PUBLIC_BASE_URL), limited to its case-study/ and testimonial/ folders. next/image fetches and optimizes them on
   // the server, so the browser only loads /_next/image and the CSP img-src needs no extra host. Read at build time.
